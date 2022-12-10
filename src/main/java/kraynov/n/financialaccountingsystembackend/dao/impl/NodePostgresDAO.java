@@ -2,19 +2,14 @@ package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
 import kraynov.n.financialaccountingsystembackend.model.Node;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
-
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Repository
 public class NodePostgresDAO implements NodeDAO {
-    @Autowired
     private final JdbcTemplate jdbcTemplate;
 
     public NodePostgresDAO(JdbcTemplate jdbcTemplate) {
