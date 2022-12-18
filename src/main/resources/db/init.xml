@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="kraynov.n" id="1671378133243-1">
+        <createTable tableName="node">
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(2147483647)"/>
+            <column name="description" type="VARCHAR(2147483647)"/>
+            <column name="currencyid" type="INT"/>
+            <column name="amount" type="numeric(2)"/>
+            <column name="is_external" type="BOOL"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="kraynov.n" id="1671378133243-2">
+        <createTable tableName="transaction">
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sendernodeid" type="INT"/>
+            <column name="receivernodeid" type="INT"/>
+            <column name="description" type="VARCHAR(2147483647)"/>
+            <column name="senderamount" type="numeric(2)"/>
+            <column name="receiveramount" type="numeric(2)"/>
+            <column name="timestamp" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="kraynov.n" id="1671378133243-3">
+        <addPrimaryKey columnNames="id" constraintName="node_pkey" tableName="node"/>
+    </changeSet>
+    <changeSet author="kraynov.n" id="1671378133243-4">
+        <addPrimaryKey columnNames="id" constraintName="transaction_pkey" tableName="transaction"/>
+    </changeSet>
+</databaseChangeLog>
