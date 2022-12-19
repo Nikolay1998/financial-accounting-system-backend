@@ -34,6 +34,7 @@ public class NodeController {
         return nodeService.getAll();
     }
 
+    //toDo: can't use interface?
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Node add(@RequestBody SimpleNodeImpl node) {
