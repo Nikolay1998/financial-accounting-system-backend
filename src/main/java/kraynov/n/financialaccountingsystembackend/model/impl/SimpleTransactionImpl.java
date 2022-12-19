@@ -3,6 +3,7 @@ package kraynov.n.financialaccountingsystembackend.model.impl;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 public class SimpleTransactionImpl implements Transaction {
     private final int id;
@@ -11,14 +12,16 @@ public class SimpleTransactionImpl implements Transaction {
     private final int receiverNodeId;
     private final BigDecimal senderAmount;
     private final BigDecimal receiverAmount;
+    private final Timestamp time;
 
-    public SimpleTransactionImpl(int id, String description, int senderNodeId, int receiverNodeId, BigDecimal senderAmount, BigDecimal receiverAmount) {
+    public SimpleTransactionImpl(int id, String description, int senderNodeId, int receiverNodeId, BigDecimal senderAmount, BigDecimal receiverAmount, Timestamp time) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;
         this.receiverNodeId = receiverNodeId;
         this.senderAmount = senderAmount;
         this.receiverAmount = receiverAmount;
+        this.time = time;
     }
 
     public int getId() {
@@ -43,5 +46,9 @@ public class SimpleTransactionImpl implements Transaction {
 
     public BigDecimal getReceiverAmount() {
         return receiverAmount;
+    }
+
+    public Timestamp getTime() {
+        return time;
     }
 }

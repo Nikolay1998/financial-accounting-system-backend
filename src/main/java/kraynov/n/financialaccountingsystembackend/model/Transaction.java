@@ -1,6 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.model;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 public interface Transaction {
     int getId();
@@ -14,4 +15,6 @@ public interface Transaction {
     BigDecimal getSenderAmount();
 
     BigDecimal getReceiverAmount();
+
+    Timestamp getTime();
 }

@@ -2,9 +2,13 @@ package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
+import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class TransactionPostgresDAO implements TransactionDAO {
 
@@ -17,20 +21,20 @@ public class TransactionPostgresDAO implements TransactionDAO {
     @Override
     public Transaction save(Transaction transaction) {
         jdbcTemplate.update(
-                "insert into transaction values (?, ?, ?, ?, ?, ?)",
+                "insert into transaction values (?, ?, ?, ?, ?, ?, ?)",
                 transaction.getId(),
-                transaction.getDescription(),
                 transaction.getSenderNodeId(),
                 transaction.getReceiverNodeId(),
+                transaction.getDescription(),
                 transaction.getSenderAmount(),
-                transaction.getReceiverAmount());
+                transaction.getReceiverAmount(),
+                transaction.getTime());
         return transaction;
     }
 
     @Override
     public List<Transaction> getAll() {
-        //toDo: implement method
-        return null;
+        return jdbcTemplate.query("select * from transaction", this::mapRowToTransaction);
     }
 
     @Override
@@ -43,5 +47,15 @@ public class TransactionPostgresDAO implements TransactionDAO {
     public List<Transaction> getAllByReceiverId(int id) {
         //toDo: implement method
         return null;
+    }
+
+    private Transaction mapRowToTransaction(ResultSet row, int rowNum) throws SQLException {
+        return new SimpleTransactionImpl(row.getInt("id"),
+                row.getString("description"),
+                row.getInt("senderNodeId"),
+                row.getInt("receiverNodeId"),
+                row.getBigDecimal("senderamount"),
+                row.getBigDecimal("receiveramount"),
+                row.getTimestamp("timestamp"));
     }
 }
