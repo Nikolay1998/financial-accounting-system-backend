@@ -8,7 +8,7 @@
             <column name="name" type="VARCHAR(2147483647)"/>
             <column name="description" type="VARCHAR(2147483647)"/>
             <column name="currencyid" type="INT"/>
-            <column name="amount" type="numeric(2)"/>
+            <column name="amount" type="numeric(16,8)"/>
             <column name="is_external" type="BOOL"/>
         </createTable>
     </changeSet>
@@ -20,8 +20,8 @@
             <column name="sendernodeid" type="INT"/>
             <column name="receivernodeid" type="INT"/>
             <column name="description" type="VARCHAR(2147483647)"/>
-            <column name="senderamount" type="numeric(2)"/>
-            <column name="receiveramount" type="numeric(2)"/>
+            <column name="senderamount" type="numeric(16,8)"/>
+            <column name="receiveramount" type="numeric(16,8)"/>
             <column name="timestamp" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
