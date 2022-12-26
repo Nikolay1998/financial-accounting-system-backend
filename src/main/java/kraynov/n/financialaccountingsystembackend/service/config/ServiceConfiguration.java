@@ -17,7 +17,7 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public TransactionService simpleTransactionService(TransactionDAO transactionDAO) {
-        return new TransactionSimpleService(transactionDAO);
+    public TransactionService simpleTransactionService(TransactionDAO transactionDAO, NodeDAO nodeDAO) {
+        return new TransactionSimpleService(transactionDAO, nodeDAO);
     }
 }

@@ -7,12 +7,14 @@ import kraynov.n.financialaccountingsystembackend.dao.impl.TransactionPostgresDA
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 @Configuration
 public class DAOConfiguration {
     @Bean
-    public NodeDAO nodePostgresDAO(JdbcTemplate jdbcTemplate) {
-        return new NodePostgresDAO(jdbcTemplate);
+    public NodeDAO nodePostgresDAO(JdbcTemplate jdbcTemplate,
+                                   NamedParameterJdbcTemplate namedJdbc) {
+        return new NodePostgresDAO(jdbcTemplate, namedJdbc);
     }
 
     @Bean

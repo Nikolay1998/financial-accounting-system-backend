@@ -1,6 +1,9 @@
 spring:
   datasource:
+    #test:
     url: jdbc:postgresql://localhost:5433/financial_service
+    #prod:
+    #url: jdbc:postgresql://localhost:5433/financial_service_prod
     username: postgres
     password: password
 
