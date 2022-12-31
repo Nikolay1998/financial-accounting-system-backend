@@ -4,13 +4,13 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public interface Transaction {
-    int getId();
+    String getId();
 
     String getDescription();
 
-    int getSenderNodeId();
+    String getSenderNodeId();
 
-    int getReceiverNodeId();
+    String getReceiverNodeId();
 
     BigDecimal getSenderAmount();
 

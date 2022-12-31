@@ -7,7 +7,7 @@ import java.util.List;
 public interface NodeDAO {
     Node save(Node node);
 
-    Node getById(int nodeId);
+    Node getById(String nodeId);
 
     List<Node> getAll();
 

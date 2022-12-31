@@ -2,9 +2,11 @@ package kraynov.n.financialaccountingsystembackend.service.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
 import kraynov.n.financialaccountingsystembackend.model.Node;
+import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 
 import java.util.List;
+import java.util.UUID;
 
 public class NodeSimpleService implements NodeService {
     public final NodeDAO nodeDAO;
@@ -15,7 +17,11 @@ public class NodeSimpleService implements NodeService {
 
     @Override
     public Node add(Node node) {
-        return nodeDAO.save(node);
+        Node nodeWithId = new SimpleNodeImpl.Builder()
+                .from(node)
+                .setId(UUID.randomUUID().toString())
+                .build();
+        return nodeDAO.save(nodeWithId);
     }
 
     @Override

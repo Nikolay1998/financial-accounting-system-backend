@@ -56,7 +56,7 @@ public class NodePostgresDAO implements NodeDAO {
     }
 
     @Override
-    public Node getById(int nodeId) {
+    public Node getById(String nodeId) {
         return namedJdbc.queryForObject(
                 "select * from node where id = :nodeId",
                 Map.of("nodeId", nodeId),
@@ -70,7 +70,7 @@ public class NodePostgresDAO implements NodeDAO {
 
     private Node mapRowToNode(ResultSet row, int rowNum) throws SQLException {
         return new SimpleNodeImpl.Builder()
-                .setId(row.getInt("id"))
+                .setId(row.getString("id"))
                 .setName(row.getString("name"))
                 .setDescription(row.getString("description"))
                 .setCurrencyId(row.getInt("currencyId"))

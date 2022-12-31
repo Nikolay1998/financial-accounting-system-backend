@@ -3,7 +3,7 @@ package kraynov.n.financialaccountingsystembackend.model;
 import java.math.BigDecimal;
 
 public interface Node {
-    int getId();
+    String getId();
 
     String getName();
 
