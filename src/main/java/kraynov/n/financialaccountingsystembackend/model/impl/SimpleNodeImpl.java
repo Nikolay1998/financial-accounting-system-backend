@@ -5,14 +5,14 @@ import kraynov.n.financialaccountingsystembackend.model.Node;
 import java.math.BigDecimal;
 
 public class SimpleNodeImpl implements Node {
-    private final int id;
+    private final String id;
     private final String name;
     private final String description;
     private final int currencyId;
     private final BigDecimal amount;
     private final boolean isExternal;
 
-    private SimpleNodeImpl(int id, String name, String description, int currencyId, BigDecimal amount, boolean external) {
+    private SimpleNodeImpl(String id, String name, String description, int currencyId, BigDecimal amount, boolean external) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -22,7 +22,7 @@ public class SimpleNodeImpl implements Node {
     }
 
     @Override
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -53,7 +53,7 @@ public class SimpleNodeImpl implements Node {
 
     public static class Builder {
 
-        private int id;
+        private String id;
         private String name;
         private String description;
         private int currencyId;
@@ -70,7 +70,7 @@ public class SimpleNodeImpl implements Node {
             return this;
         }
 
-        public Builder setId(int id) {
+        public Builder setId(String id) {
             this.id = id;
             return this;
         }

@@ -50,10 +50,10 @@ public class TransactionPostgresDAO implements TransactionDAO {
     }
 
     private Transaction mapRowToTransaction(ResultSet row, int rowNum) throws SQLException {
-        return new SimpleTransactionImpl(row.getInt("id"),
+        return new SimpleTransactionImpl(row.getString("id"),
                 row.getString("description"),
-                row.getInt("senderNodeId"),
-                row.getInt("receiverNodeId"),
+                row.getString("senderNodeId"),
+                row.getString("receiverNodeId"),
                 row.getBigDecimal("senderamount"),
                 row.getBigDecimal("receiveramount"),
                 row.getTimestamp("timestamp"));

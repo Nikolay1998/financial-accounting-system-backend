@@ -1,6 +1,8 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
+import kraynov.n.financialaccountingsystembackend.model.Node;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
+import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/transaction")
@@ -26,7 +29,11 @@ public class TransactionController {
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Transaction add(@RequestBody SimpleTransactionImpl transaction) {
-        return transactionService.add(transaction);
+        Transaction transactionWithId = new SimpleTransactionImpl.Builder()
+                .from(transaction)
+                .setId(UUID.randomUUID().toString())
+                .build();
+        return transactionService.add(transactionWithId);
     }
 
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
