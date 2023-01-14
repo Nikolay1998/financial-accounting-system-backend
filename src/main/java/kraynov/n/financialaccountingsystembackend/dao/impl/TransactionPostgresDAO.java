@@ -7,8 +7,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+import java.util.TimeZone;
 
 public class TransactionPostgresDAO implements TransactionDAO {
 
@@ -28,7 +29,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
                 transaction.getDescription(),
                 transaction.getSenderAmount(),
                 transaction.getReceiverAmount(),
-                transaction.getTime());
+                java.sql.Date.valueOf((transaction.getTime())));
         return transaction;
     }
 
@@ -50,12 +51,15 @@ public class TransactionPostgresDAO implements TransactionDAO {
     }
 
     private Transaction mapRowToTransaction(ResultSet row, int rowNum) throws SQLException {
-        return new SimpleTransactionImpl(row.getString("id"),
-                row.getString("description"),
-                row.getString("senderNodeId"),
-                row.getString("receiverNodeId"),
-                row.getBigDecimal("senderamount"),
-                row.getBigDecimal("receiveramount"),
-                row.getTimestamp("timestamp"));
+        return new SimpleTransactionImpl.Builder()
+                .setId(row.getString("id"))
+                .setDescription(row.getString("description"))
+                .setSenderNodeId(row.getString("senderNodeId"))
+                .setReceiverNodeId(row.getString("receiverNodeId"))
+                .setSenderAmount(row.getBigDecimal("senderamount"))
+                .setReceiverAmount(row.getBigDecimal("receiveramount"))
+                .setTime(LocalDate.ofInstant(row.getTimestamp("timestamp").toInstant(),
+                        TimeZone.getDefault().toZoneId()))
+                .build();
     }
 }

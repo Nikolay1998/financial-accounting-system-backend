@@ -1,9 +1,10 @@
 package kraynov.n.financialaccountingsystembackend.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 public class SimpleTransactionImpl implements Transaction {
     private final String id;
@@ -12,16 +13,23 @@ public class SimpleTransactionImpl implements Transaction {
     private final String receiverNodeId;
     private final BigDecimal senderAmount;
     private final BigDecimal receiverAmount;
-    private final Timestamp time;
+    private final LocalDate dateTime;
 
-    public SimpleTransactionImpl(String id, String description, String senderNodeId, String receiverNodeId, BigDecimal senderAmount, BigDecimal receiverAmount, Timestamp time) {
+    private SimpleTransactionImpl(String id,
+            String description,
+            String senderNodeId,
+            String receiverNodeId,
+            BigDecimal senderAmount,
+            BigDecimal receiverAmount,
+            LocalDate dateTime
+    ) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;
         this.receiverNodeId = receiverNodeId;
         this.senderAmount = senderAmount;
         this.receiverAmount = receiverAmount;
-        this.time = time;
+        this.dateTime = dateTime;
     }
 
     public String getId() {
@@ -48,8 +56,9 @@ public class SimpleTransactionImpl implements Transaction {
         return receiverAmount;
     }
 
-    public Timestamp getTime() {
-        return time;
+    @JsonFormat(pattern = "YYYY-MM-dd")
+    public LocalDate getTime() {
+        return dateTime;
     }
 
     public static class Builder {
@@ -59,7 +68,7 @@ public class SimpleTransactionImpl implements Transaction {
         private String receiverNodeId;
         private BigDecimal senderAmount;
         private BigDecimal receiverAmount;
-        private Timestamp time;
+        private LocalDate dateTime;
 
         public Builder from(Transaction transaction) {
             this.id = transaction.getId();
@@ -68,7 +77,7 @@ public class SimpleTransactionImpl implements Transaction {
             this.senderAmount = transaction.getSenderAmount();
             this.receiverNodeId = transaction.getReceiverNodeId();
             this.receiverAmount = transaction.getReceiverAmount();
-            this.time = transaction.getTime();
+            this.dateTime = transaction.getTime();
             return this;
         }
 
@@ -102,13 +111,20 @@ public class SimpleTransactionImpl implements Transaction {
             return this;
         }
 
-        public Builder setTime(Timestamp time) {
-            this.time = time;
+        @JsonFormat(pattern = "YYYY-MM-dd")
+        public Builder setTime(LocalDate time) {
+            this.dateTime = time;
             return this;
         }
 
         public Transaction build() {
-            return new SimpleTransactionImpl(id, description, senderNodeId, receiverNodeId, senderAmount, receiverAmount, time);
+            return new SimpleTransactionImpl(id,
+                    description,
+                    senderNodeId,
+                    receiverNodeId,
+                    senderAmount,
+                    receiverAmount,
+                    dateTime);
         }
     }
 }
