@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_PATH:localhost:5433/financial_service}
+    username: postgres
+    password: password
+
+
+  liquibase:
+    change-log: classpath:db/master-changelogs.xml

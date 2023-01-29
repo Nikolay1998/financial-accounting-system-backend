@@ -26,6 +26,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
+    @CrossOrigin
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Transaction add(@RequestBody SimpleTransactionImpl transaction) {
@@ -36,6 +37,7 @@ public class TransactionController {
         return transactionService.add(transactionWithId);
     }
 
+    @CrossOrigin
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Transaction> getAll() {
         return transactionService.getAll();
