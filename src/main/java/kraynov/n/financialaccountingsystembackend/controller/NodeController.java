@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,12 +30,14 @@ public class NodeController {
         this.nodeService = nodeService;
     }
 
+    @CrossOrigin
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Node> getAll() {
         return nodeService.getAll();
     }
 
     //toDo: can't use interface?
+    @CrossOrigin
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Node add(@RequestBody SimpleNodeImpl node) {
