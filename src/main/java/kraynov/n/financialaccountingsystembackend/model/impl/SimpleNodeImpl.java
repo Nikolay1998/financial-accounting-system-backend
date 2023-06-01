@@ -10,14 +10,16 @@ public class SimpleNodeImpl implements Node {
     private final String description;
     private final int currencyId;
     private final BigDecimal amount;
+    private final String userId;
     private final boolean isExternal;
 
-    private SimpleNodeImpl(String id, String name, String description, int currencyId, BigDecimal amount, boolean external) {
+    private SimpleNodeImpl(String id, String name, String description, int currencyId, BigDecimal amount, String userId, boolean external) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.currencyId = currencyId;
         this.amount = amount;
+        this.userId = userId;
         this.isExternal = external;
     }
 
@@ -47,6 +49,11 @@ public class SimpleNodeImpl implements Node {
     }
 
     @Override
+    public String getUserId() {
+        return userId;
+    }
+
+    @Override
     public boolean isExternal() {
         return isExternal;
     }
@@ -58,6 +65,7 @@ public class SimpleNodeImpl implements Node {
         private String description;
         private int currencyId;
         private BigDecimal amount;
+        private String userId;
         private boolean isExternal;
 
         public Builder from(Node node) {
@@ -66,6 +74,7 @@ public class SimpleNodeImpl implements Node {
             this.description = node.getDescription();
             this.currencyId = node.getCurrencyId();
             this.amount = node.getAmount();
+            this.userId = node.getUserId();
             this.isExternal = node.isExternal();
             return this;
         }
@@ -95,13 +104,18 @@ public class SimpleNodeImpl implements Node {
             return this;
         }
 
+        public Builder setUserId(String userId) {
+            this.userId = userId;
+            return this;
+        }
+
         public Builder setExternal(boolean external) {
             isExternal = external;
             return this;
         }
 
         public Node build() {
-            return new SimpleNodeImpl(id, name, description, currencyId, amount, isExternal);
+            return new SimpleNodeImpl(id, name, description, currencyId, amount, userId, isExternal);
         }
     }
 }
