@@ -5,6 +5,7 @@ import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
 import kraynov.n.financialaccountingsystembackend.model.Node;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
+import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 
 import java.util.List;
@@ -13,11 +14,12 @@ public class TransactionSimpleService implements TransactionService {
 
     private final TransactionDAO transactionDAO;
     private final NodeDAO nodeDAO;
+    private final ContextHolderFacade contextHolderFacade;
 
-
-    public TransactionSimpleService(TransactionDAO transactionDAO, NodeDAO nodeDAO) {
+    public TransactionSimpleService(TransactionDAO transactionDAO, NodeDAO nodeDAO, ContextHolderFacade contextHolderFacade) {
         this.transactionDAO = transactionDAO;
         this.nodeDAO = nodeDAO;
+        this.contextHolderFacade = contextHolderFacade;
     }
 
     @Override
@@ -42,6 +44,8 @@ public class TransactionSimpleService implements TransactionService {
 
     @Override
     public List<Transaction> getAll() {
+        //toDo: use userDTO
+        contextHolderFacade.getAuthenticatedUser();
         return transactionDAO.getAll();
     }
 

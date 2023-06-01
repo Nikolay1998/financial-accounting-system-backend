@@ -1,6 +1,5 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
-import kraynov.n.financialaccountingsystembackend.dao.impl.NodePostgresDAO;
 import kraynov.n.financialaccountingsystembackend.model.Node;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
@@ -36,7 +35,6 @@ public class NodeController {
         return nodeService.getAll();
     }
 
-    //toDo: can't use interface?
     @CrossOrigin
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)

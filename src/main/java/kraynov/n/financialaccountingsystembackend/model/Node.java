@@ -13,5 +13,7 @@ public interface Node {
 
     BigDecimal getAmount();
 
+    String getUserId();
+
     boolean isExternal();
 }

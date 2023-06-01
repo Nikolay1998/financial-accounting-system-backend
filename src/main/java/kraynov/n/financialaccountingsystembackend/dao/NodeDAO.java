@@ -9,7 +9,7 @@ public interface NodeDAO {
 
     Node getById(String nodeId);
 
-    List<Node> getAll();
+    List<Node> getAll(String userId);
 
     Node update(Node node);
 }

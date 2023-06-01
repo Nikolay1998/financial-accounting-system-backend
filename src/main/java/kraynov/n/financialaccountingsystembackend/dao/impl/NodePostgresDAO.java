@@ -23,13 +23,14 @@ public class NodePostgresDAO implements NodeDAO {
     @Override
     public Node save(Node node) {
         jdbcTemplate.update(
-                "insert into node values (?, ?, ?, ?, ?, ?)",
+                "insert into node values (?, ?, ?, ?, ?, ?, ?)",
                 node.getId(),
                 node.getName(),
                 node.getDescription(),
                 node.getCurrencyId(),
                 node.getAmount(),
-                node.isExternal());
+                node.isExternal(),
+                node.getUserId());
         return node;
     }
 
@@ -41,6 +42,7 @@ public class NodePostgresDAO implements NodeDAO {
                         description = :description,
                         currencyid = :currencyid,
                         amount = :amount,
+                        user_id = :user_id,
                         is_external = :is_external
                         where id = :id
                         """
@@ -49,6 +51,7 @@ public class NodePostgresDAO implements NodeDAO {
                         "description", node.getDescription(),
                         "currencyid", node.getCurrencyId(),
                         "amount", node.getAmount(),
+                        "user_id", node.getUserId(),
                         "is_external", node.isExternal(),
                         "id", node.getId())
         );
@@ -64,8 +67,8 @@ public class NodePostgresDAO implements NodeDAO {
     }
 
     @Override
-    public List<Node> getAll() {
-        return jdbcTemplate.query("select * from node", this::mapRowToNode);
+    public List<Node> getAll(String userId) {
+        return namedJdbc.query("select * from node where user_id = :userId", Map.of("userId", userId), this::mapRowToNode);
     }
 
     private Node mapRowToNode(ResultSet row, int rowNum) throws SQLException {
@@ -75,6 +78,7 @@ public class NodePostgresDAO implements NodeDAO {
                 .setDescription(row.getString("description"))
                 .setCurrencyId(row.getInt("currencyId"))
                 .setAmount(row.getBigDecimal("amount"))
+                .setUserId(row.getString("user_id"))
                 .setExternal(row.getBoolean("is_external"))
                 .build();
     }

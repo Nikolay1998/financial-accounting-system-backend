@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="kraynov.n" id="user-init-1">
+        <createTable tableName="fas_user">
+            <column name="id" type="VARCHAR(2147483647)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(2147483647)">
+                <constraints unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(2147483647)"/>
+        </createTable>
+        <addPrimaryKey columnNames="id" constraintName="fas_user_pkey" tableName="fas_user"/>
+    </changeSet>
+
+    <changeSet author="kraynov.n" id="add-user_id-in-node">
+        <addColumn tableName="node">
+            <column name="user_id" type="VARCHAR(2147483647)">
+                <constraints foreignKeyName="fas_user_pkey" referencedTableName="fas_user" referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="kraynov.n" id="add-user_id-in-transaction">
+        <addColumn tableName="transaction">
+            <column name="user_id" type="VARCHAR(2147483647)">
+                <constraints foreignKeyName="fas_user_pkey" referencedTableName="fas_user" referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
