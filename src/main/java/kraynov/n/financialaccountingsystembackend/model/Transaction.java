@@ -16,5 +16,5 @@ public interface Transaction {
 
     BigDecimal getReceiverAmount();
 
-    LocalDate getTime();
+    LocalDate getDateTime();
 }

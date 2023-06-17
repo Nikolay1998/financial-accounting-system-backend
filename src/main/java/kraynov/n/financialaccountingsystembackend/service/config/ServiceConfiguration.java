@@ -33,7 +33,7 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public UserService simpleUserService(UserDAO userDAO) {
-        return new UserSimpleService(userDAO);
+    public UserService simpleUserService(UserDAO userDAO, ContextHolderFacade contextHolderFacade) {
+        return new UserSimpleService(userDAO, contextHolderFacade);
     }
 }
