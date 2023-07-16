@@ -1,6 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.security.config;
 
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
+import kraynov.n.financialaccountingsystembackend.security.impl.FASBasicAuthenticationEntryPoint;
 import kraynov.n.financialaccountingsystembackend.security.impl.SimpleContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -13,11 +14,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @Configuration
 public class SecurityConfiguration {
+
+    @Bean
+    public BasicAuthenticationEntryPoint fasBasicAuthenticationEntryPoint() {
+        return new FASBasicAuthenticationEntryPoint();
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -40,15 +46,16 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, BasicAuthenticationEntryPoint fasBasicAuthenticationEntryPoint) throws Exception {
         http.csrf().disable();
-        return http
+        http
                 .authorizeRequests()
                 .antMatchers("/user/add").permitAll()
                 .antMatchers("/", "/**").authenticated()
                 .and()
-                .httpBasic(withDefaults())
-                .build();
+                .httpBasic()
+                .authenticationEntryPoint(fasBasicAuthenticationEntryPoint);
+        return http.build();
     }
 
     @Bean

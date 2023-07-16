@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,5 +33,11 @@ public class RegistrationController {
     public UserDTO add(@RequestBody SimpleUserDTO userDTO) {
         UserDTO encryptedUser = new SimpleUserDTO(UUID.randomUUID().toString(), userDTO.getUsername(), passwordEncoder.encode(userDTO.getPassword()));
         return userService.add(encryptedUser);
+    }
+
+    @CrossOrigin
+    @GetMapping(path = "/authenticate", produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDTO authenticate() {
+        return userService.getAuthenticatedUser();
     }
 }

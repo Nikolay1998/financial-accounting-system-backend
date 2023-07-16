@@ -57,7 +57,7 @@ public class SimpleTransactionImpl implements Transaction {
     }
 
     @JsonFormat(pattern = "YYYY-MM-dd")
-    public LocalDate getTime() {
+    public LocalDate getDateTime() {
         return dateTime;
     }
 
@@ -77,7 +77,7 @@ public class SimpleTransactionImpl implements Transaction {
             this.senderAmount = transaction.getSenderAmount();
             this.receiverNodeId = transaction.getReceiverNodeId();
             this.receiverAmount = transaction.getReceiverAmount();
-            this.dateTime = transaction.getTime();
+            this.dateTime = transaction.getDateTime();
             return this;
         }
 

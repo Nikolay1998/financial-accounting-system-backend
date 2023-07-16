@@ -29,7 +29,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
                 transaction.getDescription(),
                 transaction.getSenderAmount(),
                 transaction.getReceiverAmount(),
-                java.sql.Date.valueOf((transaction.getTime())));
+                java.sql.Date.valueOf((transaction.getDateTime())));
         return transaction;
     }
 
