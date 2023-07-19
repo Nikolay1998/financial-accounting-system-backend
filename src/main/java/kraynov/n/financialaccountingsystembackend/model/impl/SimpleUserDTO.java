@@ -58,4 +58,11 @@ public class SimpleUserDTO implements UserDTO {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return "SimpleUserDTO{" +
+                "id='" + id + '\'' +
+                ", userName='" + userName + '\'' +
+                '}';
+    }
 }

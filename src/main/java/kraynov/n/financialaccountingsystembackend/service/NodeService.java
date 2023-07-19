@@ -5,7 +5,7 @@ import kraynov.n.financialaccountingsystembackend.model.Node;
 import java.util.List;
 
 public interface NodeService {
-    public Node add(Node node);
+    Node add(Node node);
 
-    public List<Node> getAll();
+    List<Node> getAll();
 }

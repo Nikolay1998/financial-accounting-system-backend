@@ -61,6 +61,19 @@ public class SimpleTransactionImpl implements Transaction {
         return dateTime;
     }
 
+    @Override
+    public String toString() {
+        return "SimpleTransactionImpl{" +
+                "id='" + id + '\'' +
+                ", description='" + description + '\'' +
+                ", senderNodeId='" + senderNodeId + '\'' +
+                ", receiverNodeId='" + receiverNodeId + '\'' +
+                ", senderAmount=" + senderAmount +
+                ", receiverAmount=" + receiverAmount +
+                ", dateTime=" + dateTime +
+                '}';
+    }
+
     public static class Builder {
         private String id;
         private String description;
