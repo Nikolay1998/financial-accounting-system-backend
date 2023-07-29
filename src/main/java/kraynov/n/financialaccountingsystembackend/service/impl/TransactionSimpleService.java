@@ -7,11 +7,14 @@ import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class TransactionSimpleService implements TransactionService {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(TransactionSimpleService.class);
     private final TransactionDAO transactionDAO;
     private final NodeDAO nodeDAO;
     private final ContextHolderFacade contextHolderFacade;
@@ -24,6 +27,7 @@ public class TransactionSimpleService implements TransactionService {
 
     @Override
     public Transaction add(Transaction transaction) {
+        LOGGER.debug("Start adding transaction {}", transaction);
         Node senderNode = nodeDAO.getById(transaction.getSenderNodeId());
         Node receiverNode = nodeDAO.getById(transaction.getReceiverNodeId());
         Node newSenderNode = new SimpleNodeImpl.Builder()
@@ -44,6 +48,7 @@ public class TransactionSimpleService implements TransactionService {
 
     @Override
     public List<Transaction> getAll() {
+        LOGGER.debug("Start loading all transactions");
         //toDo: use userDTO
         contextHolderFacade.getAuthenticatedUser();
         return transactionDAO.getAll();

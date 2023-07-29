@@ -58,6 +58,19 @@ public class SimpleNodeImpl implements Node {
         return isExternal;
     }
 
+    @Override
+    public String toString() {
+        return "SimpleNodeImpl{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", currencyId=" + currencyId +
+                ", amount=" + amount +
+                ", userId='" + userId + '\'' +
+                ", isExternal=" + isExternal +
+                '}';
+    }
+
     public static class Builder {
 
         private String id;
