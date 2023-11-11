@@ -1,13 +1,14 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
+import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
+import kraynov.n.financialaccountingsystembackend.service.FASFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,29 +17,23 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/transaction")
 public class TransactionController {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final TransactionService transactionService;
+    private final FASFacade fasFacade;
 
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService, FASFacade fasFacade) {
         this.transactionService = transactionService;
+        this.fasFacade = fasFacade;
     }
 
     @CrossOrigin
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Transaction add(@RequestBody SimpleTransactionImpl transaction) {
-        Transaction transactionWithId = new SimpleTransactionImpl.Builder()
-                .from(transaction)
-                .setId(UUID.randomUUID().toString())
-                .build();
-        return transactionService.add(transactionWithId);
+    public Transaction add(@RequestBody SimpleTransactionImpl transaction) throws InsufficientFundsException {
+        return fasFacade.addTransaction(transaction);
     }
 
     @CrossOrigin
@@ -55,5 +50,11 @@ public class TransactionController {
     @GetMapping(path = "/getAllByReceiver")
     public List<Transaction> getAllByReceiverId(int id) {
         return transactionService.getAllByReceiverId(id);
+    }
+
+    @CrossOrigin
+    @DeleteMapping(path = "/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Transaction cancelTransaction(@RequestBody String transactionId) throws InsufficientFundsException {
+        return fasFacade.cancelTransaction(transactionId);
     }
 }

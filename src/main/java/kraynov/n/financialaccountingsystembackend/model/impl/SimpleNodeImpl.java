@@ -71,6 +71,34 @@ public class SimpleNodeImpl implements Node {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleNodeImpl that = (SimpleNodeImpl) o;
+
+        if (currencyId != that.currencyId) return false;
+        if (isExternal != that.isExternal) return false;
+        if (!id.equals(that.id)) return false;
+        if (!name.equals(that.name)) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (!amount.equals(that.amount)) return false;
+        return userId.equals(that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + currencyId;
+        result = 31 * result + amount.hashCode();
+        result = 31 * result + userId.hashCode();
+        result = 31 * result + (isExternal ? 1 : 0);
+        return result;
+    }
+
     public static class Builder {
 
         private String id;

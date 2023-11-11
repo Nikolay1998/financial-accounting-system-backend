@@ -17,4 +17,8 @@ public interface Transaction {
     BigDecimal getReceiverAmount();
 
     LocalDate getDateTime();
+
+    boolean isCancelled();
+
+    String getUserId();
 }

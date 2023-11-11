@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <include file="db/init.xml"/>
-    <include file="db/id-to-string.xml"/>
-    <include file="db/user-init.xml"/>
-    <include file="db/transaction-cancellation.xml"/>
+    <changeSet author="kraynov.n" id="transaction-cancellation-1">
+        <addColumn tableName="transaction">
+            <column name="is_cancelled" type="BOOL"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

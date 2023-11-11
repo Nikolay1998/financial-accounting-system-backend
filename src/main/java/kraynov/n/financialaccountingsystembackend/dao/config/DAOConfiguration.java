@@ -20,8 +20,8 @@ public class DAOConfiguration {
     }
 
     @Bean
-    public TransactionDAO transactionPostgresDAO(JdbcTemplate jdbcTemplate) {
-        return new TransactionPostgresDAO(jdbcTemplate);
+    public TransactionDAO transactionPostgresDAO(NamedParameterJdbcTemplate namedJdbc) {
+        return new TransactionPostgresDAO(namedJdbc);
     }
 
     @Bean
