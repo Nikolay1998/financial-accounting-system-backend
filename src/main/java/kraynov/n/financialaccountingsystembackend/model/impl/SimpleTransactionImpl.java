@@ -14,15 +14,19 @@ public class SimpleTransactionImpl implements Transaction {
     private final BigDecimal senderAmount;
     private final BigDecimal receiverAmount;
     private final LocalDate dateTime;
+    private final boolean isCancelled;
+    private final String userId;
 
-    private SimpleTransactionImpl(String id,
+    private SimpleTransactionImpl(
+            String id,
             String description,
             String senderNodeId,
             String receiverNodeId,
             BigDecimal senderAmount,
             BigDecimal receiverAmount,
-            LocalDate dateTime
-    ) {
+            LocalDate dateTime,
+            boolean isCancelled,
+            String userId) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;
@@ -30,6 +34,8 @@ public class SimpleTransactionImpl implements Transaction {
         this.senderAmount = senderAmount;
         this.receiverAmount = receiverAmount;
         this.dateTime = dateTime;
+        this.isCancelled = isCancelled;
+        this.userId = userId;
     }
 
     public String getId() {
@@ -62,6 +68,20 @@ public class SimpleTransactionImpl implements Transaction {
     }
 
     @Override
+    public boolean isCancelled() {
+        return isCancelled;
+    }
+
+    @Override
+    public String getUserId() {
+        return userId;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    @Override
     public String toString() {
         return "SimpleTransactionImpl{" +
                 "id='" + id + '\'' +
@@ -82,6 +102,8 @@ public class SimpleTransactionImpl implements Transaction {
         private BigDecimal senderAmount;
         private BigDecimal receiverAmount;
         private LocalDate dateTime;
+        private boolean isCancelled;
+        private String userId;
 
         public Builder from(Transaction transaction) {
             this.id = transaction.getId();
@@ -91,6 +113,8 @@ public class SimpleTransactionImpl implements Transaction {
             this.receiverNodeId = transaction.getReceiverNodeId();
             this.receiverAmount = transaction.getReceiverAmount();
             this.dateTime = transaction.getDateTime();
+            this.isCancelled = transaction.isCancelled();
+            this.userId = transaction.getUserId();
             return this;
         }
 
@@ -130,6 +154,16 @@ public class SimpleTransactionImpl implements Transaction {
             return this;
         }
 
+        public Builder setCancelled(boolean cancelled) {
+            this.isCancelled = cancelled;
+            return this;
+        }
+
+        public Builder setUserId(String userId) {
+            this.userId = userId;
+            return this;
+        }
+
         public Transaction build() {
             return new SimpleTransactionImpl(id,
                     description,
@@ -137,7 +171,9 @@ public class SimpleTransactionImpl implements Transaction {
                     receiverNodeId,
                     senderAmount,
                     receiverAmount,
-                    dateTime);
+                    dateTime,
+                    isCancelled,
+                    userId);
         }
     }
 }

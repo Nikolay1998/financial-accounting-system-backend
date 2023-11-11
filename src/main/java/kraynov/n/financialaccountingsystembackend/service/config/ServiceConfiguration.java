@@ -4,10 +4,12 @@ import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
 import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
 import kraynov.n.financialaccountingsystembackend.dao.UserDAO;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
+import kraynov.n.financialaccountingsystembackend.service.FASFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import kraynov.n.financialaccountingsystembackend.service.SummaryService;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import kraynov.n.financialaccountingsystembackend.service.UserService;
+import kraynov.n.financialaccountingsystembackend.service.impl.FASSimpleFacade;
 import kraynov.n.financialaccountingsystembackend.service.impl.NodeSimpleService;
 import kraynov.n.financialaccountingsystembackend.service.impl.SummarySimpleService;
 import kraynov.n.financialaccountingsystembackend.service.impl.TransactionSimpleService;
@@ -23,8 +25,8 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public TransactionService simpleTransactionService(TransactionDAO transactionDAO, NodeDAO nodeDAO, ContextHolderFacade contextHolderFacade) {
-        return new TransactionSimpleService(transactionDAO, nodeDAO, contextHolderFacade);
+    public TransactionService simpleTransactionService(TransactionDAO transactionDAO, ContextHolderFacade contextHolderFacade) {
+        return new TransactionSimpleService(transactionDAO, contextHolderFacade);
     }
 
     @Bean
@@ -35,5 +37,13 @@ public class ServiceConfiguration {
     @Bean
     public UserService simpleUserService(UserDAO userDAO, ContextHolderFacade contextHolderFacade) {
         return new UserSimpleService(userDAO, contextHolderFacade);
+    }
+
+    @Bean
+    public FASFacade fasFacade(
+            TransactionService simpleTransactionService,
+            NodeService simpleNodeService
+    ) {
+        return new FASSimpleFacade(simpleNodeService, simpleTransactionService);
     }
 }

@@ -7,9 +7,13 @@ import java.util.List;
 public interface TransactionDAO {
     Transaction save(Transaction transaction);
 
+    Transaction get(String transactionId);
+
     List<Transaction> getAll();
 
     List<Transaction> getAllBySenderId(int id);
 
     List<Transaction> getAllByReceiverId(int id);
+
+    int setCancelled(String id);
 }

@@ -3,39 +3,55 @@ package kraynov.n.financialaccountingsystembackend.dao.impl;
 import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class TransactionPostgresDAO implements TransactionDAO {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedJdbc;
 
-    public TransactionPostgresDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public TransactionPostgresDAO(NamedParameterJdbcTemplate namedJdbc) {
+        this.namedJdbc = namedJdbc;
     }
 
     @Override
     public Transaction save(Transaction transaction) {
-        jdbcTemplate.update(
-                "insert into transaction values (?, ?, ?, ?, ?, ?, ?)",
-                transaction.getId(),
-                transaction.getSenderNodeId(),
-                transaction.getReceiverNodeId(),
-                transaction.getDescription(),
-                transaction.getSenderAmount(),
-                transaction.getReceiverAmount(),
-                java.sql.Date.valueOf((transaction.getDateTime())));
+        namedJdbc.update(
+                "insert into transaction values (:id, :senderNodeId, :receiverNodeId, :description, :senderAmount, :receiverAmount, :dateTime, :userId, :isCancelled)",
+                Map.of(
+                        "id", transaction.getId(),
+                        "senderNodeId", transaction.getSenderNodeId(),
+                        "receiverNodeId", transaction.getReceiverNodeId(),
+                        "description", transaction.getDescription(),
+                        "senderAmount", transaction.getSenderAmount(),
+                        "receiverAmount", transaction.getReceiverAmount(),
+                        "dateTime", java.sql.Date.valueOf((transaction.getDateTime())),
+                        "isCancelled", transaction.isCancelled(),
+                        "userId", transaction.getUserId()
+                )
+        );
         return transaction;
     }
 
     @Override
+    public Transaction get(String transactionId) {
+
+        return namedJdbc.queryForObject(
+                "select * from transaction where id = :id",
+                Map.of("id", transactionId),
+                this::mapRowToTransaction
+        );
+    }
+
+    @Override
     public List<Transaction> getAll() {
-        return jdbcTemplate.query("select * from transaction", this::mapRowToTransaction);
+        return namedJdbc.query("select * from transaction", this::mapRowToTransaction);
     }
 
     @Override
@@ -50,8 +66,13 @@ public class TransactionPostgresDAO implements TransactionDAO {
         return null;
     }
 
+    @Override
+    public int setCancelled(String id) {
+        return namedJdbc.update("update transaction set is_cancelled = true where id = :id", Map.of("id", id));
+    }
+
     private Transaction mapRowToTransaction(ResultSet row, int rowNum) throws SQLException {
-        return new SimpleTransactionImpl.Builder()
+        return SimpleTransactionImpl.builder()
                 .setId(row.getString("id"))
                 .setDescription(row.getString("description"))
                 .setSenderNodeId(row.getString("senderNodeId"))
@@ -60,6 +81,8 @@ public class TransactionPostgresDAO implements TransactionDAO {
                 .setReceiverAmount(row.getBigDecimal("receiveramount"))
                 .setTime(LocalDate.ofInstant(row.getTimestamp("timestamp").toInstant(),
                         TimeZone.getDefault().toZoneId()))
+                .setCancelled(row.getBoolean("is_cancelled"))
+                .setUserId(row.getString("user_id"))
                 .build();
     }
 }
