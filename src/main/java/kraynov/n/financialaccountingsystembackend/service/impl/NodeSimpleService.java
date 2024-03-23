@@ -1,5 +1,12 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.model.Node;
@@ -9,12 +16,6 @@ import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
 
 public class NodeSimpleService implements NodeService {
 
@@ -41,6 +42,11 @@ public class NodeSimpleService implements NodeService {
     }
 
     @Override
+    public Node get(String id) {
+        return nodeDAO.getById(id);
+    }
+
+    @Override
     public List<Node> getAll() {
         UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         LOGGER.debug("Start loading all nodes for user with id {}", userDTO.getId());
@@ -53,7 +59,8 @@ public class NodeSimpleService implements NodeService {
         try {
             calculate(transaction);
         } catch (InsufficientFundsException e) {
-            LOGGER.debug("Not enough amount ({}) on sender node with id = {} ({})", transaction.getSenderAmount(), transaction.getSenderNodeId(), transaction.getSenderAmount());
+            LOGGER.debug("Not enough amount ({}) on sender node with id = {} ({})", transaction.getSenderAmount(),
+                    transaction.getSenderNodeId(), transaction.getSenderAmount());
             throw e;
         }
     }
@@ -70,7 +77,8 @@ public class NodeSimpleService implements NodeService {
         try {
             calculate(reversedTransaction);
         } catch (InsufficientFundsException e) {
-            LOGGER.debug("Not enough amount ({}) on receiver node with id = {} ({}) to cancel transaction", transaction.getSenderAmount(), transaction.getSenderNodeId(), transaction.getSenderAmount());
+            LOGGER.debug("Not enough amount ({}) on receiver node with id = {} ({}) to cancel transaction",
+                    transaction.getSenderAmount(), transaction.getSenderNodeId(), transaction.getSenderAmount());
             throw e;
         }
     }

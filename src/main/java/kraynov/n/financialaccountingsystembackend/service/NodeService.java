@@ -1,13 +1,16 @@
 package kraynov.n.financialaccountingsystembackend.service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.model.Node;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 
-import java.util.List;
-
 public interface NodeService {
     Node add(Node node);
+
+    Node get(String id);
 
     List<Node> getAll();
 

@@ -1,8 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
-import kraynov.n.financialaccountingsystembackend.model.Node;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
-import kraynov.n.financialaccountingsystembackend.service.NodeService;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import kraynov.n.financialaccountingsystembackend.mapper.NodeMapper;
+import kraynov.n.financialaccountingsystembackend.model.Node;
+import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
+import kraynov.n.financialaccountingsystembackend.service.NodeService;
+import kraynov.n.financialaccountingsystembackend.to.NodeVO;
 
 @RestController
 @RequestMapping(path = "/node")
@@ -25,14 +28,17 @@ public class NodeController {
 
     private final NodeService nodeService;
 
-    public NodeController(NodeService nodeService) {
+    private final NodeMapper nodeMapper;
+
+    public NodeController(NodeService nodeService, NodeMapper nodeMapper) {
         this.nodeService = nodeService;
+        this.nodeMapper = nodeMapper;
     }
 
     @CrossOrigin
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Node> getAll() {
-        return nodeService.getAll();
+    public List<NodeVO> getAll() {
+        return nodeService.getAll().stream().map(nodeMapper::viewObjectFromEntity).toList();
     }
 
     @CrossOrigin
