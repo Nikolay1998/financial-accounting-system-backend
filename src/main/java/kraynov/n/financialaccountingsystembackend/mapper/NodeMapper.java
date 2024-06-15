@@ -1,5 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.mapper;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ public class NodeMapper {
     }
 
     public NodeVO viewObjectFromEntity(Node node) {
-        LocalDate lastTransactionDate = null;
+        LocalDate lastTransactionDate = LocalDate.MIN;
         Optional<Transaction> lastTransactionByNodeId = transactionService.getLastTransactionByNodeId(node.getId());
         if (lastTransactionByNodeId.isPresent()) {
             lastTransactionDate = lastTransactionByNodeId.get().getDateTime();
@@ -33,5 +34,15 @@ public class NodeMapper {
                 .setExternal(node.isExternal())
                 .setLastTransactionDate(lastTransactionDate)
                 .build();
+    }
+
+    public static int compareNodeVO(NodeVO node1, NodeVO node2) {
+        int nodeOneBancrupt = node1.getAmount().compareTo(BigDecimal.ZERO);
+        int nodeTwoBancrupt = node2.getAmount().compareTo(BigDecimal.ZERO);
+        if (nodeOneBancrupt != nodeTwoBancrupt) {
+            return nodeTwoBancrupt - nodeOneBancrupt;
+        }
+
+        return node2.getLastTransactionDate().compareTo(node1.getLastTransactionDate());
     }
 }

@@ -1,5 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
+import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -38,7 +40,11 @@ public class NodeController {
     @CrossOrigin
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NodeVO> getAll() {
-        return nodeService.getAll().stream().map(nodeMapper::viewObjectFromEntity).toList();
+        return nodeService.getAll()
+                .stream()
+                .map(nodeMapper::viewObjectFromEntity)
+                .sorted(NodeMapper::compareNodeVO)
+                .toList();
     }
 
     @CrossOrigin

@@ -3,7 +3,8 @@ package kraynov.n.financialaccountingsystembackend.utils;
 public enum Currency {
     DOLLAR_USA(1, "Доллар США", "USD", "$"),
     RUBLE_RU(2, "Рубль", "RUB", "₽"),
-    ETHEREUM(3, "Эфир", "ETH", "Ξ");
+    ETHEREUM(3, "Эфир", "ETH", "Ξ"),
+    EURO(4, "Евро", "EUR", "€");
 
     private final int id;
     private final String name;

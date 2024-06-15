@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.mapper.TransactionMapper;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 import kraynov.n.financialaccountingsystembackend.service.FASFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import kraynov.n.financialaccountingsystembackend.to.TransactionVO;
@@ -38,9 +37,8 @@ public class TransactionController {
     @CrossOrigin
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Transaction add(@RequestBody SimpleTransactionImpl transaction) throws InsufficientFundsException {
-        // toDO: replace with transactionVO
-        return fasFacade.addTransaction(transaction);
+    public Transaction add(@RequestBody TransactionVO transaction) throws InsufficientFundsException {
+        return fasFacade.addTransaction(transactionMapper.entityFromViewObject(transaction));
     }
 
     @CrossOrigin
