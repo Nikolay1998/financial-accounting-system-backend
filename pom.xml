@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>kraynov.n</groupId>
 	<artifactId>financial-accounting-system-backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<packaging>war</packaging>
 	<name>financial-accounting-system-backend</name>
 	<description>Backend service for financies accounting</description>

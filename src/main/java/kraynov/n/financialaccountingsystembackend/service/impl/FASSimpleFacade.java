@@ -7,7 +7,7 @@ import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 
 public class FASSimpleFacade implements FASFacade {
-    //todo: rename to TransactionProcessor?
+    // todo: rename to TransactionProcessor?
     private final NodeService nodeService;
     private final TransactionService transactionService;
 

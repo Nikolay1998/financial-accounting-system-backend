@@ -1,16 +1,18 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.model.UserDTO;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.UUID;
 
 public class TransactionSimpleService implements TransactionService {
 
@@ -43,7 +45,7 @@ public class TransactionSimpleService implements TransactionService {
     @Override
     public List<Transaction> getAll() {
         LOGGER.debug("Start loading all transactions");
-        //toDo: use userDTO
+        // toDo: use userDTO
         contextHolderFacade.getAuthenticatedUser();
         return transactionDAO.getAll();
     }
@@ -63,5 +65,17 @@ public class TransactionSimpleService implements TransactionService {
         LOGGER.debug("Start cancelling transaction {}", transactionId);
         transactionDAO.setCancelled(transactionId);
         return transactionDAO.get(transactionId);
+    }
+
+    @Override
+    public List<Transaction> getAllByNodeId(String id) {
+        LOGGER.debug("Start loading all transactions for nodeId = {}", id);
+        return transactionDAO.getAllByNodeId(id);
+
+    }
+
+    @Override
+    public Optional<Transaction> getLastTransactionByNodeId(String id) {
+        return getAllByNodeId(id).stream().filter(t -> !t.isCancelled()).findFirst();
     }
 }

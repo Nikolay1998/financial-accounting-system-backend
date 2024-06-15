@@ -1,16 +1,17 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
-import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
-import kraynov.n.financialaccountingsystembackend.model.Transaction;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
+import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
+import kraynov.n.financialaccountingsystembackend.model.Transaction;
+import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 
 public class TransactionPostgresDAO implements TransactionDAO {
 
@@ -33,9 +34,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         "receiverAmount", transaction.getReceiverAmount(),
                         "dateTime", java.sql.Date.valueOf((transaction.getDateTime())),
                         "isCancelled", transaction.isCancelled(),
-                        "userId", transaction.getUserId()
-                )
-        );
+                        "userId", transaction.getUserId()));
         return transaction;
     }
 
@@ -45,25 +44,31 @@ public class TransactionPostgresDAO implements TransactionDAO {
         return namedJdbc.queryForObject(
                 "select * from transaction where id = :id",
                 Map.of("id", transactionId),
-                this::mapRowToTransaction
-        );
+                this::mapRowToTransaction);
     }
 
     @Override
     public List<Transaction> getAll() {
-        return namedJdbc.query("select * from transaction", this::mapRowToTransaction);
+        return namedJdbc.query("select * from transaction order by timestamp desc", this::mapRowToTransaction);
     }
 
     @Override
     public List<Transaction> getAllBySenderId(int id) {
-        //toDo: implement method
+        // toDo: implement method
         return null;
     }
 
     @Override
     public List<Transaction> getAllByReceiverId(int id) {
-        //toDo: implement method
+        // toDo: implement method
         return null;
+    }
+
+    @Override
+    public List<Transaction> getAllByNodeId(String id) {
+        return namedJdbc.query(
+                "select * from transaction where sendernodeid = :nodeId or receivernodeid = :nodeId order by timestamp desc",
+                Map.of("nodeId", id), this::mapRowToTransaction);
     }
 
     @Override
@@ -85,4 +90,5 @@ public class TransactionPostgresDAO implements TransactionDAO {
                 .setUserId(row.getString("user_id"))
                 .build();
     }
+
 }

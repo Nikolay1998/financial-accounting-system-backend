@@ -16,7 +16,7 @@ public interface Transaction {
 
     BigDecimal getReceiverAmount();
 
-    LocalDate getDateTime();
+    LocalDate getDateTime(); //toDo: change to Date
 
     boolean isCancelled();
 
