@@ -9,7 +9,7 @@ public interface TransactionDAO {
 
     Transaction get(String transactionId);
 
-    List<Transaction> getAll();
+    List<Transaction> getAll(String usedId);
 
     List<Transaction> getAllBySenderId(int id);
 
