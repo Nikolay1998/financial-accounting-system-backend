@@ -1,15 +1,13 @@
 package kraynov.n.financialaccountingsystembackend.security.impl;
 
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
-import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
-
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import kraynov.n.financialaccountingsystembackend.model.UserDTO;
+import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 
 public class SimpleContextHolderFacade implements ContextHolderFacade {
 

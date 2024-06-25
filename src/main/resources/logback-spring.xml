@@ -10,7 +10,7 @@
     </appender>
 
     <appender name="COMMON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/home/nick/logs/common.log</file>
+        <file>${LOG_DIR}/common.log</file>
         <encoder
             class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
@@ -19,7 +19,7 @@
         <rollingPolicy
             class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>/home/nick/logs/archived/common-%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>${LOG_DIR}/archived/common-%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -29,7 +29,7 @@
     </appender>
 
     <appender name="REQUESTS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/home/nick/logs/requests.log</file>
+        <file>${LOG_DIR}/requests.log</file>
         <encoder
             class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
@@ -38,7 +38,7 @@
         <rollingPolicy
             class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>/home/nick/logs/archived/requests-%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>${LOG_DIR}/archived/requests-%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -48,16 +48,18 @@
     </appender>
 
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/home/nick/logs/error.log</file>
+        <file>${LOG_DIR}/error.log</file>
         <encoder
             class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
         </encoder>
-
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
         <rollingPolicy
             class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>/home/nick/logs/archived/error-%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>${LOG_DIR}/archived/error-%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -66,21 +68,25 @@
         </rollingPolicy>
     </appender>
 
+    <root level="ERROR" additivity="false">
+        <appender-ref ref="ERROR_FILE" />
+        <appender-ref ref="COMMON_FILE" />
+        <appender-ref ref="STDOUT" />
+    </root>
+
     <logger name="org.springframework" level="INFO" additivity="false">
         <appender-ref ref="COMMON_FILE" />
         <appender-ref ref="STDOUT" />
     </logger>
 
     <logger name="kraynov.n.financialaccountingsystembackend" level="DEBUG" additivity="false">
+        <appender-ref ref="ERROR_FILE" />
         <appender-ref ref="COMMON_FILE" />
         <appender-ref ref="STDOUT" />
     </logger>
 
-    <logger name="kraynov.n.financialaccountingsystembackend" level="ERROR" additivity="false">
-        <appender-ref ref="ERROR_FILE" />
-    </logger>
-
-    <logger name="kraynov.n.financialaccountingsystembackend.logger.SimpleRequestLoggingFilter" level="TRACE" additivity="false">
+    <logger name="kraynov.n.financialaccountingsystembackend.logger.SimpleRequestLoggingFilter"
+        level="TRACE" additivity="false">
         <appender-ref ref="REQUESTS_FILE" />
     </logger>
 
