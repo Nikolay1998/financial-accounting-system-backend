@@ -45,7 +45,6 @@ public enum Currency {
                 return currency;
             }
         }
-        logger.error("Cannot find currency with id = {}", id);
         throw new IllegalStateException("Cannot find currency with id = " + id);
     }
 }
