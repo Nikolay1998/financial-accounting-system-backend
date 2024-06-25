@@ -48,8 +48,12 @@ public class TransactionPostgresDAO implements TransactionDAO {
     }
 
     @Override
-    public List<Transaction> getAll() {
-        return namedJdbc.query("select * from transaction order by timestamp desc", this::mapRowToTransaction);
+    public List<Transaction> getAll(String userId) {
+        return namedJdbc.query(
+                "select * from transaction where user_id = :userId order by timestamp desc",
+                Map.of("userId", userId),
+                this::mapRowToTransaction);
+
     }
 
     @Override

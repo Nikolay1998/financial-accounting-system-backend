@@ -40,11 +40,13 @@ public class NodeController {
     @CrossOrigin
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NodeVO> getAll() {
-        return nodeService.getAll()
+        List<NodeVO> nodes = nodeService.getAll()
                 .stream()
                 .map(nodeMapper::viewObjectFromEntity)
                 .sorted(NodeMapper::compareNodeVO)
                 .toList();
+        logger.debug("find {} nodes by user", nodes.size());
+        return nodes;
     }
 
     @CrossOrigin

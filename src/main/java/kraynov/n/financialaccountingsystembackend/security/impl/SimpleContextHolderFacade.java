@@ -2,6 +2,9 @@ package kraynov.n.financialaccountingsystembackend.security.impl;
 
 import kraynov.n.financialaccountingsystembackend.model.UserDTO;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -26,7 +29,7 @@ public class SimpleContextHolderFacade implements ContextHolderFacade {
         UserDTO userDTO = getAuthenticatedUser();
         if (userDTO == null) {
             LOGGER.error("Can't find authenticated user");
-            throw new IllegalStateException();
+            throw new IllegalStateException("Can't find authenticated user");
         }
         return userDTO;
     }

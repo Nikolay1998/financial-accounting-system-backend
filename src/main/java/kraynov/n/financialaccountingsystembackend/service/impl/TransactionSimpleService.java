@@ -45,9 +45,10 @@ public class TransactionSimpleService implements TransactionService {
     @Override
     public List<Transaction> getAll() {
         LOGGER.debug("Start loading all transactions");
-        // toDo: use userDTO
-        contextHolderFacade.getAuthenticatedUser();
-        return transactionDAO.getAll();
+
+        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        return transactionDAO.getAll(userDTO.getId());
+
     }
 
     @Override

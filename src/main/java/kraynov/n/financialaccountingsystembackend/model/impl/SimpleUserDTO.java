@@ -10,12 +10,12 @@ import java.util.List;
 public class SimpleUserDTO implements UserDTO {
     private final String id;
     private final String password;
-    private final String userName;
+    private final String username;
 
     public SimpleUserDTO(String id, String userName, String password) {
         this.id = id;
         this.password = password;
-        this.userName = userName;
+        this.username = userName;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SimpleUserDTO implements UserDTO {
 
     @Override
     public String getUsername() {
-        return userName;
+        return username;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class SimpleUserDTO implements UserDTO {
     public String toString() {
         return "SimpleUserDTO{" +
                 "id='" + id + '\'' +
-                ", userName='" + userName + '\'' +
+                ", userName='" + username + '\'' +
                 '}';
     }
 }
