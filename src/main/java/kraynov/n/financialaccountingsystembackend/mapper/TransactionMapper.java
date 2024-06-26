@@ -3,15 +3,17 @@ package kraynov.n.financialaccountingsystembackend.mapper;
 import kraynov.n.financialaccountingsystembackend.model.Node;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
+import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import kraynov.n.financialaccountingsystembackend.to.TransactionVO;
-import kraynov.n.financialaccountingsystembackend.utils.Currency;
 
 public class TransactionMapper {
     private final NodeService nodeService;
+    private final CurrencyService currencyService;
 
-    public TransactionMapper(NodeService nodeService) {
+    public TransactionMapper(NodeService nodeService, CurrencyService currencyService) {
         this.nodeService = nodeService;
+        this.currencyService = currencyService;
     }
 
     public TransactionVO viewObjectFromEntity(Transaction transaction) {
@@ -28,8 +30,8 @@ public class TransactionMapper {
                 .setReceiverAmount(transaction.getReceiverAmount())
                 .setSenderCurrencyId(senderNode.getCurrencyId())
                 .setReceiverCurrencyId(receiverNode.getCurrencyId())
-                .setSenderCurrencySymbol(Currency.define(senderNode.getCurrencyId()).getSymbol())
-                .setReceiverCurrencySymbol(Currency.define(receiverNode.getCurrencyId()).getSymbol())
+                .setSenderCurrencySymbol(currencyService.getById(senderNode.getCurrencyId()).getSymbol())
+                .setReceiverCurrencySymbol(currencyService.getById(receiverNode.getCurrencyId()).getSymbol())
                 .setDate(transaction.getDateTime())
                 .setCancelled(transaction.isCancelled())
                 .setUserId(transaction.getUserId())

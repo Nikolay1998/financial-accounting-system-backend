@@ -9,7 +9,7 @@ public interface Node {
 
     String getDescription();
 
-    int getCurrencyId();
+    String getCurrencyId();
 
     BigDecimal getAmount();
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="node-non-null-constraints" author="kraynov.n">
+        <addNotNullConstraint tableName="node" columnName="currencyid" />
+        <addNotNullConstraint tableName="node" columnName="user_id" />
+        <addNotNullConstraint tableName="node" columnName="amount" />
+        <addNotNullConstraint tableName="node" columnName="name" />
+    </changeSet>
+
+    <changeSet id="transaction-non-null-constraints" author="kraynov.n">
+        <addNotNullConstraint tableName="transaction" columnName="sendernodeid" />
+        <addNotNullConstraint tableName="transaction" columnName="receivernodeid" />
+        <addNotNullConstraint tableName="transaction" columnName="senderamount" />
+        <addNotNullConstraint tableName="transaction" columnName="receiveramount" />
+        <addNotNullConstraint tableName="transaction" columnName="timestamp" />
+        <addNotNullConstraint tableName="transaction" columnName="user_id" />
+    </changeSet>
+</databaseChangeLog>

@@ -76,7 +76,7 @@ public class NodePostgresDAO implements NodeDAO {
                 .setId(row.getString("id"))
                 .setName(row.getString("name"))
                 .setDescription(row.getString("description"))
-                .setCurrencyId(row.getInt("currencyId"))
+                .setCurrencyId(row.getString("currencyId"))
                 .setAmount(row.getBigDecimal("amount"))
                 .setUserId(row.getString("user_id"))
                 .setExternal(row.getBoolean("is_external"))

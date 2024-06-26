@@ -6,4 +6,7 @@
     <include file="db/id-to-string.xml"/>
     <include file="db/user-init.xml"/>
     <include file="db/transaction-cancellation.xml"/>
+    <include file="db/foreign-keys.xml"/>
+    <include file="db/currency-init.xml"/>
+    <include file="db/2024-06.xml"/>
 </databaseChangeLog>

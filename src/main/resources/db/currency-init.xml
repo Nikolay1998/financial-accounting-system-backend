@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="currency-init" author="kraynov.n">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="currency" />
+            </not>
+        </preConditions>
+        <createTable tableName="currency">
+            <column name="id" type="VARCHAR(2147483647)">
+                <constraints primaryKey="true" primaryKeyName="currency_pkey" />
+            </column>
+            <column name="short_name" type="VARCHAR(10)">
+                <constraints nullable="false" />
+            </column>
+            <column name="full_name" type="VARCHAR(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="symbol" type="VARCHAR(3)">
+                <constraints nullable="false" />
+            </column>
+            <column name="iso_code" type="SMALLINT" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="currencyid-to-string" author="kraynov.n">
+        <modifyDataType tableName="node" columnName="currencyid" newDataType="VARCHAR(36)" />
+    </changeSet>
+
+    <changeSet id="node-foreign-key-to-currency" author="kraynov.n">
+        <addForeignKeyConstraint baseTableName="node" baseColumnNames="currencyid"
+            constraintName="currencyid_foreig_key" referencedTableName="currency"
+            referencedColumnNames="id" />
+    </changeSet>
+
+
+</databaseChangeLog>
