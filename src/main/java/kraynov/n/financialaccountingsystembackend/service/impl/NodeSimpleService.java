@@ -42,6 +42,14 @@ public class NodeSimpleService implements NodeService {
     }
 
     @Override
+    public Node edit(Node node) {
+        LOGGER.debug("Start editing node with id={}", node.getId());
+
+        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        return nodeDAO.update(node, userDTO.getId());
+    }
+
+    @Override
     public Node get(String id) {
         return nodeDAO.getById(id);
     }
@@ -108,7 +116,7 @@ public class NodeSimpleService implements NodeService {
             throw new InsufficientFundsException("Not enough amount on sender node");
         }
 
-        nodeDAO.update(newSenderNode);
-        nodeDAO.update(newReceiverNode);
+        nodeDAO.update(newSenderNode, userDTO.getId());
+        nodeDAO.update(newReceiverNode, userDTO.getId());
     }
 }

@@ -11,5 +11,5 @@ public interface NodeDAO {
 
     List<Node> getAll(String userId);
 
-    Node update(Node node);
+    Node update(Node node, String userId);
 }

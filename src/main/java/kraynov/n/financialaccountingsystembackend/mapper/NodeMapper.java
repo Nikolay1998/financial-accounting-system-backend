@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import kraynov.n.financialaccountingsystembackend.model.Node;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
+import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import kraynov.n.financialaccountingsystembackend.to.NodeVO;
@@ -47,5 +48,17 @@ public class NodeMapper {
         }
 
         return node2.getLastTransactionDate().compareTo(node1.getLastTransactionDate());
+    }
+
+    public Node entityFromViewObject(NodeVO nodeVO) {
+        return new SimpleNodeImpl.Builder()
+                .setId(nodeVO.getId())
+                .setName(nodeVO.getName())
+                .setDescription(nodeVO.getDescription())
+                .setAmount(nodeVO.getAmount())
+                .setCurrencyId(nodeVO.getCurrencyId())
+                .setExternal(nodeVO.isExternal())
+                .setUserId(nodeVO.getUserId())
+                .build();
     }
 }

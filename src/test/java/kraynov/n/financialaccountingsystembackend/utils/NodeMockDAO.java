@@ -28,7 +28,7 @@ public class NodeMockDAO implements NodeDAO {
     }
 
     @Override
-    public Node update(Node node) {
+    public Node update(Node node, String userId) {
         nodes.put(node.getId(), node);
         return node;
     }

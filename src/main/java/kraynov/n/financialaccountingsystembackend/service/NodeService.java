@@ -9,6 +9,8 @@ import kraynov.n.financialaccountingsystembackend.model.Transaction;
 public interface NodeService {
     Node add(Node node);
 
+    Node edit(Node node);
+
     Node get(String id);
 
     List<Node> getAll();
