@@ -17,5 +17,7 @@ public interface TransactionDAO {
 
     List<Transaction> getAllByNodeId(String id);
 
+    Transaction update(Transaction transaction, String userId);
+
     int setCancelled(String id);
 }

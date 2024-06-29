@@ -40,7 +40,7 @@ public class TransactionMapper {
 
     public Transaction entityFromViewObject(TransactionVO transactionVO) {
         return SimpleTransactionImpl.builder()
-                .setId(null)
+                .setId(transactionVO.getId())
                 .setDescription(transactionVO.getDescription())
                 .setSenderNodeId(transactionVO.getSenderNodeId())
                 .setReceiverNodeId(transactionVO.getReceiverNodeId())
