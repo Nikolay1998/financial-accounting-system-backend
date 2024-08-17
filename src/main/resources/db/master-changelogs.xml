@@ -9,4 +9,5 @@
     <include file="db/foreign-keys.xml"/>
     <include file="db/currency-init.xml"/>
     <include file="db/2024-06.xml"/>
+    <include file="db/2024-08.xml"/>
 </databaseChangeLog>

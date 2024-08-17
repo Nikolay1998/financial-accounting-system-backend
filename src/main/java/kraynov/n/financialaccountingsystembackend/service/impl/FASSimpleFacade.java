@@ -5,9 +5,9 @@ import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.service.FASFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
+import org.springframework.transaction.annotation.Transactional;
 
 public class FASSimpleFacade implements FASFacade {
-    // todo: rename to TransactionProcessor?
     private final NodeService nodeService;
     private final TransactionService transactionService;
 

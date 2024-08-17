@@ -35,8 +35,9 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public SummaryService simpleSummaryService(NodeDAO nodeDAO, ContextHolderFacade contextHolderFacade) {
-        return new SummarySimpleService(nodeDAO, contextHolderFacade);
+    public SummaryService simpleSummaryService(NodeDAO nodeDAO, ContextHolderFacade contextHolderFacade,
+            CurrencyService simpleCurrencyService) {
+        return new SummarySimpleService(nodeDAO, contextHolderFacade, simpleCurrencyService);
     }
 
     @Bean

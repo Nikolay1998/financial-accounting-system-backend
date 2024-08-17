@@ -1,27 +1,33 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
-import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
-import kraynov.n.financialaccountingsystembackend.model.Node;
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
-import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
-import kraynov.n.financialaccountingsystembackend.service.SummaryService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
+import kraynov.n.financialaccountingsystembackend.model.Node;
+import kraynov.n.financialaccountingsystembackend.model.UserDTO;
+import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
+import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
+import kraynov.n.financialaccountingsystembackend.service.SummaryService;
 
 public class SummarySimpleService implements SummaryService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SummarySimpleService.class);
     private final NodeDAO nodeDAO;
-    public final ContextHolderFacade contextHolderFacade;
+    private final ContextHolderFacade contextHolderFacade;
+    private final CurrencyService currencyService;
 
-    public SummarySimpleService(NodeDAO nodeDAO, ContextHolderFacade contextHolderFacade) {
+    public SummarySimpleService(NodeDAO nodeDAO, ContextHolderFacade contextHolderFacade,
+            CurrencyService currencyService) {
         this.nodeDAO = nodeDAO;
         this.contextHolderFacade = contextHolderFacade;
+        this.currencyService = currencyService;
     }
 
     @Override
@@ -36,7 +42,11 @@ public class SummarySimpleService implements SummaryService {
         for (Node node : nodes) {
             sum.merge(node.getCurrencyId(), node.getAmount(), BigDecimal::add);
         }
-        LOGGER.debug("End computing sum for user with id = {}, sum = {}", userDTO.getId(), sum);
-        return sum;
+        Map<String, BigDecimal> sumWithCurencySymbol = sum.entrySet().stream().collect(Collectors.toMap(
+                e -> currencyService.getById(e.getKey()).getSymbol(),
+                e -> e.getValue()));
+
+        LOGGER.debug("End computing sum for user with id = {}, sum = {}", userDTO.getId(), sumWithCurencySymbol);
+        return sumWithCurencySymbol;
     }
 }

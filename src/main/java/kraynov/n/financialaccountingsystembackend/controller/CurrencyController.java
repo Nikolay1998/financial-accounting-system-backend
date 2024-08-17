@@ -2,6 +2,7 @@ package kraynov.n.financialaccountingsystembackend.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ public class CurrencyController {
         this.currencyService = currencyService;
     }
 
+    @CrossOrigin
     @GetMapping("getAll")
     public List<CurrencyDTO> getAll() {
         return currencyService.getAll();
