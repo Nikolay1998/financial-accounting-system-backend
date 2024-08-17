@@ -8,12 +8,12 @@ public class SimpleNodeImpl implements Node {
     private final String id;
     private final String name;
     private final String description;
-    private final int currencyId;
+    private final String currencyId;
     private final BigDecimal amount;
     private final String userId;
     private final boolean isExternal;
 
-    private SimpleNodeImpl(String id, String name, String description, int currencyId, BigDecimal amount, String userId, boolean external) {
+    private SimpleNodeImpl(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean external) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -39,7 +39,7 @@ public class SimpleNodeImpl implements Node {
     }
 
     @Override
-    public int getCurrencyId() {
+    public String getCurrencyId() {
         return currencyId;
     }
 
@@ -92,7 +92,7 @@ public class SimpleNodeImpl implements Node {
         int result = id.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + currencyId;
+        result = 31 * result + currencyId.hashCode();
         result = 31 * result + amount.hashCode();
         result = 31 * result + userId.hashCode();
         result = 31 * result + (isExternal ? 1 : 0);
@@ -104,7 +104,7 @@ public class SimpleNodeImpl implements Node {
         private String id;
         private String name;
         private String description;
-        private int currencyId;
+        private String currencyId;
         private BigDecimal amount;
         private String userId;
         private boolean isExternal;
@@ -135,7 +135,7 @@ public class SimpleNodeImpl implements Node {
             return this;
         }
 
-        public Builder setCurrencyId(int currencyId) {
+        public Builder setCurrencyId(String currencyId) {
             this.currencyId = currencyId;
             return this;
         }

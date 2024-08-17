@@ -21,7 +21,7 @@ public class SummaryController {
 
     @CrossOrigin
     @GetMapping(path = "/sum", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<Integer, BigDecimal> getSummary() {
+    public Map<String, BigDecimal> getSummary() {
         return summaryService.getSum();
     }
 }

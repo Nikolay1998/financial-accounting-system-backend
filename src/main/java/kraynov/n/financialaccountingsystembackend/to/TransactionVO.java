@@ -12,9 +12,9 @@ public class TransactionVO {
     private final String receiverNodeName;
     private final BigDecimal senderAmount;
     private final BigDecimal receiverAmount;
-    private final int senderCurrencyId;
+    private final String senderCurrencyId;
     private final String senderCurrencySymbol;
-    private final int receiverCurrencyId;
+    private final String receiverCurrencyId;
     private final String receiverCurrencySymbol;
     private final LocalDate date;
     private final boolean isCancelled;
@@ -22,7 +22,7 @@ public class TransactionVO {
 
     public TransactionVO(String id, String description, String senderNodeId, String receiverNodeId,
             String senderNodeName, String receiverNodeName, BigDecimal senderAmount, BigDecimal receiverAmount,
-            int senderCurrencyId, String senderCurrencySymbol, int receiverCurrencyId, String receiverCurrencySymbol,
+            String senderCurrencyId, String senderCurrencySymbol, String receiverCurrencyId, String receiverCurrencySymbol,
             LocalDate date, boolean isCancelled, String userId) {
         this.id = id;
         this.description = description;
@@ -73,7 +73,7 @@ public class TransactionVO {
         return receiverAmount;
     }
 
-    public int getSenderCurrencyId() {
+    public String getSenderCurrencyId() {
         return senderCurrencyId;
     }
 
@@ -81,7 +81,7 @@ public class TransactionVO {
         return senderCurrencySymbol;
     }
 
-    public int getReceiverCurrencyId() {
+    public String getReceiverCurrencyId() {
         return receiverCurrencyId;
     }
 
@@ -114,9 +114,9 @@ public class TransactionVO {
         private String receiverNodeName;
         private BigDecimal senderAmount;
         private BigDecimal receiverAmount;
-        private int senderCurrencyId;
+        private String senderCurrencyId;
         private String senderCurrencySymbol;
-        private int receiverCurrencyId;
+        private String receiverCurrencyId;
         private String receiverCurrencySymbol;
         private LocalDate date;
         private boolean isCancelled;
@@ -194,11 +194,11 @@ public class TransactionVO {
             return this;
         }
 
-        public int getSenderCurrencyId() {
+        public String getSenderCurrencyId() {
             return senderCurrencyId;
         }
 
-        public Builder setSenderCurrencyId(int senderCurrencyId) {
+        public Builder setSenderCurrencyId(String senderCurrencyId) {
             this.senderCurrencyId = senderCurrencyId;
             return this;
         }
@@ -212,11 +212,11 @@ public class TransactionVO {
             return this;
         }
 
-        public int getReceiverCurrencyId() {
+        public String getReceiverCurrencyId() {
             return receiverCurrencyId;
         }
 
-        public Builder setReceiverCurrencyId(int receiverCurrencyId) {
+        public Builder setReceiverCurrencyId(String receiverCurrencyId) {
             this.receiverCurrencyId = receiverCurrencyId;
             return this;
         }

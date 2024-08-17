@@ -41,7 +41,7 @@ public class TestHelper {
         return new SimpleNodeImpl.Builder()
                 .setId(String.valueOf(nodeCounter.incrementAndGet()))
                 .setAmount(amount)
-                .setCurrencyId(1)
+                .setCurrencyId("1")
                 .setDescription("Just node")
                 .setExternal(isExternal)
                 .setName("Node")

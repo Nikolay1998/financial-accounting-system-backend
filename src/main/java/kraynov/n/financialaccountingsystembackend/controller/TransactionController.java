@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -51,6 +52,14 @@ public class TransactionController {
     @GetMapping(path = "/getAllByNode", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TransactionVO> getAllRelatedToNode(String nodeId) {
         return transactionService.getAllByNodeId(nodeId).stream().map(transactionMapper::viewObjectFromEntity).toList();
+    }
+
+    @CrossOrigin
+    @PutMapping(path = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public TransactionVO editTransaction(@RequestBody TransactionVO transactionVO) throws InsufficientFundsException {
+        Transaction editedTransaction = fasFacade
+                .editTransaction(transactionMapper.entityFromViewObject(transactionVO));
+        return transactionMapper.viewObjectFromEntity(editedTransaction);
     }
 
     @GetMapping(path = "/getAllBySender", produces = MediaType.APPLICATION_JSON_VALUE)

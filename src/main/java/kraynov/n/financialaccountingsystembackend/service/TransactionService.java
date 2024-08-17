@@ -1,9 +1,9 @@
 package kraynov.n.financialaccountingsystembackend.service;
 
-import kraynov.n.financialaccountingsystembackend.model.Transaction;
-
 import java.util.List;
 import java.util.Optional;
+
+import kraynov.n.financialaccountingsystembackend.model.Transaction;
 
 public interface TransactionService {
     Transaction add(Transaction transaction);
@@ -21,4 +21,6 @@ public interface TransactionService {
     Optional<Transaction> getLastTransactionByNodeId(String id);
 
     Transaction cancel(String transactionId);
+
+    Transaction edit(Transaction transaction);
 }

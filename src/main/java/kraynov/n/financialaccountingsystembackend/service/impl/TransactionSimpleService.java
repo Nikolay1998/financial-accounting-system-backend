@@ -27,6 +27,7 @@ public class TransactionSimpleService implements TransactionService {
 
     @Override
     public Transaction add(Transaction transaction) {
+        LOGGER.debug("Start adding transaction {}", transaction);
         UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         Transaction transactionWithId = SimpleTransactionImpl.builder()
                 .from(transaction)
@@ -39,6 +40,7 @@ public class TransactionSimpleService implements TransactionService {
 
     @Override
     public Transaction get(String id) {
+        LOGGER.debug("Start loading transaction with id = {}", id);
         return transactionDAO.get(id);
     }
 
@@ -78,5 +80,17 @@ public class TransactionSimpleService implements TransactionService {
     @Override
     public Optional<Transaction> getLastTransactionByNodeId(String id) {
         return getAllByNodeId(id).stream().filter(t -> !t.isCancelled()).findFirst();
+    }
+
+    @Override
+    public Transaction edit(Transaction transaction) {
+        LOGGER.debug("Start editing transaction {}", transaction);
+        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+
+        Transaction updated = transactionDAO.update(transaction, userDTO.getId());
+        if (updated == null) {
+            throw new IllegalStateException("Can't find transaction for edit with id=" + transaction.getId());
+        }
+        return updated;
     }
 }

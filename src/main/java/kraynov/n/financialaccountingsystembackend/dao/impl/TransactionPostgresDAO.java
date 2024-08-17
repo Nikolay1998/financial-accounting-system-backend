@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
@@ -14,6 +16,8 @@ import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 
 public class TransactionPostgresDAO implements TransactionDAO {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final NamedParameterJdbcTemplate namedJdbc;
 
@@ -93,6 +97,38 @@ public class TransactionPostgresDAO implements TransactionDAO {
                 .setCancelled(row.getBoolean("is_cancelled"))
                 .setUserId(row.getString("user_id"))
                 .build();
+    }
+
+    @Override
+    public Transaction update(Transaction transaction, String userId) {
+        logger.debug("Start updating transaction: {}", transaction);
+
+        int updated = namedJdbc.update(
+                """
+                        update transaction
+                        set sendernodeid = :senderNodeId,
+                        receivernodeid = :receiverNodeId,
+                        description = :description,
+                        senderamount = :senderAmount,
+                        receiveramount = :receiverAmount,
+                        timestamp = :dateTime
+                        where id = :id and user_id = :userId
+                        """,
+                Map.of(
+                        "id", transaction.getId(),
+                        "senderNodeId", transaction.getSenderNodeId(),
+                        "receiverNodeId", transaction.getReceiverNodeId(),
+                        "description", transaction.getDescription(),
+                        "senderAmount", transaction.getSenderAmount(),
+                        "receiverAmount", transaction.getReceiverAmount(),
+                        "dateTime", java.sql.Date.valueOf((transaction.getDateTime())),
+                        // "isCancelled", transaction.isCancelled(),
+                        "userId", userId));
+
+        if (updated > 0) {
+            return transaction;
+        }
+        return null;
     }
 
 }

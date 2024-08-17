@@ -13,7 +13,7 @@ public class NodeVO {
 
     private final String currencySymbol;
 
-    private final int currencyId;
+    private final String currencyId;
 
     private final BigDecimal amount;
 
@@ -23,7 +23,7 @@ public class NodeVO {
 
     private final LocalDate lastTransactionDate;
 
-    public NodeVO(String id, String name, String description, String currencySymbol, int currencyId, BigDecimal amount,
+    public NodeVO(String id, String name, String description, String currencySymbol, String currencyId, BigDecimal amount,
             String userId, boolean isExternal, LocalDate lastTransactionDate) {
         this.id = id;
         this.name = name;
@@ -58,7 +58,7 @@ public class NodeVO {
         return currencySymbol;
     }
 
-    public int getCurrencyId() {
+    public String getCurrencyId() {
         return currencyId;
     }
 
@@ -90,7 +90,7 @@ public class NodeVO {
 
         private String currencySymbol;
 
-        private int currencyId;
+        private String currencyId;
 
         private BigDecimal amount;
 
@@ -123,7 +123,7 @@ public class NodeVO {
 
         }
 
-        public Builder setCurrencyId(int currencyId) {
+        public Builder setCurrencyId(String currencyId) {
             this.currencyId = currencyId;
             return this;
 

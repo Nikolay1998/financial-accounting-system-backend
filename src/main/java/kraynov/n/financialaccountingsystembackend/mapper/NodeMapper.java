@@ -6,15 +6,19 @@ import java.util.Optional;
 
 import kraynov.n.financialaccountingsystembackend.model.Node;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
+import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
+import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import kraynov.n.financialaccountingsystembackend.to.NodeVO;
-import kraynov.n.financialaccountingsystembackend.utils.Currency;
 
 public class NodeMapper {
     private final TransactionService transactionService;
+    private final CurrencyService currencyService;
 
-    public NodeMapper(TransactionService transactionService) {
+    public NodeMapper(TransactionService transactionService,
+            CurrencyService currencyService) {
         this.transactionService = transactionService;
+        this.currencyService = currencyService;
     }
 
     public NodeVO viewObjectFromEntity(Node node) {
@@ -27,7 +31,7 @@ public class NodeMapper {
                 .setId(node.getId())
                 .setName(node.getName())
                 .setDescription(node.getDescription())
-                .setCurrencySymbol(Currency.define(node.getCurrencyId()).getSymbol())
+                .setCurrencySymbol(currencyService.getById(node.getCurrencyId()).getSymbol())
                 .setCurrencyId(node.getCurrencyId())
                 .setAmount(node.getAmount())
                 .setUserId(node.getUserId())
@@ -44,5 +48,17 @@ public class NodeMapper {
         }
 
         return node2.getLastTransactionDate().compareTo(node1.getLastTransactionDate());
+    }
+
+    public Node entityFromViewObject(NodeVO nodeVO) {
+        return new SimpleNodeImpl.Builder()
+                .setId(nodeVO.getId())
+                .setName(nodeVO.getName())
+                .setDescription(nodeVO.getDescription())
+                .setAmount(nodeVO.getAmount())
+                .setCurrencyId(nodeVO.getCurrencyId())
+                .setExternal(nodeVO.isExternal())
+                .setUserId(nodeVO.getUserId())
+                .build();
     }
 }
