@@ -1,5 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
+import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.service.FASFacade;
@@ -23,7 +24,7 @@ public class FASSimpleFacade implements FASFacade {
     }
 
     @Override
-    public Transaction cancelTransaction(String transactionId) throws InsufficientFundsException {
+    public Transaction cancelTransaction(String transactionId) throws InsufficientFundsException, AlreadyCanceledException {
         Transaction transaction = transactionService.cancel(transactionId);
         nodeService.cancelTransactionAffection(transaction);
         return transaction;

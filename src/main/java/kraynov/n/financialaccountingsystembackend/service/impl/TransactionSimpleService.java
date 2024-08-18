@@ -1,18 +1,18 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
+import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.model.UserDTO;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class TransactionSimpleService implements TransactionService {
 
@@ -64,9 +64,17 @@ public class TransactionSimpleService implements TransactionService {
     }
 
     @Override
-    public Transaction cancel(String transactionId) {
+    public Transaction cancel(String transactionId) throws AlreadyCanceledException {
         LOGGER.debug("Start cancelling transaction {}", transactionId);
-        transactionDAO.setCancelled(transactionId);
+        Transaction transactionToCancel = transactionDAO.get(transactionId);
+        if (transactionToCancel.isCancelled()) {
+            throw new AlreadyCanceledException("Transaction already canceled");
+        }
+        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        Transaction canceledTransaction = SimpleTransactionImpl.builder().from(transactionToCancel)
+                .setCancelled(true)
+                .build();
+        transactionDAO.update(canceledTransaction, userDTO.getId());
         return transactionDAO.get(transactionId);
     }
 
