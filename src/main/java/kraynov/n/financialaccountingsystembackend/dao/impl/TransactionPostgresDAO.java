@@ -79,11 +79,6 @@ public class TransactionPostgresDAO implements TransactionDAO {
                 Map.of("nodeId", id), this::mapRowToTransaction);
     }
 
-    @Override
-    public int setCancelled(String id) {
-        return namedJdbc.update("update transaction set is_cancelled = true where id = :id", Map.of("id", id));
-    }
-
     private Transaction mapRowToTransaction(ResultSet row, int rowNum) throws SQLException {
         return SimpleTransactionImpl.builder()
                 .setId(row.getString("id"))

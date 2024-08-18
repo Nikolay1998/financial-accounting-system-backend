@@ -1,8 +1,8 @@
 package kraynov.n.financialaccountingsystembackend.dao;
 
-import java.util.List;
-
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
+
+import java.util.List;
 
 public interface TransactionDAO {
     Transaction save(Transaction transaction);
@@ -18,6 +18,4 @@ public interface TransactionDAO {
     List<Transaction> getAllByNodeId(String id);
 
     Transaction update(Transaction transaction, String userId);
-
-    int setCancelled(String id);
 }

@@ -3,6 +3,7 @@ package kraynov.n.financialaccountingsystembackend.service;
 import java.util.List;
 import java.util.Optional;
 
+import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 
 public interface TransactionService {
@@ -20,7 +21,7 @@ public interface TransactionService {
 
     Optional<Transaction> getLastTransactionByNodeId(String id);
 
-    Transaction cancel(String transactionId);
+    Transaction cancel(String transactionId) throws AlreadyCanceledException;
 
     Transaction edit(Transaction transaction);
 }
