@@ -17,12 +17,14 @@ public class FASSimpleFacade implements FASFacade {
         this.transactionService = transactionService;
     }
 
+    @Transactional
     @Override
     public Transaction addTransaction(Transaction transaction) throws InsufficientFundsException {
         nodeService.calculateTransactionAffection(transaction);
         return transactionService.add(transaction);
     }
 
+    @Transactional
     @Override
     public Transaction cancelTransaction(String transactionId) throws InsufficientFundsException, AlreadyCanceledException {
         Transaction transaction = transactionService.cancel(transactionId);
@@ -30,6 +32,7 @@ public class FASSimpleFacade implements FASFacade {
         return transaction;
     }
 
+    @Transactional
     @Override
     public Transaction editTransaction(Transaction newTransaction) throws InsufficientFundsException {
         Transaction old = transactionService.get(newTransaction.getId());
