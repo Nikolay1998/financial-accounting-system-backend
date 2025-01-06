@@ -1,6 +1,5 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -112,9 +111,9 @@ public class NodeSimpleService implements NodeService {
                 .setAmount(receiverNode.getAmount().add(transaction.getReceiverAmount()))
                 .build();
 
-        if (!newSenderNode.isExternal() && BigDecimal.ZERO.compareTo(newSenderNode.getAmount()) > 0) {
-            throw new InsufficientFundsException("Not enough amount on sender node");
-        }
+//        if (!newSenderNode.isExternal() && BigDecimal.ZERO.compareTo(newSenderNode.getAmount()) > 0) {
+//            throw new InsufficientFundsException("Not enough amount on sender node");
+//        }
 
         nodeDAO.update(newSenderNode, userDTO.getId());
         nodeDAO.update(newReceiverNode, userDTO.getId());
