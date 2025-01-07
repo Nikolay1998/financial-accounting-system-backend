@@ -1,11 +1,5 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.model.Node;
@@ -15,6 +9,11 @@ import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.UUID;
 
 public class NodeSimpleService implements NodeService {
 
@@ -74,12 +73,10 @@ public class NodeSimpleService implements NodeService {
 
     @Override
     public void cancelTransactionAffection(Transaction transaction) throws InsufficientFundsException {
-        String senderNodeId = transaction.getSenderNodeId();
-        String receiverNodeId = transaction.getReceiverNodeId();
         Transaction reversedTransaction = SimpleTransactionImpl.builder()
                 .from(transaction)
-                .setSenderNodeId(receiverNodeId)
-                .setReceiverNodeId(senderNodeId)
+                .setSenderAmount(transaction.getSenderAmount().negate())
+                .setReceiverAmount(transaction.getReceiverAmount().negate())
                 .build();
         try {
             calculate(reversedTransaction);
