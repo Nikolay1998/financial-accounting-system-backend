@@ -1,0 +1,32 @@
+services:
+  fas-frontend:
+    image: krajnovnik/fas-frontend:latest
+    ports:
+      - "80:80"
+    environment:
+      API_URL: http://192.168.45.9:8081 
+  fas-backend:
+    image: krajnovnik/fas-backend:latest
+    depends_on:
+      - fas-db
+    ports:
+      - "8081:8080"
+    environment:
+      POSTGRES_PATH: fas_test_bd:5432/financial_service_test
+    networks:
+      - fas-net
+  fas-db:
+    image: postgres:latest
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: financial_service_test
+    networks:
+      - fas-net
+    hostname: fas_test_bd
+
+networks:
+  fas-net:
+    external: false

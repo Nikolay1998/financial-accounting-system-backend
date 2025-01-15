@@ -106,7 +106,8 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         description = :description,
                         senderamount = :senderAmount,
                         receiveramount = :receiverAmount,
-                        timestamp = :dateTime
+                        timestamp = :dateTime,
+                        is_cancelled = :isCancelled
                         where id = :id and user_id = :userId
                         """,
                 Map.of(
@@ -117,7 +118,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         "senderAmount", transaction.getSenderAmount(),
                         "receiverAmount", transaction.getReceiverAmount(),
                         "dateTime", java.sql.Date.valueOf((transaction.getDateTime())),
-                        // "isCancelled", transaction.isCancelled(),
+                        "isCancelled", transaction.isCancelled(),
                         "userId", userId));
 
         if (updated > 0) {

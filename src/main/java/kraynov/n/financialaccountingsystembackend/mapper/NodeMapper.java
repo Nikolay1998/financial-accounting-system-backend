@@ -41,6 +41,10 @@ public class NodeMapper {
     }
 
     public static int compareNodeVO(NodeVO node1, NodeVO node2) {
+        if (node1.getExternal() != node2.getExternal()){
+            return Boolean.compare(node1.getExternal(), node2.getExternal());
+        }
+
         int nodeOneBancrupt = node1.getAmount().compareTo(BigDecimal.ZERO);
         int nodeTwoBancrupt = node2.getAmount().compareTo(BigDecimal.ZERO);
         if (nodeOneBancrupt != nodeTwoBancrupt) {
@@ -57,7 +61,7 @@ public class NodeMapper {
                 .setDescription(nodeVO.getDescription())
                 .setAmount(nodeVO.getAmount())
                 .setCurrencyId(nodeVO.getCurrencyId())
-                .setExternal(nodeVO.isExternal())
+                .setExternal(nodeVO.getExternal())
                 .setUserId(nodeVO.getUserId())
                 .build();
     }

@@ -19,12 +19,12 @@ public class NodeVO {
 
     private final String userId;
 
-    private final boolean isExternal;
+    private final boolean external;
 
     private final LocalDate lastTransactionDate;
 
     public NodeVO(String id, String name, String description, String currencySymbol, String currencyId, BigDecimal amount,
-            String userId, boolean isExternal, LocalDate lastTransactionDate) {
+                  String userId, boolean external, LocalDate lastTransactionDate) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -32,7 +32,7 @@ public class NodeVO {
         this.currencyId = currencyId;
         this.amount = amount;
         this.userId = userId;
-        this.isExternal = isExternal;
+        this.external = external;
         this.lastTransactionDate = lastTransactionDate;
     }
 
@@ -70,8 +70,8 @@ public class NodeVO {
         return userId;
     }
 
-    public boolean isExternal() {
-        return isExternal;
+    public boolean getExternal() {
+        return external;
     }
 
     public LocalDate getLastTransactionDate() {
