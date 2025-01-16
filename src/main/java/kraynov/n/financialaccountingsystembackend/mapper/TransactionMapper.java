@@ -35,6 +35,8 @@ public class TransactionMapper {
                 .setDate(transaction.getDateTime())
                 .setCancelled(transaction.isCancelled())
                 .setUserId(transaction.getUserId())
+                .setFromExternal(transaction.isFromExternal())
+                .setToExternal(transaction.isToExternal())
                 .build();
     }
 

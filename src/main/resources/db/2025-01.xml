@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create_view_node_with_last_transaction_date" author="kraynov.n">
+        <createView viewName="node_with_last_transaction_date">
+            select n.id,
+                   n."name",
+                   n.description,
+                   n.currencyid,
+                   n.amount,
+                   n.is_external,
+                   n.user_id,
+                   max(t.timestamp) as last_transaction_date
+            from node n
+                     left join (select * from "transaction" t where is_cancelled = false) t
+                               on n.id = t.sendernodeid or n.id = t.receivernodeid
+            group by n.id
+            order by last_transaction_date desc
+        </createView>
+    </changeSet>
+
+    <changeSet id="create_view_transaction_with_extended_info" author="kraynov.n">
+        <createView viewName="transaction_with_extended_info">
+            select tr.id,
+                   tr.sendernodeid,
+                   tr.receivernodeid,
+                   tr.description,
+                   tr.senderamount,
+                   tr.receiveramount,
+                   tr.timestamp,
+                   tr.user_id,
+                   tr.is_cancelled,
+                   n.is_external  as is_from_external,
+                   n2.is_external as is_to_external
+            from transaction tr
+                     join node n on tr.sendernodeid = n.id
+                     join node n2 on tr.receivernodeid = n2.id
+        </createView>
+    </changeSet>
+
+</databaseChangeLog>

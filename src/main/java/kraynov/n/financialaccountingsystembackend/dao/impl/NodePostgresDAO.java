@@ -2,8 +2,10 @@ package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -63,14 +65,16 @@ public class NodePostgresDAO implements NodeDAO {
     @Override
     public Node getById(String nodeId) {
         return namedJdbc.queryForObject(
-                "select * from node where id = :nodeId",
+                "select * from node_with_last_transaction_date where id = :nodeId",
                 Map.of("nodeId", nodeId),
                 this::mapRowToNode);
     }
 
     @Override
     public List<Node> getAll(String userId) {
-        return namedJdbc.query("select * from node where user_id = :userId", Map.of("userId", userId),
+        return namedJdbc.query(
+                "select * from node_with_last_transaction_date where user_id = :userId",
+                Map.of("userId", userId),
                 this::mapRowToNode);
     }
 
@@ -83,6 +87,10 @@ public class NodePostgresDAO implements NodeDAO {
                 .setAmount(row.getBigDecimal("amount"))
                 .setUserId(row.getString("user_id"))
                 .setExternal(row.getBoolean("is_external"))
+                .setLastTransactionDate(
+                        row.getTimestamp("last_transaction_date") == null ? null :
+                                LocalDate.ofInstant(row.getTimestamp("last_transaction_date").toInstant(),
+                                        TimeZone.getDefault().toZoneId()))
                 .build();
     }
 }

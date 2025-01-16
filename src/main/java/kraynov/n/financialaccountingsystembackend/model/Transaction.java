@@ -21,4 +21,8 @@ public interface Transaction {
     boolean isCancelled();
 
     String getUserId();
+
+    boolean isFromExternal();
+
+    boolean isToExternal();
 }
