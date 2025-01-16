@@ -1,32 +1,23 @@
 package kraynov.n.financialaccountingsystembackend.mapper;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Optional;
-
 import kraynov.n.financialaccountingsystembackend.model.Node;
-import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import kraynov.n.financialaccountingsystembackend.to.NodeVO;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 public class NodeMapper {
-    private final TransactionService transactionService;
     private final CurrencyService currencyService;
 
     public NodeMapper(TransactionService transactionService,
-            CurrencyService currencyService) {
-        this.transactionService = transactionService;
+                      CurrencyService currencyService) {
         this.currencyService = currencyService;
     }
 
     public NodeVO viewObjectFromEntity(Node node) {
-        LocalDate lastTransactionDate = LocalDate.MIN;
-        Optional<Transaction> lastTransactionByNodeId = transactionService.getLastTransactionByNodeId(node.getId());
-        if (lastTransactionByNodeId.isPresent()) {
-            lastTransactionDate = lastTransactionByNodeId.get().getDateTime();
-        }
         return NodeVO.builder()
                 .setId(node.getId())
                 .setName(node.getName())
@@ -36,12 +27,12 @@ public class NodeMapper {
                 .setAmount(node.getAmount())
                 .setUserId(node.getUserId())
                 .setExternal(node.isExternal())
-                .setLastTransactionDate(lastTransactionDate)
+                .setLastTransactionDate(node.getLastTransactionDate() == null ? LocalDate.MIN : node.getLastTransactionDate())
                 .build();
     }
 
     public static int compareNodeVO(NodeVO node1, NodeVO node2) {
-        if (node1.getExternal() != node2.getExternal()){
+        if (node1.getExternal() != node2.getExternal()) {
             return Boolean.compare(node1.getExternal(), node2.getExternal());
         }
 

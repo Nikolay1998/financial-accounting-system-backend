@@ -5,6 +5,7 @@ import kraynov.n.financialaccountingsystembackend.model.Transaction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class SimpleTransactionImpl implements Transaction {
     private final String id;
@@ -16,6 +17,9 @@ public class SimpleTransactionImpl implements Transaction {
     private final LocalDate dateTime;
     private final boolean isCancelled;
     private final String userId;
+    private final boolean isFromExternal;
+    private final boolean isToExternal;
+
 
     private SimpleTransactionImpl(
             String id,
@@ -26,7 +30,9 @@ public class SimpleTransactionImpl implements Transaction {
             BigDecimal receiverAmount,
             LocalDate dateTime,
             boolean isCancelled,
-            String userId) {
+            String userId,
+            boolean isFromExternal,
+            boolean isToExternal) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;
@@ -36,6 +42,8 @@ public class SimpleTransactionImpl implements Transaction {
         this.dateTime = dateTime;
         this.isCancelled = isCancelled;
         this.userId = userId;
+        this.isFromExternal = isFromExternal;
+        this.isToExternal = isToExternal;
     }
 
     public String getId() {
@@ -62,6 +70,16 @@ public class SimpleTransactionImpl implements Transaction {
         return receiverAmount;
     }
 
+    @Override
+    public boolean isFromExternal() {
+        return isFromExternal;
+    }
+
+    @Override
+    public boolean isToExternal() {
+        return isToExternal;
+    }
+
     @JsonFormat(pattern = "YYYY-MM-dd")
     public LocalDate getDateTime() {
         return dateTime;
@@ -82,6 +100,24 @@ public class SimpleTransactionImpl implements Transaction {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        SimpleTransactionImpl that = (SimpleTransactionImpl) o;
+        return isCancelled == that.isCancelled &&
+                isFromExternal == that.isFromExternal && isToExternal == that.isToExternal
+                && Objects.equals(id, that.id) && Objects.equals(description, that.description)
+                && Objects.equals(senderNodeId, that.senderNodeId) && Objects.equals(receiverNodeId, that.receiverNodeId)
+                && Objects.equals(senderAmount, that.senderAmount) && Objects.equals(receiverAmount, that.receiverAmount)
+                && Objects.equals(dateTime, that.dateTime) && Objects.equals(userId, that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, senderNodeId, receiverNodeId, senderAmount,
+                receiverAmount, dateTime, isCancelled, userId, isFromExternal, isToExternal);
+    }
+
+    @Override
     public String toString() {
         return "SimpleTransactionImpl{" +
                 "id='" + id + '\'' +
@@ -91,6 +127,10 @@ public class SimpleTransactionImpl implements Transaction {
                 ", senderAmount=" + senderAmount +
                 ", receiverAmount=" + receiverAmount +
                 ", dateTime=" + dateTime +
+                ", isCancelled=" + isCancelled +
+                ", userId='" + userId + '\'' +
+                ", isFromExternal=" + isFromExternal +
+                ", isToExternal=" + isToExternal +
                 '}';
     }
 
@@ -104,6 +144,8 @@ public class SimpleTransactionImpl implements Transaction {
         private LocalDate dateTime;
         private boolean isCancelled;
         private String userId;
+        private boolean isFromExternal;
+        private boolean isToExternal;
 
         public Builder from(Transaction transaction) {
             this.id = transaction.getId();
@@ -115,6 +157,8 @@ public class SimpleTransactionImpl implements Transaction {
             this.dateTime = transaction.getDateTime();
             this.isCancelled = transaction.isCancelled();
             this.userId = transaction.getUserId();
+            this.isFromExternal = transaction.isFromExternal();
+            this.isToExternal = transaction.isToExternal();
             return this;
         }
 
@@ -164,6 +208,16 @@ public class SimpleTransactionImpl implements Transaction {
             return this;
         }
 
+        public Builder setFromExternal(boolean fromExternal) {
+            isFromExternal = fromExternal;
+            return this;
+        }
+
+        public Builder setToExternal(boolean toExternal) {
+            isToExternal = toExternal;
+            return this;
+        }
+
         public Transaction build() {
             return new SimpleTransactionImpl(id,
                     description,
@@ -173,7 +227,9 @@ public class SimpleTransactionImpl implements Transaction {
                     receiverAmount,
                     dateTime,
                     isCancelled,
-                    userId);
+                    userId,
+                    isFromExternal,
+                    isToExternal);
         }
     }
 }

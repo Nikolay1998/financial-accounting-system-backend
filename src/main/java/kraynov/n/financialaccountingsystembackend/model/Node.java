@@ -1,6 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface Node {
     String getId();
@@ -16,4 +17,6 @@ public interface Node {
     String getUserId();
 
     boolean isExternal();
+
+    LocalDate getLastTransactionDate();
 }

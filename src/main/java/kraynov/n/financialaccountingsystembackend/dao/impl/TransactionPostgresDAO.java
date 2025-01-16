@@ -46,7 +46,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
     public Transaction get(String transactionId) {
 
         return namedJdbc.queryForObject(
-                "select * from transaction where id = :id",
+                "select * from transaction_with_extended_info where id = :id",
                 Map.of("id", transactionId),
                 this::mapRowToTransaction);
     }
@@ -54,7 +54,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
     @Override
     public List<Transaction> getAll(String userId) {
         return namedJdbc.query(
-                "select * from transaction where user_id = :userId order by timestamp desc",
+                "select * from transaction_with_extended_info where user_id = :userId order by timestamp desc",
                 Map.of("userId", userId),
                 this::mapRowToTransaction);
 
@@ -75,7 +75,8 @@ public class TransactionPostgresDAO implements TransactionDAO {
     @Override
     public List<Transaction> getAllByNodeId(String id) {
         return namedJdbc.query(
-                "select * from transaction where sendernodeid = :nodeId or receivernodeid = :nodeId order by timestamp desc",
+                "select * from transaction_with_extended_info" +
+                        " where sendernodeid = :nodeId or receivernodeid = :nodeId order by timestamp desc",
                 Map.of("nodeId", id), this::mapRowToTransaction);
     }
 
@@ -91,6 +92,8 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         TimeZone.getDefault().toZoneId()))
                 .setCancelled(row.getBoolean("is_cancelled"))
                 .setUserId(row.getString("user_id"))
+                .setFromExternal(row.getBoolean("is_from_external"))
+                .setToExternal(row.getBoolean("is_to_external"))
                 .build();
     }
 

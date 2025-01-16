@@ -1,8 +1,11 @@
 package kraynov.n.financialaccountingsystembackend.model.impl;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import kraynov.n.financialaccountingsystembackend.model.Node;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Objects;
 
 public class SimpleNodeImpl implements Node {
     private final String id;
@@ -12,8 +15,9 @@ public class SimpleNodeImpl implements Node {
     private final BigDecimal amount;
     private final String userId;
     private final boolean isExternal;
+    private final LocalDate lastTransactionDate;
 
-    private SimpleNodeImpl(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean external) {
+    private SimpleNodeImpl(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean external, LocalDate lastTransactionDate) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -21,6 +25,7 @@ public class SimpleNodeImpl implements Node {
         this.amount = amount;
         this.userId = userId;
         this.isExternal = external;
+        this.lastTransactionDate = lastTransactionDate;
     }
 
     @Override
@@ -59,44 +64,34 @@ public class SimpleNodeImpl implements Node {
     }
 
     @Override
+    public LocalDate getLastTransactionDate() {
+        return lastTransactionDate;
+    }
+
+    @Override
     public String toString() {
         return "SimpleNodeImpl{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", currencyId=" + currencyId +
+                ", currencyId='" + currencyId + '\'' +
                 ", amount=" + amount +
                 ", userId='" + userId + '\'' +
                 ", isExternal=" + isExternal +
+                ", lastTransactionDate=" + lastTransactionDate +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         SimpleNodeImpl that = (SimpleNodeImpl) o;
-
-        if (currencyId != that.currencyId) return false;
-        if (isExternal != that.isExternal) return false;
-        if (!id.equals(that.id)) return false;
-        if (!name.equals(that.name)) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (!amount.equals(that.amount)) return false;
-        return userId.equals(that.userId);
+        return isExternal == that.isExternal && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(currencyId, that.currencyId) && Objects.equals(amount, that.amount) && Objects.equals(userId, that.userId) && Objects.equals(lastTransactionDate, that.lastTransactionDate);
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + currencyId.hashCode();
-        result = 31 * result + amount.hashCode();
-        result = 31 * result + userId.hashCode();
-        result = 31 * result + (isExternal ? 1 : 0);
-        return result;
+        return Objects.hash(id, name, description, currencyId, amount, userId, isExternal, lastTransactionDate);
     }
 
     public static class Builder {
@@ -108,6 +103,7 @@ public class SimpleNodeImpl implements Node {
         private BigDecimal amount;
         private String userId;
         private boolean isExternal;
+        private LocalDate lastTransactionDate;
 
         public Builder from(Node node) {
             this.id = node.getId();
@@ -117,6 +113,7 @@ public class SimpleNodeImpl implements Node {
             this.amount = node.getAmount();
             this.userId = node.getUserId();
             this.isExternal = node.isExternal();
+            this.lastTransactionDate = node.getLastTransactionDate();
             return this;
         }
 
@@ -155,8 +152,14 @@ public class SimpleNodeImpl implements Node {
             return this;
         }
 
+        @JsonFormat(pattern = "YYYY-MM-dd")
+        public Builder setLastTransactionDate(LocalDate lastTransactionDate) {
+            this.lastTransactionDate = lastTransactionDate;
+            return this;
+        }
+
         public Node build() {
-            return new SimpleNodeImpl(id, name, description, currencyId, amount, userId, isExternal);
+            return new SimpleNodeImpl(id, name, description, currencyId, amount, userId, isExternal, lastTransactionDate);
         }
     }
 }

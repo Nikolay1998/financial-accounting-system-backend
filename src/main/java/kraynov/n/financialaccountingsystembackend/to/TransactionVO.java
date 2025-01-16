@@ -19,11 +19,13 @@ public class TransactionVO {
     private final LocalDate date;
     private final boolean isCancelled;
     private final String userId;
+    private final boolean isFromExternal;
+    private final boolean isToExternal;
 
     public TransactionVO(String id, String description, String senderNodeId, String receiverNodeId,
-            String senderNodeName, String receiverNodeName, BigDecimal senderAmount, BigDecimal receiverAmount,
-            String senderCurrencyId, String senderCurrencySymbol, String receiverCurrencyId, String receiverCurrencySymbol,
-            LocalDate date, boolean isCancelled, String userId) {
+                         String senderNodeName, String receiverNodeName, BigDecimal senderAmount, BigDecimal receiverAmount,
+                         String senderCurrencyId, String senderCurrencySymbol, String receiverCurrencyId, String receiverCurrencySymbol,
+                         LocalDate date, boolean isCancelled, String userId, boolean isFromExternal, boolean isToExternal) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;
@@ -39,6 +41,8 @@ public class TransactionVO {
         this.date = date;
         this.isCancelled = isCancelled;
         this.userId = userId;
+        this.isFromExternal = isFromExternal;
+        this.isToExternal = isToExternal;
     }
 
     public String getId() {
@@ -101,6 +105,14 @@ public class TransactionVO {
         return userId;
     }
 
+    public boolean isFromExternal() {
+        return isFromExternal;
+    }
+
+    public boolean isToExternal() {
+        return isToExternal;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -121,6 +133,8 @@ public class TransactionVO {
         private LocalDate date;
         private boolean isCancelled;
         private String userId;
+        private boolean isFromExternal;
+        private boolean isToExternal;
 
         public String getId() {
             return id;
@@ -257,10 +271,28 @@ public class TransactionVO {
             return this;
         }
 
+        public boolean isFromExternal() {
+            return isFromExternal;
+        }
+
+        public Builder setFromExternal(boolean fromExternal) {
+            isFromExternal = fromExternal;
+            return this;
+        }
+
+        public boolean isToExternal() {
+            return isToExternal;
+        }
+
+        public Builder setToExternal(boolean toExternal) {
+            isToExternal = toExternal;
+            return this;
+        }
+
         public TransactionVO build() {
             return new TransactionVO(id, description, senderNodeId, receiverNodeId, senderNodeName, receiverNodeName,
                     senderAmount, receiverAmount, senderCurrencyId, senderCurrencySymbol, receiverCurrencyId,
-                    receiverCurrencySymbol, date, isCancelled, userId);
+                    receiverCurrencySymbol, date, isCancelled, userId, isFromExternal, isToExternal);
         }
 
     }
