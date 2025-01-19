@@ -40,4 +40,20 @@
         </createView>
     </changeSet>
 
+    <changeSet id="edit_create_view_transaction_with_extended_info" author="kraynov.n">
+        <dropView viewName="transaction_with_extended_info"/>
+        <createView viewName="transaction_with_extended_info">
+            select tr.*,
+                   n.is_external  as is_from_external,
+                   n.currencyid as sender_currency_id,
+                   n.name as sender_name,
+                   n2.is_external as is_to_external,
+                   n2.currencyid as receiver_currency_id,
+                   n2.name as receiver_name
+            from transaction tr
+                     join node n on tr.sendernodeid = n.id
+                     join node n2 on tr.receivernodeid = n2.id
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

@@ -1,6 +1,5 @@
 package kraynov.n.financialaccountingsystembackend.mapper;
 
-import kraynov.n.financialaccountingsystembackend.model.Node;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
@@ -8,30 +7,26 @@ import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import kraynov.n.financialaccountingsystembackend.to.TransactionVO;
 
 public class TransactionMapper {
-    private final NodeService nodeService;
     private final CurrencyService currencyService;
 
-    public TransactionMapper(NodeService nodeService, CurrencyService currencyService) {
-        this.nodeService = nodeService;
+    public TransactionMapper(CurrencyService currencyService) {
         this.currencyService = currencyService;
     }
 
     public TransactionVO viewObjectFromEntity(Transaction transaction) {
-        Node senderNode = nodeService.get(transaction.getSenderNodeId());
-        Node receiverNode = nodeService.get(transaction.getReceiverNodeId());
         return TransactionVO.builder()
                 .setId(transaction.getId())
                 .setDescription(transaction.getDescription())
                 .setSenderNodeId(transaction.getSenderNodeId())
                 .setReceiverNodeId(transaction.getReceiverNodeId())
-                .setSenderNodeName(senderNode.getName())
-                .setReceiverNodeName(receiverNode.getName())
+                .setSenderNodeName(transaction.getSenderName())
+                .setReceiverNodeName(transaction.getReceiverName())
                 .setSenderAmount(transaction.getSenderAmount())
                 .setReceiverAmount(transaction.getReceiverAmount())
-                .setSenderCurrencyId(senderNode.getCurrencyId())
-                .setReceiverCurrencyId(receiverNode.getCurrencyId())
-                .setSenderCurrencySymbol(currencyService.getById(senderNode.getCurrencyId()).getSymbol())
-                .setReceiverCurrencySymbol(currencyService.getById(receiverNode.getCurrencyId()).getSymbol())
+                .setSenderCurrencyId(transaction.getSenderCurrencyId())
+                .setReceiverCurrencyId(transaction.getReceiverCurrencyId())
+                .setSenderCurrencySymbol(currencyService.getById(transaction.getSenderCurrencyId()).getSymbol())
+                .setReceiverCurrencySymbol(currencyService.getById(transaction.getReceiverCurrencyId()).getSymbol())
                 .setDate(transaction.getDateTime())
                 .setCancelled(transaction.isCancelled())
                 .setUserId(transaction.getUserId())

@@ -54,7 +54,7 @@ public class ServiceConfiguration {
 
     @Bean
     public CurrencyService simpleCurrencyService(
-            CurrencyDAO currencyDAO) {
-        return new CurrencySimpleService(currencyDAO);
+            CurrencyDAO currencyCachedDAO) {
+        return new CurrencySimpleService(currencyCachedDAO);
     }
 }

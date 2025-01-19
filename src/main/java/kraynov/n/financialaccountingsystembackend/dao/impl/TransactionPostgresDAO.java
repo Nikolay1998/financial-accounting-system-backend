@@ -53,10 +53,13 @@ public class TransactionPostgresDAO implements TransactionDAO {
 
     @Override
     public List<Transaction> getAll(String userId) {
-        return namedJdbc.query(
+        logger.debug("Start retrieving all transactions by userId");
+        List<Transaction> result = namedJdbc.query(
                 "select * from transaction_with_extended_info where user_id = :userId order by timestamp desc",
                 Map.of("userId", userId),
                 this::mapRowToTransaction);
+        logger.debug("Finish retrieving all transactions by userId");
+        return result;
 
     }
 
@@ -93,6 +96,11 @@ public class TransactionPostgresDAO implements TransactionDAO {
                 .setCancelled(row.getBoolean("is_cancelled"))
                 .setUserId(row.getString("user_id"))
                 .setFromExternal(row.getBoolean("is_from_external"))
+                .setToExternal(row.getBoolean("is_to_external"))
+                .setSenderName(row.getString("sender_name"))
+                .setSenderCurrencyId(row.getString("sender_currency_id"))
+                .setReceiverName(row.getString("receiver_name"))
+                .setReceiverCurrencyId(row.getString("receiver_currency_id"))
                 .setToExternal(row.getBoolean("is_to_external"))
                 .build();
     }
