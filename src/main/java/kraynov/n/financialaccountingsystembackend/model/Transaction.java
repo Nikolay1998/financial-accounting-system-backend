@@ -25,4 +25,12 @@ public interface Transaction {
     boolean isFromExternal();
 
     boolean isToExternal();
+
+    String getSenderCurrencyId();
+
+    String getReceiverCurrencyId();
+
+    String getSenderName();
+
+    String getReceiverName();
 }

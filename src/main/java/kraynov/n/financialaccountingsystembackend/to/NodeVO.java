@@ -23,8 +23,10 @@ public class NodeVO {
 
     private final LocalDate lastTransactionDate;
 
+    private final boolean overdraft;
+
     public NodeVO(String id, String name, String description, String currencySymbol, String currencyId, BigDecimal amount,
-                  String userId, boolean external, LocalDate lastTransactionDate) {
+                  String userId, boolean external, LocalDate lastTransactionDate, boolean overdraft) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -34,6 +36,7 @@ public class NodeVO {
         this.userId = userId;
         this.external = external;
         this.lastTransactionDate = lastTransactionDate;
+        this.overdraft = overdraft;
     }
 
     public static Builder builder() {
@@ -78,7 +81,9 @@ public class NodeVO {
         return lastTransactionDate;
     }
 
-
+    public boolean getOverdraft() {
+        return overdraft;
+    }
 
     public static class Builder {
 
@@ -99,6 +104,8 @@ public class NodeVO {
         private boolean isExternal;
 
         private LocalDate lastTransactionDate;
+
+        private boolean overdraft;
 
         public Builder setId(String id) {
             this.id = id;
@@ -153,9 +160,14 @@ public class NodeVO {
 
         }
 
+        public Builder setOverdraft(boolean overdraft) {
+            this.overdraft = overdraft;
+            return this;
+        }
+
         public NodeVO build() {
             return new NodeVO(id, name, description, currencySymbol, currencyId, amount, userId, isExternal,
-                    lastTransactionDate);
+                    lastTransactionDate, overdraft);
         }
 
     }

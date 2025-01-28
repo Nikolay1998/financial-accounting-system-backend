@@ -16,8 +16,9 @@ public class SimpleNodeImpl implements Node {
     private final String userId;
     private final boolean isExternal;
     private final LocalDate lastTransactionDate;
+    private final boolean isOverdraft;
 
-    private SimpleNodeImpl(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean external, LocalDate lastTransactionDate) {
+    private SimpleNodeImpl(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean external, LocalDate lastTransactionDate, boolean isOverdraft) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -26,6 +27,7 @@ public class SimpleNodeImpl implements Node {
         this.userId = userId;
         this.isExternal = external;
         this.lastTransactionDate = lastTransactionDate;
+        this.isOverdraft = isOverdraft;
     }
 
     @Override
@@ -69,6 +71,11 @@ public class SimpleNodeImpl implements Node {
     }
 
     @Override
+    public boolean isOverdraft() {
+        return isOverdraft;
+    }
+
+    @Override
     public String toString() {
         return "SimpleNodeImpl{" +
                 "id='" + id + '\'' +
@@ -104,6 +111,7 @@ public class SimpleNodeImpl implements Node {
         private String userId;
         private boolean isExternal;
         private LocalDate lastTransactionDate;
+        private boolean isOverdraft;
 
         public Builder from(Node node) {
             this.id = node.getId();
@@ -114,6 +122,7 @@ public class SimpleNodeImpl implements Node {
             this.userId = node.getUserId();
             this.isExternal = node.isExternal();
             this.lastTransactionDate = node.getLastTransactionDate();
+            this.isOverdraft = node.isOverdraft();
             return this;
         }
 
@@ -152,6 +161,11 @@ public class SimpleNodeImpl implements Node {
             return this;
         }
 
+        public Builder setOverdraft(boolean overdraft) {
+            isOverdraft = overdraft;
+            return this;
+        }
+
         @JsonFormat(pattern = "YYYY-MM-dd")
         public Builder setLastTransactionDate(LocalDate lastTransactionDate) {
             this.lastTransactionDate = lastTransactionDate;
@@ -159,7 +173,7 @@ public class SimpleNodeImpl implements Node {
         }
 
         public Node build() {
-            return new SimpleNodeImpl(id, name, description, currencyId, amount, userId, isExternal, lastTransactionDate);
+            return new SimpleNodeImpl(id, name, description, currencyId, amount, userId, isExternal, lastTransactionDate, isOverdraft);
         }
     }
 }
