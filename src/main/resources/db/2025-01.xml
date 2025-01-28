@@ -56,4 +56,23 @@
         </createView>
     </changeSet>
 
+    <changeSet id="edit_view_node_with_last_transaction_date" author="kraynov.n">
+        <dropView viewName="node_with_last_transaction_date"/>
+        <createView viewName="node_with_last_transaction_date">
+            select n.*,
+                   max(t.timestamp) as last_transaction_date
+            from node n
+                     left join (select * from "transaction" t where is_cancelled = false) t
+                               on n.id = t.sendernodeid or n.id = t.receivernodeid
+            group by n.id
+            order by last_transaction_date desc
+        </createView>
+    </changeSet>
+    
+    <changeSet id="node_overdraft_column_init" author="kraynov.n">
+        <addColumn tableName="node">
+            <column name="is_overdraft" type="BOOL" defaultValue="false"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

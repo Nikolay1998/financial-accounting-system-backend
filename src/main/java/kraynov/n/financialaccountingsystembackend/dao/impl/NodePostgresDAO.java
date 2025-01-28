@@ -26,14 +26,15 @@ public class NodePostgresDAO implements NodeDAO {
     @Override
     public Node save(Node node) {
         jdbcTemplate.update(
-                "insert into node values (?, ?, ?, ?, ?, ?, ?)",
+                "insert into node values (?, ?, ?, ?, ?, ?, ?, ?)",
                 node.getId(),
                 node.getName(),
                 node.getDescription(),
                 node.getCurrencyId(),
                 node.getAmount(),
                 node.isExternal(),
-                node.getUserId());
+                node.getUserId(),
+                node.isOverdraft());
         return node;
     }
 
@@ -46,7 +47,8 @@ public class NodePostgresDAO implements NodeDAO {
                         description = :description,
                         currencyid = :currencyid,
                         amount = :amount,
-                        is_external = :is_external
+                        is_external = :is_external,
+                        is_overdraft = :is_overdraft
                         where id = :id and user_id = :user_id
                         """,
                 Map.of("name", node.getName(),
@@ -55,6 +57,7 @@ public class NodePostgresDAO implements NodeDAO {
                         "amount", node.getAmount(),
                         "user_id", userId,
                         "is_external", node.isExternal(),
+                        "is_overdraft", node.isOverdraft(),
                         "id", node.getId()));
         if (updated > 0) {
             return node;
@@ -91,6 +94,7 @@ public class NodePostgresDAO implements NodeDAO {
                         row.getTimestamp("last_transaction_date") == null ? null :
                                 LocalDate.ofInstant(row.getTimestamp("last_transaction_date").toInstant(),
                                         TimeZone.getDefault().toZoneId()))
+                .setOverdraft(row.getBoolean("is_overdraft"))
                 .build();
     }
 }

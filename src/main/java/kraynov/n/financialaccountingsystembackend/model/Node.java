@@ -19,4 +19,6 @@ public interface Node {
     boolean isExternal();
 
     LocalDate getLastTransactionDate();
+
+    boolean isOverdraft();
 }

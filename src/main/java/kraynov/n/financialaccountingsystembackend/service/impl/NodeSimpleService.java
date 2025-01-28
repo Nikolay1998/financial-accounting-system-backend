@@ -12,6 +12,7 @@ import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,18 +31,32 @@ public class NodeSimpleService implements NodeService {
     public Node add(Node node) {
         UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
 
+        validate(node);
+
         Node nodeWithId = new SimpleNodeImpl.Builder()
                 .from(node)
                 .setId(UUID.randomUUID().toString())
                 .setUserId(userDTO.getId())
+                .setOverdraft(node.isExternal() ? Boolean.TRUE : node.isOverdraft())
                 .build();
         LOGGER.debug("Start adding node {}", node);
         return nodeDAO.save(nodeWithId);
     }
 
+    private void validate(Node node) {
+        if (!node.isOverdraft() && node.isExternal()) {
+            LOGGER.warn("External node {} is not overdraft", node);
+        }
+        if (!node.isOverdraft() && !node.isExternal() && node.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Node should be overdraft to have negative balance"); //todo
+        }
+    }
+
     @Override
     public Node edit(Node node) {
         LOGGER.debug("Start editing node with id={}", node.getId());
+
+        validate(node);
 
         UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         return nodeDAO.update(node, userDTO.getId());
@@ -108,9 +123,9 @@ public class NodeSimpleService implements NodeService {
                 .setAmount(receiverNode.getAmount().add(transaction.getReceiverAmount()))
                 .build();
 
-//        if (!newSenderNode.isExternal() && BigDecimal.ZERO.compareTo(newSenderNode.getAmount()) > 0) {
-//            throw new InsufficientFundsException("Not enough amount on sender node");
-//        }
+        if (!newSenderNode.isOverdraft() && !newSenderNode.isExternal() && BigDecimal.ZERO.compareTo(newSenderNode.getAmount()) > 0) {
+            throw new InsufficientFundsException("Not enough amount on sender node");
+        }
 
         nodeDAO.update(newSenderNode, userDTO.getId());
         nodeDAO.update(newReceiverNode, userDTO.getId());

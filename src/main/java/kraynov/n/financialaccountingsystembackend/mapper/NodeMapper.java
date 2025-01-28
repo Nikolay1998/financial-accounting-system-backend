@@ -28,6 +28,7 @@ public class NodeMapper {
                 .setUserId(node.getUserId())
                 .setExternal(node.isExternal())
                 .setLastTransactionDate(node.getLastTransactionDate() == null ? LocalDate.MIN : node.getLastTransactionDate())
+                .setOverdraft(node.isOverdraft())
                 .build();
     }
 
@@ -54,6 +55,7 @@ public class NodeMapper {
                 .setCurrencyId(nodeVO.getCurrencyId())
                 .setExternal(nodeVO.getExternal())
                 .setUserId(nodeVO.getUserId())
+                .setOverdraft(nodeVO.getOverdraft())
                 .build();
     }
 }
