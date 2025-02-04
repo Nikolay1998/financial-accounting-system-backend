@@ -1,18 +1,17 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
-import java.util.List;
-
 import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.mapper.TransactionMapper;
 import kraynov.n.financialaccountingsystembackend.model.Transaction;
 import kraynov.n.financialaccountingsystembackend.service.FASFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import kraynov.n.financialaccountingsystembackend.to.TransactionVO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/transaction")
@@ -22,7 +21,7 @@ public class TransactionController {
     private final TransactionMapper transactionMapper;
 
     public TransactionController(TransactionService transactionService, FASFacade fasFacade,
-            TransactionMapper transactionMapper) {
+                                 TransactionMapper transactionMapper) {
         this.transactionService = transactionService;
         this.fasFacade = fasFacade;
         this.transactionMapper = transactionMapper;
@@ -69,7 +68,15 @@ public class TransactionController {
 
     @CrossOrigin
     @DeleteMapping(path = "/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Transaction cancelTransaction(@RequestParam String transactionId) throws InsufficientFundsException, AlreadyCanceledException {
-        return fasFacade.cancelTransaction(transactionId);
+    public TransactionVO cancelTransaction(@RequestParam String transactionId) throws InsufficientFundsException, AlreadyCanceledException {
+        Transaction cancelledTransaction = fasFacade.cancelTransaction(transactionId);
+        return transactionMapper.viewObjectFromEntity(cancelledTransaction);
+    }
+
+    @CrossOrigin
+    @PutMapping(path = "/restore")
+    public TransactionVO restore(@RequestParam String transactionId) throws InsufficientFundsException {
+        Transaction restoredTransaction = fasFacade.restoreTransaction(transactionId);
+        return transactionMapper.viewObjectFromEntity(restoredTransaction);
     }
 }
