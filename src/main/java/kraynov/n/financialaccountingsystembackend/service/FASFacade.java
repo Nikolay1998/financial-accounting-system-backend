@@ -11,4 +11,5 @@ public interface FASFacade {
 
     Transaction editTransaction(Transaction transaction) throws InsufficientFundsException;
 
+    Transaction restoreTransaction(String transactionId) throws InsufficientFundsException;
 }

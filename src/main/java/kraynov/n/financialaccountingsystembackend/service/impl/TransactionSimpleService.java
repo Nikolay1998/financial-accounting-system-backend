@@ -101,4 +101,19 @@ public class TransactionSimpleService implements TransactionService {
         }
         return updated;
     }
+
+    @Override
+    public Transaction restore(String transactionId) {
+        LOGGER.debug("Start restoring transaction {}", transactionId);
+        Transaction transactionToRestore = transactionDAO.get(transactionId);
+        if (!transactionToRestore.isCancelled()) {
+            throw new IllegalStateException("Transaction is not canceled");
+        }
+        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        Transaction restoredTransaction = SimpleTransactionImpl.builder().from(transactionToRestore)
+                .setCancelled(false)
+                .build();
+        transactionDAO.update(restoredTransaction, userDTO.getId());
+        return transactionDAO.get(transactionId);
+    }
 }

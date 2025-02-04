@@ -40,4 +40,12 @@ public class FASSimpleFacade implements FASFacade {
         nodeService.calculateTransactionAffection(newTransaction);
         return transactionService.edit(newTransaction);
     }
+
+    @Transactional
+    @Override
+    public Transaction restoreTransaction(String transactionId) throws InsufficientFundsException {
+        Transaction transaction = transactionService.restore(transactionId);
+        nodeService.calculateTransactionAffection(transaction);
+        return transaction;
+    }
 }

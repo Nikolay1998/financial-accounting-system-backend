@@ -24,4 +24,6 @@ public interface TransactionService {
     Transaction cancel(String transactionId) throws AlreadyCanceledException;
 
     Transaction edit(Transaction transaction);
+
+    Transaction restore(String transactionId);
 }

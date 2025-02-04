@@ -11,4 +11,6 @@
     <include file="db/2024-06.xml"/>
     <include file="db/2024-08.xml"/>
     <include file="db/2025-01.xml"/>
+    
+    <include file="db/views.xml"/>
 </databaseChangeLog>
