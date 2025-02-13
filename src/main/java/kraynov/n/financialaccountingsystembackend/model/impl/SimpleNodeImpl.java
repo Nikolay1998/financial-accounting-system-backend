@@ -17,8 +17,9 @@ public class SimpleNodeImpl implements Node {
     private final boolean isExternal;
     private final LocalDate lastTransactionDate;
     private final boolean isOverdraft;
+    private final boolean isArchived;
 
-    private SimpleNodeImpl(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean external, LocalDate lastTransactionDate, boolean isOverdraft) {
+    private SimpleNodeImpl(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean external, LocalDate lastTransactionDate, boolean isOverdraft, boolean isArchived) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,6 +29,7 @@ public class SimpleNodeImpl implements Node {
         this.isExternal = external;
         this.lastTransactionDate = lastTransactionDate;
         this.isOverdraft = isOverdraft;
+        this.isArchived = isArchived;
     }
 
     @Override
@@ -76,6 +78,11 @@ public class SimpleNodeImpl implements Node {
     }
 
     @Override
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    @Override
     public String toString() {
         return "SimpleNodeImpl{" +
                 "id='" + id + '\'' +
@@ -86,6 +93,7 @@ public class SimpleNodeImpl implements Node {
                 ", userId='" + userId + '\'' +
                 ", isExternal=" + isExternal +
                 ", lastTransactionDate=" + lastTransactionDate +
+                ", isArchived=" + isArchived +
                 '}';
     }
 
@@ -93,12 +101,12 @@ public class SimpleNodeImpl implements Node {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         SimpleNodeImpl that = (SimpleNodeImpl) o;
-        return isExternal == that.isExternal && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(currencyId, that.currencyId) && Objects.equals(amount, that.amount) && Objects.equals(userId, that.userId) && Objects.equals(lastTransactionDate, that.lastTransactionDate);
+        return isExternal == that.isExternal && isOverdraft == that.isOverdraft && isArchived == that.isArchived && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(currencyId, that.currencyId) && Objects.equals(amount, that.amount) && Objects.equals(userId, that.userId) && Objects.equals(lastTransactionDate, that.lastTransactionDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, currencyId, amount, userId, isExternal, lastTransactionDate);
+        return Objects.hash(id, name, description, currencyId, amount, userId, isExternal, lastTransactionDate, isOverdraft, isArchived);
     }
 
     public static class Builder {
@@ -112,6 +120,7 @@ public class SimpleNodeImpl implements Node {
         private boolean isExternal;
         private LocalDate lastTransactionDate;
         private boolean isOverdraft;
+        private boolean isArchived;
 
         public Builder from(Node node) {
             this.id = node.getId();
@@ -123,6 +132,7 @@ public class SimpleNodeImpl implements Node {
             this.isExternal = node.isExternal();
             this.lastTransactionDate = node.getLastTransactionDate();
             this.isOverdraft = node.isOverdraft();
+            this.isArchived = node.isArchived();
             return this;
         }
 
@@ -166,6 +176,11 @@ public class SimpleNodeImpl implements Node {
             return this;
         }
 
+        public Builder setArchived(boolean archived) {
+            isArchived = archived;
+            return this;
+        }
+
         @JsonFormat(pattern = "YYYY-MM-dd")
         public Builder setLastTransactionDate(LocalDate lastTransactionDate) {
             this.lastTransactionDate = lastTransactionDate;
@@ -173,7 +188,7 @@ public class SimpleNodeImpl implements Node {
         }
 
         public Node build() {
-            return new SimpleNodeImpl(id, name, description, currencyId, amount, userId, isExternal, lastTransactionDate, isOverdraft);
+            return new SimpleNodeImpl(id, name, description, currencyId, amount, userId, isExternal, lastTransactionDate, isOverdraft, isArchived);
         }
     }
 }

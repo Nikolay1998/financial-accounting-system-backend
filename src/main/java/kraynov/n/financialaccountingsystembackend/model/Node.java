@@ -21,4 +21,6 @@ public interface Node {
     LocalDate getLastTransactionDate();
 
     boolean isOverdraft();
+
+    boolean isArchived();
 }

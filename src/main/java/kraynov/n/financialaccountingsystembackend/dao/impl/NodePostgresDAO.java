@@ -26,7 +26,7 @@ public class NodePostgresDAO implements NodeDAO {
     @Override
     public Node save(Node node) {
         jdbcTemplate.update(
-                "insert into node values (?, ?, ?, ?, ?, ?, ?, ?)",
+                "insert into node values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 node.getId(),
                 node.getName(),
                 node.getDescription(),
@@ -34,7 +34,9 @@ public class NodePostgresDAO implements NodeDAO {
                 node.getAmount(),
                 node.isExternal(),
                 node.getUserId(),
-                node.isOverdraft());
+                node.isOverdraft(),
+                node.isArchived()
+                );
         return node;
     }
 
@@ -48,7 +50,8 @@ public class NodePostgresDAO implements NodeDAO {
                         currencyid = :currencyid,
                         amount = :amount,
                         is_external = :is_external,
-                        is_overdraft = :is_overdraft
+                        is_overdraft = :is_overdraft,
+                        is_archived = :is_archived
                         where id = :id and user_id = :user_id
                         """,
                 Map.of("name", node.getName(),
@@ -58,6 +61,7 @@ public class NodePostgresDAO implements NodeDAO {
                         "user_id", userId,
                         "is_external", node.isExternal(),
                         "is_overdraft", node.isOverdraft(),
+                        "is_archived", node.isArchived(),
                         "id", node.getId()));
         if (updated > 0) {
             return node;
@@ -95,6 +99,7 @@ public class NodePostgresDAO implements NodeDAO {
                                 LocalDate.ofInstant(row.getTimestamp("last_transaction_date").toInstant(),
                                         TimeZone.getDefault().toZoneId()))
                 .setOverdraft(row.getBoolean("is_overdraft"))
+                .setArchived(row.getBoolean("is_archived"))
                 .build();
     }
 }
