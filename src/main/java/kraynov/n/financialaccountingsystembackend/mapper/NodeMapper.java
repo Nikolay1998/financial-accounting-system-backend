@@ -3,7 +3,6 @@ package kraynov.n.financialaccountingsystembackend.mapper;
 import kraynov.n.financialaccountingsystembackend.model.Node;
 import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
-import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import kraynov.n.financialaccountingsystembackend.to.NodeVO;
 
 import java.math.BigDecimal;
@@ -12,8 +11,7 @@ import java.time.LocalDate;
 public class NodeMapper {
     private final CurrencyService currencyService;
 
-    public NodeMapper(TransactionService transactionService,
-                      CurrencyService currencyService) {
+    public NodeMapper(CurrencyService currencyService) {
         this.currencyService = currencyService;
     }
 
@@ -29,6 +27,7 @@ public class NodeMapper {
                 .setExternal(node.isExternal())
                 .setLastTransactionDate(node.getLastTransactionDate() == null ? LocalDate.MIN : node.getLastTransactionDate())
                 .setOverdraft(node.isOverdraft())
+                .setArchived(node.isArchived())
                 .build();
     }
 
@@ -56,6 +55,7 @@ public class NodeMapper {
                 .setExternal(nodeVO.getExternal())
                 .setUserId(nodeVO.getUserId())
                 .setOverdraft(nodeVO.getOverdraft())
+                .setArchived(nodeVO.getArchived())
                 .build();
     }
 }

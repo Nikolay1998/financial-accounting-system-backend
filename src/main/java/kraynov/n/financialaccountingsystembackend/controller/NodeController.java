@@ -6,14 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import kraynov.n.financialaccountingsystembackend.mapper.NodeMapper;
 import kraynov.n.financialaccountingsystembackend.model.Node;
@@ -64,6 +57,20 @@ public class NodeController {
             throw new IllegalStateException("Can't find node for edit with id=" + node.getId());
         }
         return nodeMapper.viewObjectFromEntity(edited);
+    }
+
+    @CrossOrigin
+    @PutMapping(path = "/archive", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public NodeVO archiveNode(@RequestParam String nodeId) {
+        Node archived = nodeService.archive(nodeId);
+        return nodeMapper.viewObjectFromEntity(archived);
+    }
+
+    @CrossOrigin
+    @PutMapping(path = "/restore", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public NodeVO restoreNode(@RequestParam String nodeId) {
+        Node restored = nodeService.restore(nodeId);
+        return nodeMapper.viewObjectFromEntity(restored);
     }
 
 }

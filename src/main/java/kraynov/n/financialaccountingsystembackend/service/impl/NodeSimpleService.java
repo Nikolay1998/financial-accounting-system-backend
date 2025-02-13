@@ -11,6 +11,7 @@ import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -72,6 +73,36 @@ public class NodeSimpleService implements NodeService {
         UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         LOGGER.debug("Start loading all nodes for user with id {}", userDTO.getId());
         return nodeDAO.getAll(userDTO.getId());
+    }
+
+    @Transactional
+    @Override
+    public Node archive(String id) {
+        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        Node nodeToArchive = nodeDAO.getById(id);
+        if (nodeToArchive.isArchived()) {
+            throw new IllegalArgumentException("Node " + nodeToArchive.getName() + " is already archived");
+        }
+        Node arhivedNode = new SimpleNodeImpl.Builder()
+                .from(nodeToArchive)
+                .setArchived(Boolean.TRUE)
+                .build();
+        return nodeDAO.update(arhivedNode, userDTO.getId());
+    }
+
+    @Transactional
+    @Override
+    public Node restore(String id) {
+        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        Node nodeToRestore = nodeDAO.getById(id);
+        if (!nodeToRestore.isArchived()) {
+            throw new IllegalArgumentException("Node " + nodeToRestore.getName() + " is not archived");
+        }
+        Node restoredNode = new SimpleNodeImpl.Builder()
+                .from(nodeToRestore)
+                .setArchived(Boolean.FALSE)
+                .build();
+        return nodeDAO.update(restoredNode, userDTO.getId());
     }
 
     @Override

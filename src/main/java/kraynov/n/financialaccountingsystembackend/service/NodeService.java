@@ -15,6 +15,10 @@ public interface NodeService {
 
     List<Node> getAll();
 
+    Node archive(String id);
+
+    Node restore(String id);
+
     void calculateTransactionAffection(Transaction transaction) throws InsufficientFundsException;
 
     void cancelTransactionAffection(Transaction transaction) throws InsufficientFundsException;
