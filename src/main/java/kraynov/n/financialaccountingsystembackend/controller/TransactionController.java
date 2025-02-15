@@ -30,8 +30,8 @@ public class TransactionController {
     @CrossOrigin
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Transaction add(@RequestBody TransactionVO transaction) throws InsufficientFundsException {
-        return fasFacade.addTransaction(transactionMapper.entityFromViewObject(transaction));
+    public TransactionVO add(@RequestBody TransactionVO transaction) throws InsufficientFundsException {
+        return transactionMapper.viewObjectFromEntity(fasFacade.addTransaction(transactionMapper.entityFromViewObject(transaction)));
     }
 
     @CrossOrigin

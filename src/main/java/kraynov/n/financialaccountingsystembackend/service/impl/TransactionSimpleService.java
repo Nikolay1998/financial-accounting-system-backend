@@ -35,7 +35,10 @@ public class TransactionSimpleService implements TransactionService {
                 .setCancelled(false)
                 .setUserId(userDTO.getId())
                 .build();
-        return transactionDAO.save(transactionWithId);
+
+        //todo: separate pure transaction and transactionWithAdditionalData
+        transactionDAO.save(transactionWithId);
+        return transactionDAO.get(transactionWithId.getId());
     }
 
     @Override
@@ -99,7 +102,7 @@ public class TransactionSimpleService implements TransactionService {
         if (updated == null) {
             throw new IllegalStateException("Can't find transaction for edit with id=" + transaction.getId());
         }
-        return updated;
+        return transactionDAO.get(transaction.getId());
     }
 
     @Override
