@@ -1,11 +1,11 @@
 package kraynov.n.financialaccountingsystembackend.service;
 
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
+import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
 
 public interface UserService {
-    UserDTO add(UserDTO userDTO);
+    UserDetailsDto add(UserDetailsDto userDTO);
 
-    UserDTO getByName(String username);
+    UserDetailsDto getByName(String username);
 
-    UserDTO getAuthenticatedUser();
+    UserDetailsDto getAuthenticatedUser();
 }

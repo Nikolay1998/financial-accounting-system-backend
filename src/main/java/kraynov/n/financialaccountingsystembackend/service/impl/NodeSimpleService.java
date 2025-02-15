@@ -2,11 +2,9 @@ package kraynov.n.financialaccountingsystembackend.service.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
-import kraynov.n.financialaccountingsystembackend.model.Node;
-import kraynov.n.financialaccountingsystembackend.model.Transaction;
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
+import kraynov.n.financialaccountingsystembackend.model.NodeDto;
+import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import org.slf4j.Logger;
@@ -29,22 +27,21 @@ public class NodeSimpleService implements NodeService {
     }
 
     @Override
-    public Node add(Node node) {
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+    public NodeDto add(NodeDto node) {
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
 
         validate(node);
 
-        Node nodeWithId = new SimpleNodeImpl.Builder()
-                .from(node)
-                .setId(UUID.randomUUID().toString())
-                .setUserId(userDTO.getId())
-                .setOverdraft(node.isExternal() ? Boolean.TRUE : node.isOverdraft())
+        NodeDto nodeWithId = node.toBuilder()
+                .id(UUID.randomUUID().toString())
+                .userId(userDTO.getId())
+                .isOverdraft(node.isExternal() ? Boolean.TRUE : node.isOverdraft())
                 .build();
         LOGGER.debug("Start adding node {}", node);
         return nodeDAO.save(nodeWithId);
     }
 
-    private void validate(Node node) {
+    private void validate(NodeDto node) {
         if (!node.isOverdraft() && node.isExternal()) {
             LOGGER.warn("External node {} is not overdraft", node);
         }
@@ -54,59 +51,59 @@ public class NodeSimpleService implements NodeService {
     }
 
     @Override
-    public Node edit(Node node) {
+    public NodeDto edit(NodeDto node) {
         LOGGER.debug("Start editing node with id={}", node.getId());
 
         validate(node);
 
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         return nodeDAO.update(node, userDTO.getId());
     }
 
     @Override
-    public Node get(String id) {
+    public NodeDto get(String id) {
         return nodeDAO.getById(id);
     }
 
     @Override
-    public List<Node> getAll() {
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+    public List<NodeDto> getAll() {
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         LOGGER.debug("Start loading all nodes for user with id {}", userDTO.getId());
         return nodeDAO.getAll(userDTO.getId());
     }
 
     @Transactional
     @Override
-    public Node archive(String id) {
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        Node nodeToArchive = nodeDAO.getById(id);
+    public NodeDto archive(String id) {
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        NodeDto nodeToArchive = nodeDAO.getById(id);
         if (nodeToArchive.isArchived()) {
             throw new IllegalArgumentException("Node " + nodeToArchive.getName() + " is already archived");
         }
-        Node arhivedNode = new SimpleNodeImpl.Builder()
-                .from(nodeToArchive)
-                .setArchived(Boolean.TRUE)
-                .build();
-        return nodeDAO.update(arhivedNode, userDTO.getId());
+
+        NodeDto archivedNode = nodeToArchive
+                .withArchived(Boolean.TRUE);
+
+        return nodeDAO.update(archivedNode, userDTO.getId());
     }
 
     @Transactional
     @Override
-    public Node restore(String id) {
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        Node nodeToRestore = nodeDAO.getById(id);
+    public NodeDto restore(String id) {
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        NodeDto nodeToRestore = nodeDAO.getById(id);
         if (!nodeToRestore.isArchived()) {
             throw new IllegalArgumentException("Node " + nodeToRestore.getName() + " is not archived");
         }
-        Node restoredNode = new SimpleNodeImpl.Builder()
-                .from(nodeToRestore)
-                .setArchived(Boolean.FALSE)
-                .build();
+
+        NodeDto restoredNode = nodeToRestore
+                .withArchived(Boolean.FALSE);
+
         return nodeDAO.update(restoredNode, userDTO.getId());
     }
 
     @Override
-    public void calculateTransactionAffection(Transaction transaction) throws InsufficientFundsException {
+    public void calculateTransactionAffection(TransactionDto transaction) throws InsufficientFundsException {
         LOGGER.debug("Start calculating transaction {}", transaction);
         try {
             calculate(transaction);
@@ -118,11 +115,11 @@ public class NodeSimpleService implements NodeService {
     }
 
     @Override
-    public void cancelTransactionAffection(Transaction transaction) throws InsufficientFundsException {
-        Transaction reversedTransaction = SimpleTransactionImpl.builder()
-                .from(transaction)
-                .setSenderAmount(transaction.getSenderAmount().negate())
-                .setReceiverAmount(transaction.getReceiverAmount().negate())
+    public void cancelTransactionAffection(TransactionDto transaction) throws InsufficientFundsException {
+        TransactionDto reversedTransaction = transaction
+                .toBuilder()
+                .senderAmount(transaction.getSenderAmount().negate())
+                .receiverAmount(transaction.getReceiverAmount().negate())
                 .build();
         try {
             calculate(reversedTransaction);
@@ -133,26 +130,22 @@ public class NodeSimpleService implements NodeService {
         }
     }
 
-    private void calculate(Transaction transaction) throws InsufficientFundsException {
-        Node senderNode = nodeDAO.getById(transaction.getSenderNodeId());
-        Node receiverNode = nodeDAO.getById(transaction.getReceiverNodeId());
+    private void calculate(TransactionDto transaction) throws InsufficientFundsException {
+        NodeDto senderNode = nodeDAO.getById(transaction.getSenderNodeId());
+        NodeDto receiverNode = nodeDAO.getById(transaction.getReceiverNodeId());
 
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         if (!senderNode.getUserId().equals(userDTO.getId()) ||
                 !receiverNode.getUserId().equals(userDTO.getId())) {
             LOGGER.warn("Requested transaction from another user node");
             throw new IllegalArgumentException("Requested transaction from another user node");
         }
 
-        Node newSenderNode = new SimpleNodeImpl.Builder()
-                .from(senderNode)
-                .setAmount(senderNode.getAmount().subtract(transaction.getSenderAmount()))
-                .build();
+        NodeDto newSenderNode = senderNode
+                .withAmount(senderNode.getAmount().subtract(transaction.getSenderAmount()));
 
-        Node newReceiverNode = new SimpleNodeImpl.Builder()
-                .from(receiverNode)
-                .setAmount(receiverNode.getAmount().add(transaction.getReceiverAmount()))
-                .build();
+        NodeDto newReceiverNode = receiverNode
+                .withAmount(receiverNode.getAmount().add(transaction.getReceiverAmount()));
 
         if (!newSenderNode.isOverdraft() && !newSenderNode.isExternal() && BigDecimal.ZERO.compareTo(newSenderNode.getAmount()) > 0) {
             throw new InsufficientFundsException("Not enough amount on sender node");

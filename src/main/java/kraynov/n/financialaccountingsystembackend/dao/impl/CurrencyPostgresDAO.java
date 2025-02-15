@@ -1,15 +1,14 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
+import kraynov.n.financialaccountingsystembackend.dao.CurrencyDAO;
+import kraynov.n.financialaccountingsystembackend.model.CurrencyDTO;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-
-import kraynov.n.financialaccountingsystembackend.dao.CurrencyDAO;
-import kraynov.n.financialaccountingsystembackend.model.CurrencyDTO;
 
 public class CurrencyPostgresDAO implements CurrencyDAO {
     private final JdbcTemplate jdbcTemplate;
@@ -34,11 +33,11 @@ public class CurrencyPostgresDAO implements CurrencyDAO {
 
     private CurrencyDTO mapRowToCurrency(ResultSet row, int rowNum) throws SQLException {
         return CurrencyDTO.builder()
-                .setId(row.getString("id"))
-                .setFullName(row.getString("full_name"))
-                .setShortName(row.getString("short_name"))
-                .setSymbol(row.getString("symbol"))
-                .setIsoCode(row.getShort("iso_code"))
+                .id(row.getString("id"))
+                .fullName(row.getString("full_name"))
+                .shortName(row.getString("short_name"))
+                .symbol(row.getString("symbol"))
+                .isoCode(row.getShort("iso_code"))
                 .build();
     }
 }

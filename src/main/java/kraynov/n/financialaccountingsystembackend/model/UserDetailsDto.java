@@ -1,25 +1,25 @@
-package kraynov.n.financialaccountingsystembackend.model.impl;
+package kraynov.n.financialaccountingsystembackend.model;
 
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
-public class SimpleUserDTO implements UserDTO {
+public class UserDetailsDto implements UserDetails {
     private final String id;
     private final String password;
     private final String username;
 
-    public SimpleUserDTO(String id, String userName, String password) {
+    public UserDetailsDto(String id, String userName, String password) {
         this.id = id;
         this.password = password;
         this.username = userName;
     }
 
     @Override
-    public Collection<GrantedAuthority> getAuthorities(){
+    public Collection<GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
@@ -53,16 +53,7 @@ public class SimpleUserDTO implements UserDTO {
         return true;
     }
 
-    @Override
     public String getId() {
         return id;
-    }
-
-    @Override
-    public String toString() {
-        return "SimpleUserDTO{" +
-                "id='" + id + '\'' +
-                ", userName='" + username + '\'' +
-                '}';
     }
 }

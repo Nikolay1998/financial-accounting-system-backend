@@ -1,21 +1,21 @@
 package kraynov.n.financialaccountingsystembackend.dao;
 
-import kraynov.n.financialaccountingsystembackend.model.Transaction;
+import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
 
 import java.util.List;
 
 public interface TransactionDAO {
-    Transaction save(Transaction transaction);
+    TransactionDto save(TransactionDto transaction);
 
-    Transaction get(String transactionId);
+    TransactionDto get(String transactionId);
 
-    List<Transaction> getAll(String usedId);
+    List<TransactionDto> getAll(String usedId);
 
-    List<Transaction> getAllBySenderId(int id);
+    List<TransactionDto> getAllBySenderId(int id);
 
-    List<Transaction> getAllByReceiverId(int id);
+    List<TransactionDto> getAllByReceiverId(int id);
 
-    List<Transaction> getAllByNodeId(String id);
+    List<TransactionDto> getAllByNodeId(String id);
 
-    Transaction update(Transaction transaction, String userId);
+    TransactionDto update(TransactionDto transaction, String userId);
 }

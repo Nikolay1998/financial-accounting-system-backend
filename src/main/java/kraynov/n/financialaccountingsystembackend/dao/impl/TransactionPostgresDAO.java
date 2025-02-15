@@ -1,19 +1,17 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
+import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
+import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-
-import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
-import kraynov.n.financialaccountingsystembackend.model.Transaction;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
 
 public class TransactionPostgresDAO implements TransactionDAO {
 
@@ -26,7 +24,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
     }
 
     @Override
-    public Transaction save(Transaction transaction) {
+    public TransactionDto save(TransactionDto transaction) {
         namedJdbc.update(
                 "insert into transaction values (:id, :senderNodeId, :receiverNodeId, :description, :senderAmount, :receiverAmount, :dateTime, :userId, :isCancelled)",
                 Map.of(
@@ -36,14 +34,14 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         "description", transaction.getDescription(),
                         "senderAmount", transaction.getSenderAmount(),
                         "receiverAmount", transaction.getReceiverAmount(),
-                        "dateTime", java.sql.Date.valueOf((transaction.getDateTime())),
+                        "dateTime", java.sql.Date.valueOf((transaction.getDate())),
                         "isCancelled", transaction.isCancelled(),
                         "userId", transaction.getUserId()));
         return transaction;
     }
 
     @Override
-    public Transaction get(String transactionId) {
+    public TransactionDto get(String transactionId) {
 
         return namedJdbc.queryForObject(
                 "select * from transaction_with_extended_info where id = :id",
@@ -52,9 +50,9 @@ public class TransactionPostgresDAO implements TransactionDAO {
     }
 
     @Override
-    public List<Transaction> getAll(String userId) {
+    public List<TransactionDto> getAll(String userId) {
         logger.debug("Start retrieving all transactions by userId");
-        List<Transaction> result = namedJdbc.query(
+        List<TransactionDto> result = namedJdbc.query(
                 "select * from transaction_with_extended_info where user_id = :userId order by timestamp desc",
                 Map.of("userId", userId),
                 this::mapRowToTransaction);
@@ -64,49 +62,48 @@ public class TransactionPostgresDAO implements TransactionDAO {
     }
 
     @Override
-    public List<Transaction> getAllBySenderId(int id) {
+    public List<TransactionDto> getAllBySenderId(int id) {
         // toDo: implement method
         return null;
     }
 
     @Override
-    public List<Transaction> getAllByReceiverId(int id) {
+    public List<TransactionDto> getAllByReceiverId(int id) {
         // toDo: implement method
         return null;
     }
 
     @Override
-    public List<Transaction> getAllByNodeId(String id) {
+    public List<TransactionDto> getAllByNodeId(String id) {
         return namedJdbc.query(
                 "select * from transaction_with_extended_info" +
                         " where sendernodeid = :nodeId or receivernodeid = :nodeId order by timestamp desc",
                 Map.of("nodeId", id), this::mapRowToTransaction);
     }
 
-    private Transaction mapRowToTransaction(ResultSet row, int rowNum) throws SQLException {
-        return SimpleTransactionImpl.builder()
-                .setId(row.getString("id"))
-                .setDescription(row.getString("description"))
-                .setSenderNodeId(row.getString("senderNodeId"))
-                .setReceiverNodeId(row.getString("receiverNodeId"))
-                .setSenderAmount(row.getBigDecimal("senderamount"))
-                .setReceiverAmount(row.getBigDecimal("receiveramount"))
-                .setTime(LocalDate.ofInstant(row.getTimestamp("timestamp").toInstant(),
+    private TransactionDto mapRowToTransaction(ResultSet row, int rowNum) throws SQLException {
+        return TransactionDto.builder()
+                .id(row.getString("id"))
+                .description(row.getString("description"))
+                .senderNodeId(row.getString("senderNodeId"))
+                .receiverNodeId(row.getString("receiverNodeId"))
+                .senderAmount(row.getBigDecimal("senderamount"))
+                .receiverAmount(row.getBigDecimal("receiveramount"))
+                .date(LocalDate.ofInstant(row.getTimestamp("timestamp").toInstant(),
                         TimeZone.getDefault().toZoneId()))
-                .setCancelled(row.getBoolean("is_cancelled"))
-                .setUserId(row.getString("user_id"))
-                .setFromExternal(row.getBoolean("is_from_external"))
-                .setToExternal(row.getBoolean("is_to_external"))
-                .setSenderName(row.getString("sender_name"))
-                .setSenderCurrencyId(row.getString("sender_currency_id"))
-                .setReceiverName(row.getString("receiver_name"))
-                .setReceiverCurrencyId(row.getString("receiver_currency_id"))
-                .setToExternal(row.getBoolean("is_to_external"))
+                .isCancelled(row.getBoolean("is_cancelled"))
+                .userId(row.getString("user_id"))
+                .isFromExternal(row.getBoolean("is_from_external"))
+                .isToExternal(row.getBoolean("is_to_external"))
+                .senderName(row.getString("sender_name"))
+                .senderCurrencyId(row.getString("sender_currency_id"))
+                .receiverName(row.getString("receiver_name"))
+                .receiverCurrencyId(row.getString("receiver_currency_id"))
                 .build();
     }
 
     @Override
-    public Transaction update(Transaction transaction, String userId) {
+    public TransactionDto update(TransactionDto transaction, String userId) {
         logger.debug("Start updating transaction: {}", transaction);
 
         int updated = namedJdbc.update(
@@ -128,7 +125,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         "description", transaction.getDescription(),
                         "senderAmount", transaction.getSenderAmount(),
                         "receiverAmount", transaction.getReceiverAmount(),
-                        "dateTime", java.sql.Date.valueOf((transaction.getDateTime())),
+                        "dateTime", java.sql.Date.valueOf((transaction.getDate())),
                         "isCancelled", transaction.isCancelled(),
                         "userId", userId));
 

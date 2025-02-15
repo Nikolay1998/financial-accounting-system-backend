@@ -1,7 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.UserDAO;
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
+import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.UserService;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class UserSimpleService implements UserService {
     }
 
     @Override
-    public UserDTO add(UserDTO userDTO) {
+    public UserDetailsDto add(UserDetailsDto userDTO) {
         LOGGER.debug("Start adding user {}", userDTO);
         if (getByName(userDTO.getUsername()) != null) {
             LOGGER.warn("Provided username {} already in use", userDTO.getUsername());
@@ -30,12 +30,12 @@ public class UserSimpleService implements UserService {
     }
 
     @Override
-    public UserDTO getByName(String username) {
+    public UserDetailsDto getByName(String username) {
         return userDAO.getByName(username);
     }
 
     @Override
-    public UserDTO getAuthenticatedUser() {
+    public UserDetailsDto getAuthenticatedUser() {
         return contextHolderFacade.getAuthenticatedUser();
     }
 }

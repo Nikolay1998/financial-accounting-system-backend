@@ -2,9 +2,8 @@ package kraynov.n.financialaccountingsystembackend.service.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
 import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
-import kraynov.n.financialaccountingsystembackend.model.Transaction;
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
+import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import org.slf4j.Logger;
@@ -26,14 +25,14 @@ public class TransactionSimpleService implements TransactionService {
     }
 
     @Override
-    public Transaction add(Transaction transaction) {
+    public TransactionDto add(TransactionDto transaction) {
         LOGGER.debug("Start adding transaction {}", transaction);
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        Transaction transactionWithId = SimpleTransactionImpl.builder()
-                .from(transaction)
-                .setId(UUID.randomUUID().toString())
-                .setCancelled(false)
-                .setUserId(userDTO.getId())
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        TransactionDto transactionWithId = transaction
+                .toBuilder()
+                .id(UUID.randomUUID().toString())
+                .isCancelled(false)
+                .userId(userDTO.getId())
                 .build();
 
         //todo: separate pure transaction and transactionWithAdditionalData
@@ -42,63 +41,60 @@ public class TransactionSimpleService implements TransactionService {
     }
 
     @Override
-    public Transaction get(String id) {
+    public TransactionDto get(String id) {
         LOGGER.debug("Start loading transaction with id = {}", id);
         return transactionDAO.get(id);
     }
 
     @Override
-    public List<Transaction> getAll() {
+    public List<TransactionDto> getAll() {
         LOGGER.debug("Start loading all transactions");
 
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         return transactionDAO.getAll(userDTO.getId());
-
     }
 
     @Override
-    public List<Transaction> getAllBySenderId(int id) {
+    public List<TransactionDto> getAllBySenderId(int id) {
         return transactionDAO.getAllBySenderId(id);
     }
 
     @Override
-    public List<Transaction> getAllByReceiverId(int id) {
+    public List<TransactionDto> getAllByReceiverId(int id) {
         return transactionDAO.getAllByReceiverId(id);
     }
 
     @Override
-    public Transaction cancel(String transactionId) throws AlreadyCanceledException {
+    public TransactionDto cancel(String transactionId) throws AlreadyCanceledException {
         LOGGER.debug("Start cancelling transaction {}", transactionId);
-        Transaction transactionToCancel = transactionDAO.get(transactionId);
+        TransactionDto transactionToCancel = transactionDAO.get(transactionId);
         if (transactionToCancel.isCancelled()) {
             throw new AlreadyCanceledException("Transaction already canceled");
         }
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        Transaction canceledTransaction = SimpleTransactionImpl.builder().from(transactionToCancel)
-                .setCancelled(true)
-                .build();
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        TransactionDto canceledTransaction = transactionToCancel
+                .withCancelled(true);
         transactionDAO.update(canceledTransaction, userDTO.getId());
         return transactionDAO.get(transactionId);
     }
 
     @Override
-    public List<Transaction> getAllByNodeId(String id) {
+    public List<TransactionDto> getAllByNodeId(String id) {
         LOGGER.debug("Start loading all transactions for nodeId = {}", id);
         return transactionDAO.getAllByNodeId(id);
-
     }
 
     @Override
-    public Optional<Transaction> getLastTransactionByNodeId(String id) {
+    public Optional<TransactionDto> getLastTransactionByNodeId(String id) {
         return getAllByNodeId(id).stream().filter(t -> !t.isCancelled()).findFirst();
     }
 
     @Override
-    public Transaction edit(Transaction transaction) {
+    public TransactionDto edit(TransactionDto transaction) {
         LOGGER.debug("Start editing transaction {}", transaction);
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
 
-        Transaction updated = transactionDAO.update(transaction, userDTO.getId());
+        TransactionDto updated = transactionDAO.update(transaction, userDTO.getId());
         if (updated == null) {
             throw new IllegalStateException("Can't find transaction for edit with id=" + transaction.getId());
         }
@@ -106,16 +102,15 @@ public class TransactionSimpleService implements TransactionService {
     }
 
     @Override
-    public Transaction restore(String transactionId) {
+    public TransactionDto restore(String transactionId) {
         LOGGER.debug("Start restoring transaction {}", transactionId);
-        Transaction transactionToRestore = transactionDAO.get(transactionId);
+        TransactionDto transactionToRestore = transactionDAO.get(transactionId);
         if (!transactionToRestore.isCancelled()) {
             throw new IllegalStateException("Transaction is not canceled");
         }
-        UserDTO userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        Transaction restoredTransaction = SimpleTransactionImpl.builder().from(transactionToRestore)
-                .setCancelled(false)
-                .build();
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        TransactionDto restoredTransaction = transactionToRestore
+                .withCancelled(false);
         transactionDAO.update(restoredTransaction, userDTO.getId());
         return transactionDAO.get(transactionId);
     }

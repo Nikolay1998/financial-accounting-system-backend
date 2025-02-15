@@ -1,10 +1,10 @@
 package kraynov.n.financialaccountingsystembackend.security;
 
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
+import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
 
 public interface ContextHolderFacade {
 
-    UserDTO getAuthenticatedUser();
+    UserDetailsDto getAuthenticatedUser();
 
-    UserDTO getAuthenticatedUserOrThrowException();
+    UserDetailsDto getAuthenticatedUserOrThrowException();
 }
