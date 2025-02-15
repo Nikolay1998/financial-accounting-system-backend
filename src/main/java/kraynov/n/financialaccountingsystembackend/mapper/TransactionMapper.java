@@ -1,8 +1,10 @@
 package kraynov.n.financialaccountingsystembackend.mapper;
 
 import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.model.TransactionExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
-import kraynov.n.financialaccountingsystembackend.to.TransactionVO;
+import kraynov.n.financialaccountingsystembackend.to.TransactionRequestTO;
+import kraynov.n.financialaccountingsystembackend.to.TransactionResponseTO;
 
 public class TransactionMapper {
     private final CurrencyService currencyService;
@@ -11,8 +13,8 @@ public class TransactionMapper {
         this.currencyService = currencyService;
     }
 
-    public TransactionVO viewObjectFromEntity(TransactionDto transaction) {
-        return TransactionVO.builder()
+    public TransactionResponseTO responseFromDto(TransactionExtendedInfoDto transaction) {
+        return TransactionResponseTO.builder()
                 .id(transaction.getId())
                 .description(transaction.getDescription())
                 .senderNodeId(transaction.getSenderNodeId())
@@ -33,17 +35,19 @@ public class TransactionMapper {
                 .build();
     }
 
-    public TransactionDto entityFromViewObject(TransactionVO transactionVO) {
+    public TransactionDto dtoFromRequest(TransactionRequestTO transactionRequestTO) {
         return TransactionDto.builder()
-                .id(transactionVO.getId())
-                .description(transactionVO.getDescription())
-                .senderNodeId(transactionVO.getSenderNodeId())
-                .receiverNodeId(transactionVO.getReceiverNodeId())
-                .senderAmount(transactionVO.getSenderAmount())
-                .receiverAmount(transactionVO.getReceiverAmount())
-                .date(transactionVO.getDate())
+                .id(transactionRequestTO.getId())
+                .description(transactionRequestTO.getDescription())
+                .senderNodeId(transactionRequestTO.getSenderNodeId())
+                .receiverNodeId(transactionRequestTO.getReceiverNodeId())
+                .senderAmount(transactionRequestTO.getSenderAmount())
+                .receiverAmount(transactionRequestTO.getReceiverAmount())
+                .date(transactionRequestTO.getDate())
                 .isCancelled(false)
                 .userId(null)
                 .build();
     }
+
+
 }

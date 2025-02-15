@@ -1,9 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.service.config;
 
-import kraynov.n.financialaccountingsystembackend.dao.CurrencyDAO;
-import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
-import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
-import kraynov.n.financialaccountingsystembackend.dao.UserDAO;
+import kraynov.n.financialaccountingsystembackend.dao.*;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.*;
 import kraynov.n.financialaccountingsystembackend.service.impl.*;
@@ -18,9 +15,10 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public TransactionService simpleTransactionService(TransactionDAO transactionDAO,
-                                                       ContextHolderFacade contextHolderFacade) {
-        return new TransactionSimpleService(transactionDAO, contextHolderFacade);
+    public TransactionService simpleTransactionService(TransactionExtendedInfoDAO transactionExtendedInfoDAO,
+                                                       ContextHolderFacade contextHolderFacade,
+                                                       TransactionDAO transactionDAO) {
+        return new TransactionSimpleService(transactionExtendedInfoDAO, transactionDAO, contextHolderFacade);
     }
 
     @Bean

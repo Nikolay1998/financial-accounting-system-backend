@@ -3,6 +3,7 @@ package kraynov.n.financialaccountingsystembackend.service.impl;
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.model.NodeDto;
+import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
 import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
@@ -27,7 +28,7 @@ public class NodeSimpleService implements NodeService {
     }
 
     @Override
-    public NodeDto add(NodeDto node) {
+    public NodeExtendedInfoDto add(NodeDto node) {
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
 
         validate(node);
@@ -38,7 +39,9 @@ public class NodeSimpleService implements NodeService {
                 .isOverdraft(node.isExternal() ? Boolean.TRUE : node.isOverdraft())
                 .build();
         LOGGER.debug("Start adding node {}", node);
-        return nodeDAO.save(nodeWithId);
+        nodeDAO.save(nodeWithId);
+
+        return nodeDAO.getExtendedInfoById(nodeWithId.getId());
     }
 
     private void validate(NodeDto node) {
@@ -51,22 +54,24 @@ public class NodeSimpleService implements NodeService {
     }
 
     @Override
-    public NodeDto edit(NodeDto node) {
+    public NodeExtendedInfoDto edit(NodeDto node) {
         LOGGER.debug("Start editing node with id={}", node.getId());
 
         validate(node);
 
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        return nodeDAO.update(node, userDTO.getId());
+        nodeDAO.update(node, userDTO.getId());
+
+        return nodeDAO.getExtendedInfoById(node.getId());
     }
 
     @Override
-    public NodeDto get(String id) {
-        return nodeDAO.getById(id);
+    public NodeExtendedInfoDto get(String id) {
+        return nodeDAO.getExtendedInfoById(id);
     }
 
     @Override
-    public List<NodeDto> getAll() {
+    public List<NodeExtendedInfoDto> getAll() {
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         LOGGER.debug("Start loading all nodes for user with id {}", userDTO.getId());
         return nodeDAO.getAll(userDTO.getId());
@@ -74,7 +79,7 @@ public class NodeSimpleService implements NodeService {
 
     @Transactional
     @Override
-    public NodeDto archive(String id) {
+    public NodeExtendedInfoDto archive(String id) {
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         NodeDto nodeToArchive = nodeDAO.getById(id);
         if (nodeToArchive.isArchived()) {
@@ -84,12 +89,13 @@ public class NodeSimpleService implements NodeService {
         NodeDto archivedNode = nodeToArchive
                 .withArchived(Boolean.TRUE);
 
-        return nodeDAO.update(archivedNode, userDTO.getId());
+        nodeDAO.update(archivedNode, userDTO.getId());
+        return nodeDAO.getExtendedInfoById(id);
     }
 
     @Transactional
     @Override
-    public NodeDto restore(String id) {
+    public NodeExtendedInfoDto restore(String id) {
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         NodeDto nodeToRestore = nodeDAO.getById(id);
         if (!nodeToRestore.isArchived()) {
@@ -99,7 +105,8 @@ public class NodeSimpleService implements NodeService {
         NodeDto restoredNode = nodeToRestore
                 .withArchived(Boolean.FALSE);
 
-        return nodeDAO.update(restoredNode, userDTO.getId());
+        nodeDAO.update(restoredNode, userDTO.getId());
+        return nodeDAO.getExtendedInfoById(id);
     }
 
     @Override

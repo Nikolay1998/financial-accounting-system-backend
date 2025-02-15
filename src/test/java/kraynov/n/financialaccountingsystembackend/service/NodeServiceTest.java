@@ -46,7 +46,8 @@ public class NodeServiceTest {
     @Test
     public void calculateTransactionAffectionTest() throws InsufficientFundsException {
 
-        TransactionDto transaction = testHelper.createTransaction(firstNode.getId(), secondNode.getId(), new BigDecimal(100));
+        TransactionDto transaction = testHelper
+                .createTransactionDto(firstNode.getId(), secondNode.getId(), new BigDecimal(100));
         nodeService.calculateTransactionAffection(transaction);
 
         NodeDto senderNode = nodeDAO.getById(this.firstNode.getId());
@@ -57,14 +58,16 @@ public class NodeServiceTest {
 
     @Test(expected = InsufficientFundsException.class)
     public void calculateTransactionAffectionInsufficientFundsTest() throws InsufficientFundsException {
-        TransactionDto transaction = testHelper.createTransaction(firstNode.getId(), secondNode.getId(), new BigDecimal(101));
+        TransactionDto transaction = testHelper
+                .createTransactionDto(firstNode.getId(), secondNode.getId(), new BigDecimal(101));
 
         nodeService.calculateTransactionAffection(transaction);
     }
 
     @Test
     public void cancelTransactionAffectionTest() throws InsufficientFundsException {
-        TransactionDto transaction = testHelper.createTransaction(firstNode.getId(), secondNode.getId(), new BigDecimal(100));
+        TransactionDto transaction = testHelper
+                .createTransactionDto(firstNode.getId(), secondNode.getId(), new BigDecimal(100));
 
         nodeService.calculateTransactionAffection(transaction);
 

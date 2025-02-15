@@ -3,6 +3,7 @@ package kraynov.n.financialaccountingsystembackend.service.impl;
 import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.model.TransactionExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.service.FasFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
@@ -19,22 +20,22 @@ public class FasSimpleFacade implements FasFacade {
 
     @Transactional
     @Override
-    public TransactionDto addTransaction(TransactionDto transaction) throws InsufficientFundsException {
+    public TransactionExtendedInfoDto addTransaction(TransactionDto transaction) throws InsufficientFundsException {
         nodeService.calculateTransactionAffection(transaction);
         return transactionService.add(transaction);
     }
 
     @Transactional
     @Override
-    public TransactionDto cancelTransaction(String transactionId) throws InsufficientFundsException, AlreadyCanceledException {
+    public TransactionExtendedInfoDto cancelTransaction(String transactionId) throws InsufficientFundsException, AlreadyCanceledException {
         TransactionDto transaction = transactionService.cancel(transactionId);
         nodeService.cancelTransactionAffection(transaction);
-        return transaction;
+        return transactionService.getExtendedInfo(transactionId);
     }
 
     @Transactional
     @Override
-    public TransactionDto editTransaction(TransactionDto newTransaction) throws InsufficientFundsException {
+    public TransactionExtendedInfoDto editTransaction(TransactionDto newTransaction) throws InsufficientFundsException {
         TransactionDto old = transactionService.get(newTransaction.getId());
         nodeService.cancelTransactionAffection(old);
         nodeService.calculateTransactionAffection(newTransaction);
@@ -43,9 +44,9 @@ public class FasSimpleFacade implements FasFacade {
 
     @Transactional
     @Override
-    public TransactionDto restoreTransaction(String transactionId) throws InsufficientFundsException {
+    public TransactionExtendedInfoDto restoreTransaction(String transactionId) throws InsufficientFundsException {
         TransactionDto transaction = transactionService.restore(transactionId);
         nodeService.calculateTransactionAffection(transaction);
-        return transaction;
+        return transactionService.getExtendedInfo(transactionId);
     }
 }

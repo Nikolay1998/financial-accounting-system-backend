@@ -1,26 +1,32 @@
-package kraynov.n.financialaccountingsystembackend.model;
+package kraynov.n.financialaccountingsystembackend.to;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.With;
 
 import java.math.BigDecimal;
 
 @Data
-@Builder(toBuilder = true)
-@With
-public class NodeDto {
+public class NodeRequestTO {
+    @JsonProperty("id")
     private final String id;
+    @JsonProperty("name")
     private final String name;
+    @JsonProperty("description")
     private final String description;
+    @JsonProperty("currencyId")
     private final String currencyId;
+    @JsonProperty("amount")
     private final BigDecimal amount;
+    @JsonProperty("userId")
     private final String userId;
+    @JsonProperty("external")
     private final boolean isExternal;
+    @JsonProperty("overdraft")
     private final boolean isOverdraft;
+    @JsonProperty("archived")
     private final boolean isArchived;
 
-    private NodeDto(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean isExternal, boolean isOverdraft, boolean isArchived) {
+    private NodeRequestTO(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean isExternal, boolean isOverdraft, boolean isArchived) {
         this.id = id;
         this.name = name;
         this.description = description;

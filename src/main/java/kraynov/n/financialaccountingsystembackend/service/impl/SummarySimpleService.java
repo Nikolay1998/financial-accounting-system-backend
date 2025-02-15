@@ -1,7 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
-import kraynov.n.financialaccountingsystembackend.model.NodeDto;
+import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
@@ -36,14 +36,14 @@ public class SummarySimpleService implements SummaryService {
             throw new IllegalStateException();
         }
         LOGGER.debug("Start computing sum for user with id = {}", userDTO.getId());
-        List<NodeDto> nodes = nodeDAO.getAll(userDTO.getId()).stream().filter(n -> !n.isExternal()).toList();
+        List<NodeExtendedInfoDto> nodes = nodeDAO.getAll(userDTO.getId()).stream().filter(n -> !n.isExternal()).toList();
         Map<String, BigDecimal> sum = new HashMap<>();
-        for (NodeDto node : nodes) {
+        for (NodeExtendedInfoDto node : nodes) {
             sum.merge(node.getCurrencyId(), node.getAmount(), BigDecimal::add);
         }
         Map<String, BigDecimal> sumWithCurencySymbol = sum.entrySet().stream().collect(Collectors.toMap(
                 e -> currencyService.getById(e.getKey()).getSymbol(),
-                e -> e.getValue()));
+                Map.Entry::getValue));
 
         LOGGER.debug("End computing sum for user with id = {}, sum = {}", userDTO.getId(), sumWithCurencySymbol);
         return sumWithCurencySymbol;

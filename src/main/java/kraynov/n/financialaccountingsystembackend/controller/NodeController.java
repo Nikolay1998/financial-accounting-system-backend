@@ -2,8 +2,10 @@ package kraynov.n.financialaccountingsystembackend.controller;
 
 import kraynov.n.financialaccountingsystembackend.mapper.NodeMapper;
 import kraynov.n.financialaccountingsystembackend.model.NodeDto;
+import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
-import kraynov.n.financialaccountingsystembackend.to.NodeVO;
+import kraynov.n.financialaccountingsystembackend.to.NodeRequestTO;
+import kraynov.n.financialaccountingsystembackend.to.NodeResponseTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -29,10 +31,10 @@ public class NodeController {
 
     @CrossOrigin
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<NodeVO> getAll() {
-        List<NodeVO> nodes = nodeService.getAll()
+    public List<NodeResponseTO> getAll() {
+        List<NodeResponseTO> nodes = nodeService.getAll()
                 .stream()
-                .map(nodeMapper::viewObjectFromEntity)
+                .map(nodeMapper::responseFromDto)
                 .sorted(NodeMapper::compareNodeVO)
                 .toList();
         logger.debug("find {} nodes by user", nodes.size());
@@ -42,35 +44,35 @@ public class NodeController {
     @CrossOrigin
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public NodeVO add(@RequestBody NodeVO node) {
-        return nodeMapper.viewObjectFromEntity(
-                nodeService.add(nodeMapper.entityFromViewObject(node)));
+    public NodeResponseTO add(@RequestBody NodeRequestTO node) {
+        return nodeMapper.responseFromDto(
+                nodeService.add(nodeMapper.dtoFromRequest(node)));
     }
 
     @CrossOrigin
     @PutMapping(path = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public NodeVO editNode(@RequestBody NodeVO nodeVo) {
-        NodeDto node = nodeMapper.entityFromViewObject(nodeVo);
+    public NodeResponseTO editNode(@RequestBody NodeRequestTO nodeRequestTO) {
+        NodeDto node = nodeMapper.dtoFromRequest(nodeRequestTO);
         logger.debug("Converted node for editing: {}", node);
-        NodeDto edited = nodeService.edit(node);
+        NodeExtendedInfoDto edited = nodeService.edit(node);
         if (edited == null) {
             throw new IllegalStateException("Can't find node for edit with id=" + node.getId());
         }
-        return nodeMapper.viewObjectFromEntity(edited);
+        return nodeMapper.responseFromDto(edited);
     }
 
     @CrossOrigin
     @PutMapping(path = "/archive", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public NodeVO archiveNode(@RequestParam String nodeId) {
-        NodeDto archived = nodeService.archive(nodeId);
-        return nodeMapper.viewObjectFromEntity(archived);
+    public NodeResponseTO archiveNode(@RequestParam String nodeId) {
+        NodeExtendedInfoDto archived = nodeService.archive(nodeId);
+        return nodeMapper.responseFromDto(archived);
     }
 
     @CrossOrigin
     @PutMapping(path = "/restore", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public NodeVO restoreNode(@RequestParam String nodeId) {
-        NodeDto restored = nodeService.restore(nodeId);
-        return nodeMapper.viewObjectFromEntity(restored);
+    public NodeResponseTO restoreNode(@RequestParam String nodeId) {
+        NodeExtendedInfoDto restored = nodeService.restore(nodeId);
+        return nodeMapper.responseFromDto(restored);
     }
 
 }

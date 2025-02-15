@@ -20,14 +20,8 @@ public class TransactionDto {
     private final LocalDate date;
     private final boolean isCancelled;
     private final String userId;
-    private final boolean isFromExternal;
-    private final boolean isToExternal;
-    private final String senderCurrencyId;
-    private final String receiverCurrencyId;
-    private final String senderName;
-    private final String receiverName;
 
-    private TransactionDto(String id, String description, String senderNodeId, String receiverNodeId, BigDecimal senderAmount, BigDecimal receiverAmount, LocalDate date, boolean isCancelled, String userId, boolean isFromExternal, boolean isToExternal, String senderCurrencyId, String receiverCurrencyId, String senderName, String receiverName) {
+    private TransactionDto(String id, String description, String senderNodeId, String receiverNodeId, BigDecimal senderAmount, BigDecimal receiverAmount, LocalDate date, boolean isCancelled, String userId) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;
@@ -37,11 +31,5 @@ public class TransactionDto {
         this.date = date;
         this.isCancelled = isCancelled;
         this.userId = userId;
-        this.isFromExternal = isFromExternal;
-        this.isToExternal = isToExternal;
-        this.senderCurrencyId = senderCurrencyId;
-        this.receiverCurrencyId = receiverCurrencyId;
-        this.senderName = senderName;
-        this.receiverName = receiverName;
     }
 }

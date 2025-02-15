@@ -2,6 +2,7 @@ package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
 import kraynov.n.financialaccountingsystembackend.model.NodeDto;
+import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -39,6 +40,14 @@ public class NodePostgresDAO implements NodeDAO {
     }
 
     @Override
+    public NodeExtendedInfoDto getExtendedInfoById(String nodeId) {
+        return namedJdbc.queryForObject(
+                "select * from node_with_last_transaction_date where id = :nodeId",
+                Map.of("nodeId", nodeId),
+                this::mapRowToExtendedNodeInfo);
+    }
+
+    @Override
     public NodeDto update(NodeDto node, String userId) {
         int updated = namedJdbc.update(
                 """
@@ -70,21 +79,21 @@ public class NodePostgresDAO implements NodeDAO {
     @Override
     public NodeDto getById(String nodeId) {
         return namedJdbc.queryForObject(
-                "select * from node_with_last_transaction_date where id = :nodeId",
+                "select * from node where id = :nodeId",
                 Map.of("nodeId", nodeId),
                 this::mapRowToNode);
     }
 
     @Override
-    public List<NodeDto> getAll(String userId) {
+    public List<NodeExtendedInfoDto> getAll(String userId) {
         return namedJdbc.query(
                 "select * from node_with_last_transaction_date where user_id = :userId",
                 Map.of("userId", userId),
-                this::mapRowToNode);
+                this::mapRowToExtendedNodeInfo);
     }
 
-    private NodeDto mapRowToNode(ResultSet row, int rowNum) throws SQLException {
-        return NodeDto.builder()
+    private NodeExtendedInfoDto mapRowToExtendedNodeInfo(ResultSet row, int rowNum) throws SQLException {
+        return NodeExtendedInfoDto.builder()
                 .id(row.getString("id"))
                 .name(row.getString("name"))
                 .description(row.getString("description"))
@@ -100,4 +109,20 @@ public class NodePostgresDAO implements NodeDAO {
                 .isArchived(row.getBoolean("is_archived"))
                 .build();
     }
+
+    private NodeDto mapRowToNode(ResultSet row, int rowNum) throws SQLException {
+        return NodeDto.builder()
+                .id(row.getString("id"))
+                .name(row.getString("name"))
+                .description(row.getString("description"))
+                .currencyId(row.getString("currencyId"))
+                .amount(row.getBigDecimal("amount"))
+                .userId(row.getString("user_id"))
+                .isExternal(row.getBoolean("is_external"))
+                .isOverdraft(row.getBoolean("is_overdraft"))
+                .isArchived(row.getBoolean("is_archived"))
+                .build();
+    }
+
+
 }

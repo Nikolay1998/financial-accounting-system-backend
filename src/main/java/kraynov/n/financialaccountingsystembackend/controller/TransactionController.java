@@ -3,10 +3,11 @@ package kraynov.n.financialaccountingsystembackend.controller;
 import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.mapper.TransactionMapper;
-import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.model.TransactionExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.service.FasFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
-import kraynov.n.financialaccountingsystembackend.to.TransactionVO;
+import kraynov.n.financialaccountingsystembackend.to.TransactionRequestTO;
+import kraynov.n.financialaccountingsystembackend.to.TransactionResponseTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -30,53 +31,55 @@ public class TransactionController {
     @CrossOrigin
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public TransactionVO add(@RequestBody TransactionVO transaction) throws InsufficientFundsException {
-        return transactionMapper.viewObjectFromEntity(fasFacade.addTransaction(transactionMapper.entityFromViewObject(transaction)));
+    public TransactionResponseTO add(@RequestBody TransactionRequestTO transactionVO) throws InsufficientFundsException {
+        return transactionMapper.responseFromDto(
+                fasFacade.addTransaction(
+                        transactionMapper.dtoFromRequest(transactionVO)));
     }
 
     @CrossOrigin
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TransactionVO> getAll() {
-        return transactionService.getAll().stream().map(transactionMapper::viewObjectFromEntity).toList();
+    public List<TransactionResponseTO> getAll() {
+        return transactionService.getAll().stream().map(transactionMapper::responseFromDto).toList();
     }
 
     @CrossOrigin
     @GetMapping(path = "/getAllByNode", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TransactionVO> getAllRelatedToNode(String nodeId) {
-        return transactionService.getAllByNodeId(nodeId).stream().map(transactionMapper::viewObjectFromEntity).toList();
+    public List<TransactionResponseTO> getAllRelatedToNode(String nodeId) {
+        return transactionService.getAllByNodeId(nodeId).stream().map(transactionMapper::responseFromDto).toList();
     }
 
     @CrossOrigin
     @PutMapping(path = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public TransactionVO editTransaction(@RequestBody TransactionVO transactionVO) throws InsufficientFundsException {
-        TransactionDto editedTransaction = fasFacade
-                .editTransaction(transactionMapper.entityFromViewObject(transactionVO));
-        return transactionMapper.viewObjectFromEntity(editedTransaction);
+    public TransactionResponseTO editTransaction(@RequestBody TransactionRequestTO transactionVO) throws InsufficientFundsException {
+        TransactionExtendedInfoDto editedTransaction = fasFacade
+                .editTransaction(transactionMapper.dtoFromRequest(transactionVO));
+        return transactionMapper.responseFromDto(editedTransaction);
     }
 
     @GetMapping(path = "/getAllBySender", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TransactionDto> getAllBySenderId(int id) {
+    public List<TransactionExtendedInfoDto> getAllBySenderId(int id) {
         // toDO: replace with transactionVO
         return transactionService.getAllBySenderId(id);
     }
 
     @GetMapping(path = "/getAllByReceiver")
-    public List<TransactionDto> getAllByReceiverId(int id) {
+    public List<TransactionExtendedInfoDto> getAllByReceiverId(int id) {
         // toDO: replace with transactionVO
         return transactionService.getAllByReceiverId(id);
     }
 
     @CrossOrigin
     @DeleteMapping(path = "/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public TransactionVO cancelTransaction(@RequestParam String transactionId) throws InsufficientFundsException, AlreadyCanceledException {
-        TransactionDto cancelledTransaction = fasFacade.cancelTransaction(transactionId);
-        return transactionMapper.viewObjectFromEntity(cancelledTransaction);
+    public TransactionResponseTO cancelTransaction(@RequestParam String transactionId) throws InsufficientFundsException, AlreadyCanceledException {
+        TransactionExtendedInfoDto cancelledTransaction = fasFacade.cancelTransaction(transactionId);
+        return transactionMapper.responseFromDto(cancelledTransaction);
     }
 
     @CrossOrigin
     @PutMapping(path = "/restore")
-    public TransactionVO restore(@RequestParam String transactionId) throws InsufficientFundsException {
-        TransactionDto restoredTransaction = fasFacade.restoreTransaction(transactionId);
-        return transactionMapper.viewObjectFromEntity(restoredTransaction);
+    public TransactionResponseTO restore(@RequestParam String transactionId) throws InsufficientFundsException {
+        TransactionExtendedInfoDto restoredTransaction = fasFacade.restoreTransaction(transactionId);
+        return transactionMapper.responseFromDto(restoredTransaction);
     }
 }

@@ -2,10 +2,13 @@ package kraynov.n.financialaccountingsystembackend.utils;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
 import kraynov.n.financialaccountingsystembackend.model.NodeDto;
+import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class NodeMockDAO implements NodeDAO {
 
@@ -18,13 +21,24 @@ public class NodeMockDAO implements NodeDAO {
     }
 
     @Override
+    public NodeExtendedInfoDto getExtendedInfoById(String nodeId) {
+        return null;
+    }
+
+    @Override
     public NodeDto getById(String nodeId) {
         return nodes.get(nodeId);
     }
 
     @Override
-    public List<NodeDto> getAll(String userId) {
-        return (List<NodeDto>) nodes.values();
+    public List<NodeExtendedInfoDto> getAll(String userId) {
+        return nodes.values().stream().map(nodeDto -> NodeExtendedInfoDto
+                        .builder()
+                        .id(nodeDto.getId())
+                        .name(nodeDto.getName())
+                        .lastTransactionDate(LocalDate.of(2020, 1, 1))
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override

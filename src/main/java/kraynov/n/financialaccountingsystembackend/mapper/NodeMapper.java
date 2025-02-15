@@ -1,8 +1,10 @@
 package kraynov.n.financialaccountingsystembackend.mapper;
 
 import kraynov.n.financialaccountingsystembackend.model.NodeDto;
+import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
-import kraynov.n.financialaccountingsystembackend.to.NodeVO;
+import kraynov.n.financialaccountingsystembackend.to.NodeRequestTO;
+import kraynov.n.financialaccountingsystembackend.to.NodeResponseTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,7 +16,7 @@ public class NodeMapper {
         this.currencyService = currencyService;
     }
 
-    public static int compareNodeVO(NodeVO node1, NodeVO node2) {
+    public static int compareNodeVO(NodeResponseTO node1, NodeResponseTO node2) {
         if (node1.isExternal() != node2.isExternal()) {
             return Boolean.compare(node1.isExternal(), node2.isExternal());
         }
@@ -28,8 +30,8 @@ public class NodeMapper {
         return node2.getLastTransactionDate().compareTo(node1.getLastTransactionDate());
     }
 
-    public NodeVO viewObjectFromEntity(NodeDto node) {
-        return NodeVO.builder()
+    public NodeResponseTO responseFromDto(NodeExtendedInfoDto node) {
+        return NodeResponseTO.builder()
                 .id(node.getId())
                 .name(node.getName())
                 .description(node.getDescription())
@@ -44,17 +46,17 @@ public class NodeMapper {
                 .build();
     }
 
-    public NodeDto entityFromViewObject(NodeVO nodeVO) {
+    public NodeDto dtoFromRequest(NodeRequestTO nodeRequestTO) {
         return NodeDto.builder()
-                .id(nodeVO.getId())
-                .name(nodeVO.getName())
-                .description(nodeVO.getDescription())
-                .amount(nodeVO.getAmount())
-                .currencyId(nodeVO.getCurrencyId())
-                .isExternal(nodeVO.isExternal())
-                .userId(nodeVO.getUserId())
-                .isOverdraft(nodeVO.isOverdraft())
-                .isArchived(nodeVO.isArchived())
+                .id(nodeRequestTO.getId())
+                .name(nodeRequestTO.getName())
+                .description(nodeRequestTO.getDescription())
+                .amount(nodeRequestTO.getAmount())
+                .currencyId(nodeRequestTO.getCurrencyId())
+                .isExternal(nodeRequestTO.isExternal())
+                .userId(nodeRequestTO.getUserId())
+                .isOverdraft(nodeRequestTO.isOverdraft())
+                .isArchived(nodeRequestTO.isArchived())
                 .build();
     }
 }

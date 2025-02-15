@@ -2,28 +2,28 @@ package kraynov.n.financialaccountingsystembackend.service;
 
 import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
 import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.model.TransactionExtendedInfoDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TransactionService {
-    TransactionDto add(TransactionDto transaction);
+    TransactionExtendedInfoDto add(TransactionDto transaction);
 
     TransactionDto get(String id);
 
-    List<TransactionDto> getAll();
+    TransactionExtendedInfoDto getExtendedInfo(String id);
 
-    List<TransactionDto> getAllBySenderId(int id);
+    List<TransactionExtendedInfoDto> getAll();
 
-    List<TransactionDto> getAllByReceiverId(int id);
+    List<TransactionExtendedInfoDto> getAllBySenderId(int id);
 
-    List<TransactionDto> getAllByNodeId(String id);
+    List<TransactionExtendedInfoDto> getAllByReceiverId(int id);
 
-    Optional<TransactionDto> getLastTransactionByNodeId(String id);
+    List<TransactionExtendedInfoDto> getAllByNodeId(String id);
 
     TransactionDto cancel(String transactionId) throws AlreadyCanceledException;
 
-    TransactionDto edit(TransactionDto transaction);
+    TransactionExtendedInfoDto edit(TransactionDto transaction);
 
     TransactionDto restore(String transactionId);
 }

@@ -20,7 +20,7 @@ public class TestHelper {
         return testUser;
     }
 
-    public TransactionDto createTransaction(String senderNodeId, String receiverNodeId, BigDecimal amount) {
+    public TransactionDto createTransactionDto(String senderNodeId, String receiverNodeId, BigDecimal amount) {
         return TransactionDto.builder()
                 .id(String.valueOf(transactionCounter.incrementAndGet()))
                 .description("description")
