@@ -1,4 +1,4 @@
-package kraynov.n.financialaccountingsystembackend.model;
+package kraynov.n.financialaccountingsystembackend.dto;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

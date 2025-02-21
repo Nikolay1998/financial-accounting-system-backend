@@ -1,7 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.dao;
 
-import kraynov.n.financialaccountingsystembackend.model.NodeDto;
-import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 
 import java.util.List;
 

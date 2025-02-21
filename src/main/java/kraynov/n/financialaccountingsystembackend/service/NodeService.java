@@ -1,9 +1,9 @@
 package kraynov.n.financialaccountingsystembackend.service;
 
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
-import kraynov.n.financialaccountingsystembackend.model.NodeDto;
-import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
-import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
 
 import java.util.List;
 

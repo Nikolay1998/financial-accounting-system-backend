@@ -1,8 +1,8 @@
 package kraynov.n.financialaccountingsystembackend.utils;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
-import kraynov.n.financialaccountingsystembackend.model.NodeDto;
-import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 
 import java.time.LocalDate;
 import java.util.HashMap;

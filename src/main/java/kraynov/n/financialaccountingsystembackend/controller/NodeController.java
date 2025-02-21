@@ -1,8 +1,8 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.mapper.NodeMapper;
-import kraynov.n.financialaccountingsystembackend.model.NodeDto;
-import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import kraynov.n.financialaccountingsystembackend.to.NodeRequestTO;
 import kraynov.n.financialaccountingsystembackend.to.NodeResponseTO;

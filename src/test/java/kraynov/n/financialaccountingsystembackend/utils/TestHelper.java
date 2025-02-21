@@ -1,8 +1,8 @@
 package kraynov.n.financialaccountingsystembackend.utils;
 
-import kraynov.n.financialaccountingsystembackend.model.NodeDto;
-import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
-import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

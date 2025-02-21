@@ -1,6 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.dao;
 
-import kraynov.n.financialaccountingsystembackend.model.TransactionExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
 
 import java.util.List;
 

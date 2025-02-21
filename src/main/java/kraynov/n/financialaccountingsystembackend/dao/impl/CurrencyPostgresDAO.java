@@ -1,7 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.CurrencyDAO;
-import kraynov.n.financialaccountingsystembackend.model.CurrencyDTO;
+import kraynov.n.financialaccountingsystembackend.dto.CurrencyDto;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -21,18 +21,18 @@ public class CurrencyPostgresDAO implements CurrencyDAO {
     }
 
     @Override
-    public List<CurrencyDTO> getAll() {
+    public List<CurrencyDto> getAll() {
         return jdbcTemplate.query("select * from currency", this::mapRowToCurrency);
     }
 
     @Override
-    public CurrencyDTO getById(String id) {
+    public CurrencyDto getById(String id) {
         return namedJdbc.queryForObject("select * from currency where id = :id", Map.of("id", id),
                 this::mapRowToCurrency);
     }
 
-    private CurrencyDTO mapRowToCurrency(ResultSet row, int rowNum) throws SQLException {
-        return CurrencyDTO.builder()
+    private CurrencyDto mapRowToCurrency(ResultSet row, int rowNum) throws SQLException {
+        return CurrencyDto.builder()
                 .id(row.getString("id"))
                 .fullName(row.getString("full_name"))
                 .shortName(row.getString("short_name"))

@@ -1,7 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.UserDAO;
-import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.UserService;
 import org.slf4j.Logger;

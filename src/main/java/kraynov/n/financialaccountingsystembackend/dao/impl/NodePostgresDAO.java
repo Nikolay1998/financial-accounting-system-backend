@@ -1,8 +1,8 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
-import kraynov.n.financialaccountingsystembackend.model.NodeDto;
-import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 

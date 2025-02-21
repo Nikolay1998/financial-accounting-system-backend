@@ -1,6 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
-import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

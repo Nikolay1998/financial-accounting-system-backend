@@ -1,11 +1,11 @@
 package kraynov.n.financialaccountingsystembackend.dao;
 
+import kraynov.n.financialaccountingsystembackend.dto.CurrencyDto;
+
 import java.util.List;
 
-import kraynov.n.financialaccountingsystembackend.model.CurrencyDTO;
-
 public interface CurrencyDAO {
-    List<CurrencyDTO> getAll();
+    List<CurrencyDto> getAll();
 
-    CurrencyDTO getById(String id);
+    CurrencyDto getById(String id);
 }

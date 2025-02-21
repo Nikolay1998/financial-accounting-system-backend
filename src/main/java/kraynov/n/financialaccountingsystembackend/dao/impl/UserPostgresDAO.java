@@ -1,7 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.UserDAO;
-import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

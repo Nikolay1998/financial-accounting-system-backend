@@ -1,7 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.mapper;
 
-import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
-import kraynov.n.financialaccountingsystembackend.model.TransactionExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
 import kraynov.n.financialaccountingsystembackend.to.TransactionRequestTO;
 import kraynov.n.financialaccountingsystembackend.to.TransactionResponseTO;

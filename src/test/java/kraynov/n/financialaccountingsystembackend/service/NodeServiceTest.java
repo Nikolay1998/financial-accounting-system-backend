@@ -1,9 +1,9 @@
 package kraynov.n.financialaccountingsystembackend.service;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
-import kraynov.n.financialaccountingsystembackend.model.NodeDto;
-import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.impl.NodeSimpleService;
 import kraynov.n.financialaccountingsystembackend.utils.NodeMockDAO;

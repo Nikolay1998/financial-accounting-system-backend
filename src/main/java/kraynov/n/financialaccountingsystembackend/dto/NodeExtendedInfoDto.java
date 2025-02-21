@@ -1,4 +1,4 @@
-package kraynov.n.financialaccountingsystembackend.model;
+package kraynov.n.financialaccountingsystembackend.dto;
 
 import lombok.Builder;
 import lombok.Data;

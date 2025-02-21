@@ -1,14 +1,13 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
-import java.util.List;
-
+import kraynov.n.financialaccountingsystembackend.dto.CurrencyDto;
+import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kraynov.n.financialaccountingsystembackend.model.CurrencyDTO;
-import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/currency")
@@ -22,7 +21,7 @@ public class CurrencyController {
 
     @CrossOrigin
     @GetMapping("getAll")
-    public List<CurrencyDTO> getAll() {
+    public List<CurrencyDto> getAll() {
         return currencyService.getAll();
     }
 }

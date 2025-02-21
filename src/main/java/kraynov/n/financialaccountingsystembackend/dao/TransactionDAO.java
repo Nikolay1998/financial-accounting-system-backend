@@ -1,6 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.dao;
 
-import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 
 public interface TransactionDAO {
 

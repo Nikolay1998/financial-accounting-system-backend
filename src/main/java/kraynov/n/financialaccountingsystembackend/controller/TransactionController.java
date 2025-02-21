@@ -1,9 +1,9 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
+import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.mapper.TransactionMapper;
-import kraynov.n.financialaccountingsystembackend.model.TransactionExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.service.FasFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import kraynov.n.financialaccountingsystembackend.to.TransactionRequestTO;

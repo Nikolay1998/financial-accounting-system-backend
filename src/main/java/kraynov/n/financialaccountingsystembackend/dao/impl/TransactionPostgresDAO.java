@@ -1,7 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
-import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

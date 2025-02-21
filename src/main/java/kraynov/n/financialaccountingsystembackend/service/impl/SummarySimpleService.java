@@ -1,8 +1,8 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
-import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
-import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
 import kraynov.n.financialaccountingsystembackend.service.SummaryService;

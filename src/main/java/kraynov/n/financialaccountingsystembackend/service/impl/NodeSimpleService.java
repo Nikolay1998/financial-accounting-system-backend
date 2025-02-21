@@ -1,11 +1,11 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
-import kraynov.n.financialaccountingsystembackend.model.NodeDto;
-import kraynov.n.financialaccountingsystembackend.model.NodeExtendedInfoDto;
-import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
-import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import org.slf4j.Logger;

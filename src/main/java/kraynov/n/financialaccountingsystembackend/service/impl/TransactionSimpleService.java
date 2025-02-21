@@ -2,10 +2,10 @@ package kraynov.n.financialaccountingsystembackend.service.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
 import kraynov.n.financialaccountingsystembackend.dao.TransactionExtendedInfoDAO;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
-import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
-import kraynov.n.financialaccountingsystembackend.model.TransactionExtendedInfoDto;
-import kraynov.n.financialaccountingsystembackend.model.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import org.slf4j.Logger;

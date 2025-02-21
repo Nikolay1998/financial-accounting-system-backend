@@ -1,8 +1,8 @@
 package kraynov.n.financialaccountingsystembackend.service;
 
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
-import kraynov.n.financialaccountingsystembackend.model.TransactionDto;
-import kraynov.n.financialaccountingsystembackend.model.TransactionExtendedInfoDto;
 
 import java.util.List;
 

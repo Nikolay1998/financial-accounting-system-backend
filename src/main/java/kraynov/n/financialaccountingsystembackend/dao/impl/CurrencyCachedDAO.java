@@ -1,7 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.CurrencyDAO;
-import kraynov.n.financialaccountingsystembackend.model.CurrencyDTO;
+import kraynov.n.financialaccountingsystembackend.dto.CurrencyDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,7 @@ public class CurrencyCachedDAO implements CurrencyDAO {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CurrencyDAO currencyDAO;
-    private final Map<String, CurrencyDTO> currencies = new HashMap<>();
+    private final Map<String, CurrencyDto> currencies = new HashMap<>();
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public CurrencyCachedDAO(CurrencyDAO currencyDAO) {
@@ -25,13 +25,13 @@ public class CurrencyCachedDAO implements CurrencyDAO {
     }
 
     @Override
-    public List<CurrencyDTO> getAll() {
+    public List<CurrencyDto> getAll() {
         lock.readLock().lock();
         if (currencies.isEmpty()) {
             lock.readLock().unlock();
             lock.writeLock().lock();
             if (currencies.isEmpty()) {
-                currencies.putAll(currencyDAO.getAll().stream().collect(Collectors.toMap(CurrencyDTO::getId, c -> c)));
+                currencies.putAll(currencyDAO.getAll().stream().collect(Collectors.toMap(CurrencyDto::getId, c -> c)));
             }
             lock.writeLock().unlock();
             return List.copyOf(currencies.values());
@@ -41,9 +41,9 @@ public class CurrencyCachedDAO implements CurrencyDAO {
     }
 
     @Override
-    public CurrencyDTO getById(String id) {
+    public CurrencyDto getById(String id) {
         getAll();
-        CurrencyDTO currencyDTO = currencies.get(id);
+        CurrencyDto currencyDTO = currencies.get(id);
         if (currencyDTO == null) {
             logger.warn("getById : {}, currencies : {}", id, currencies);
         }
