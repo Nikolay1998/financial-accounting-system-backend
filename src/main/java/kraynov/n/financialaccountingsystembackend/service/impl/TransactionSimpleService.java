@@ -5,7 +5,7 @@ import kraynov.n.financialaccountingsystembackend.dao.TransactionExtendedInfoDAO
 import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
-import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
+import kraynov.n.financialaccountingsystembackend.exception.InvalidOperationException;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import org.slf4j.Logger;
@@ -72,11 +72,13 @@ public class TransactionSimpleService implements TransactionService {
     }
 
     @Override
-    public TransactionDto cancel(String transactionId) throws AlreadyCanceledException {
+    public TransactionDto cancel(String transactionId) {
         LOGGER.debug("Start cancelling transaction {}", transactionId);
         TransactionDto transactionToCancel = transactionDAO.get(transactionId);
         if (transactionToCancel.isCancelled()) {
-            throw new AlreadyCanceledException("Transaction already canceled");
+            throw new InvalidOperationException(
+                    String.format("Transaction %s has been cancelled", transactionId),
+                    "transaction already canceled");
         }
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         TransactionDto canceledTransaction = transactionToCancel
@@ -98,7 +100,9 @@ public class TransactionSimpleService implements TransactionService {
 
         TransactionDto updated = transactionDAO.update(transaction, userDTO.getId());
         if (updated == null) {
-            throw new IllegalStateException("Can't find transaction for edit with id=" + transaction.getId());
+            throw new InvalidOperationException(
+                    String.format("Can't find transaction for edit with id = %s", transaction.getId()),
+                    "transaction " + transaction.getDescription() + " not found");
         }
 
         return transactionExtendedInfoDAO.get(transaction.getId());
@@ -109,7 +113,9 @@ public class TransactionSimpleService implements TransactionService {
         LOGGER.debug("Start restoring transaction {}", transactionId);
         TransactionDto transactionToRestore = transactionDAO.get(transactionId);
         if (!transactionToRestore.isCancelled()) {
-            throw new IllegalStateException("Transaction is not canceled");
+            throw new InvalidOperationException(
+                    String.format("transaction %s is not canceled", transactionToRestore.getId()),
+                    String.format("transaction %s is not canceled", transactionToRestore.getDescription()));
         }
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         TransactionDto restoredTransaction = transactionToRestore

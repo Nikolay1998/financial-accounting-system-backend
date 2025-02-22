@@ -2,6 +2,7 @@ package kraynov.n.financialaccountingsystembackend.controller;
 
 import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
 import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.exception.InvalidOperationException;
 import kraynov.n.financialaccountingsystembackend.mapper.NodeMapper;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import kraynov.n.financialaccountingsystembackend.to.NodeRequestTO;
@@ -56,7 +57,9 @@ public class NodeController {
         logger.debug("Converted node for editing: {}", node);
         NodeExtendedInfoDto edited = nodeService.edit(node);
         if (edited == null) {
-            throw new IllegalStateException("Can't find node for edit with id=" + node.getId());
+            throw new InvalidOperationException(
+                    String.format("Node with id '%s' not found", node.getId()),
+                    String.format("node with '%s' not found", node.getName()));
         }
         return nodeMapper.responseFromDto(edited);
     }

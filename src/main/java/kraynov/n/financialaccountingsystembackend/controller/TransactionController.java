@@ -1,8 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.controller;
 
 import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
-import kraynov.n.financialaccountingsystembackend.exception.AlreadyCanceledException;
-import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
 import kraynov.n.financialaccountingsystembackend.mapper.TransactionMapper;
 import kraynov.n.financialaccountingsystembackend.service.FasFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
@@ -31,7 +29,7 @@ public class TransactionController {
     @CrossOrigin
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public TransactionResponseTO add(@RequestBody TransactionRequestTO transactionVO) throws InsufficientFundsException {
+    public TransactionResponseTO add(@RequestBody TransactionRequestTO transactionVO) {
         return transactionMapper.responseFromDto(
                 fasFacade.addTransaction(
                         transactionMapper.dtoFromRequest(transactionVO)));
@@ -51,7 +49,7 @@ public class TransactionController {
 
     @CrossOrigin
     @PutMapping(path = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public TransactionResponseTO editTransaction(@RequestBody TransactionRequestTO transactionVO) throws InsufficientFundsException {
+    public TransactionResponseTO editTransaction(@RequestBody TransactionRequestTO transactionVO) {
         TransactionExtendedInfoDto editedTransaction = fasFacade
                 .editTransaction(transactionMapper.dtoFromRequest(transactionVO));
         return transactionMapper.responseFromDto(editedTransaction);
@@ -71,14 +69,14 @@ public class TransactionController {
 
     @CrossOrigin
     @DeleteMapping(path = "/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public TransactionResponseTO cancelTransaction(@RequestParam String transactionId) throws InsufficientFundsException, AlreadyCanceledException {
+    public TransactionResponseTO cancelTransaction(@RequestParam String transactionId) {
         TransactionExtendedInfoDto cancelledTransaction = fasFacade.cancelTransaction(transactionId);
         return transactionMapper.responseFromDto(cancelledTransaction);
     }
 
     @CrossOrigin
     @PutMapping(path = "/restore")
-    public TransactionResponseTO restore(@RequestParam String transactionId) throws InsufficientFundsException {
+    public TransactionResponseTO restore(@RequestParam String transactionId) {
         TransactionExtendedInfoDto restoredTransaction = fasFacade.restoreTransaction(transactionId);
         return transactionMapper.responseFromDto(restoredTransaction);
     }

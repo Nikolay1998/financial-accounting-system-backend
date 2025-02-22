@@ -31,10 +31,7 @@ public class SummarySimpleService implements SummaryService {
 
     @Override
     public Map<String, BigDecimal> getSum() {
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUser();
-        if (userDTO == null) {
-            throw new IllegalStateException();
-        }
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         LOGGER.debug("Start computing sum for user with id = {}", userDTO.getId());
         List<NodeExtendedInfoDto> nodes = nodeDAO.getAll(userDTO.getId()).stream().filter(n -> !n.isExternal()).toList();
         Map<String, BigDecimal> sum = new HashMap<>();

@@ -5,7 +5,9 @@ import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
 import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
+import kraynov.n.financialaccountingsystembackend.exception.ForbiddenOperationException;
 import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
+import kraynov.n.financialaccountingsystembackend.exception.InvalidOperationException;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import org.slf4j.Logger;
@@ -49,7 +51,9 @@ public class NodeSimpleService implements NodeService {
             LOGGER.warn("External node {} is not overdraft", node);
         }
         if (!node.isOverdraft() && !node.isExternal() && node.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Node should be overdraft to have negative balance"); //todo
+            throw new InvalidOperationException(
+                    String.format("Node %s is not overdraft and have negative balance", node.getId()),
+                    "node should be overdraft to have negative balance");
         }
     }
 
@@ -83,7 +87,9 @@ public class NodeSimpleService implements NodeService {
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         NodeDto nodeToArchive = nodeDAO.getById(id);
         if (nodeToArchive.isArchived()) {
-            throw new IllegalArgumentException("Node " + nodeToArchive.getName() + " is already archived");
+            throw new InvalidOperationException(
+                    String.format("Node %s is already archived", nodeToArchive.getId()),
+                    String.format("node %s is already archived", nodeToArchive.getName()));
         }
 
         NodeDto archivedNode = nodeToArchive
@@ -99,7 +105,9 @@ public class NodeSimpleService implements NodeService {
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         NodeDto nodeToRestore = nodeDAO.getById(id);
         if (!nodeToRestore.isArchived()) {
-            throw new IllegalArgumentException("Node " + nodeToRestore.getName() + " is not archived");
+            throw new InvalidOperationException(
+                    String.format("Node %s is not archived", nodeToRestore.getId()),
+                    String.format("node %s is not archived", nodeToRestore.getName()));
         }
 
         NodeDto restoredNode = nodeToRestore
@@ -110,7 +118,7 @@ public class NodeSimpleService implements NodeService {
     }
 
     @Override
-    public void calculateTransactionAffection(TransactionDto transaction) throws InsufficientFundsException {
+    public void calculateTransactionAffection(TransactionDto transaction) {
         LOGGER.debug("Start calculating transaction {}", transaction);
         try {
             calculate(transaction);
@@ -122,7 +130,7 @@ public class NodeSimpleService implements NodeService {
     }
 
     @Override
-    public void cancelTransactionAffection(TransactionDto transaction) throws InsufficientFundsException {
+    public void cancelTransactionAffection(TransactionDto transaction) {
         TransactionDto reversedTransaction = transaction
                 .toBuilder()
                 .senderAmount(transaction.getSenderAmount().negate())
@@ -137,15 +145,14 @@ public class NodeSimpleService implements NodeService {
         }
     }
 
-    private void calculate(TransactionDto transaction) throws InsufficientFundsException {
+    private void calculate(TransactionDto transaction) {
         NodeDto senderNode = nodeDAO.getById(transaction.getSenderNodeId());
         NodeDto receiverNode = nodeDAO.getById(transaction.getReceiverNodeId());
 
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
         if (!senderNode.getUserId().equals(userDTO.getId()) ||
                 !receiverNode.getUserId().equals(userDTO.getId())) {
-            LOGGER.warn("Requested transaction from another user node");
-            throw new IllegalArgumentException("Requested transaction from another user node");
+            throw new ForbiddenOperationException("Requested transaction from another user node");
         }
 
         NodeDto newSenderNode = senderNode
