@@ -1,12 +1,12 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.UserDAO;
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
+import kraynov.n.financialaccountingsystembackend.exception.UsernameAlreadyInUseException;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.BadCredentialsException;
 
 public class UserSimpleService implements UserService {
     private final static Logger LOGGER = LoggerFactory.getLogger(UserService.class);
@@ -20,22 +20,21 @@ public class UserSimpleService implements UserService {
     }
 
     @Override
-    public UserDTO add(UserDTO userDTO) {
+    public UserDetailsDto add(UserDetailsDto userDTO) {
         LOGGER.debug("Start adding user {}", userDTO);
         if (getByName(userDTO.getUsername()) != null) {
-            LOGGER.warn("Provided username {} already in use", userDTO.getUsername());
-            throw new BadCredentialsException("Provided username already in use");
+            throw new UsernameAlreadyInUseException(String.format("Username %s already in use", userDTO.getUsername()));
         }
         return userDAO.save(userDTO);
     }
 
     @Override
-    public UserDTO getByName(String username) {
+    public UserDetailsDto getByName(String username) {
         return userDAO.getByName(username);
     }
 
     @Override
-    public UserDTO getAuthenticatedUser() {
+    public UserDetailsDto getAuthenticatedUser() {
         return contextHolderFacade.getAuthenticatedUser();
     }
 }

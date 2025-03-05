@@ -1,25 +1,25 @@
 package kraynov.n.financialaccountingsystembackend.service;
 
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
+
 import java.util.List;
 
-import kraynov.n.financialaccountingsystembackend.exception.InsufficientFundsException;
-import kraynov.n.financialaccountingsystembackend.model.Node;
-import kraynov.n.financialaccountingsystembackend.model.Transaction;
-
 public interface NodeService {
-    Node add(Node node);
+    NodeExtendedInfoDto add(NodeDto node);
 
-    Node edit(Node node);
+    NodeExtendedInfoDto edit(NodeDto node);
 
-    Node get(String id);
+    NodeExtendedInfoDto get(String id);
 
-    List<Node> getAll();
+    List<NodeExtendedInfoDto> getAll();
 
-    Node archive(String id);
+    NodeExtendedInfoDto archive(String id);
 
-    Node restore(String id);
+    NodeExtendedInfoDto restore(String id);
 
-    void calculateTransactionAffection(Transaction transaction) throws InsufficientFundsException;
+    void calculateTransactionAffection(TransactionDto transaction);
 
-    void cancelTransactionAffection(Transaction transaction) throws InsufficientFundsException;
+    void cancelTransactionAffection(TransactionDto transaction);
 }

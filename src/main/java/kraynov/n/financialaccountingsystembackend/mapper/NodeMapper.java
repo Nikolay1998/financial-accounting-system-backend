@@ -1,9 +1,10 @@
 package kraynov.n.financialaccountingsystembackend.mapper;
 
-import kraynov.n.financialaccountingsystembackend.model.Node;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
-import kraynov.n.financialaccountingsystembackend.to.NodeVO;
+import kraynov.n.financialaccountingsystembackend.to.NodeRequestTO;
+import kraynov.n.financialaccountingsystembackend.to.NodeResponseTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,25 +16,9 @@ public class NodeMapper {
         this.currencyService = currencyService;
     }
 
-    public NodeVO viewObjectFromEntity(Node node) {
-        return NodeVO.builder()
-                .setId(node.getId())
-                .setName(node.getName())
-                .setDescription(node.getDescription())
-                .setCurrencySymbol(currencyService.getById(node.getCurrencyId()).getSymbol())
-                .setCurrencyId(node.getCurrencyId())
-                .setAmount(node.getAmount())
-                .setUserId(node.getUserId())
-                .setExternal(node.isExternal())
-                .setLastTransactionDate(node.getLastTransactionDate() == null ? LocalDate.MIN : node.getLastTransactionDate())
-                .setOverdraft(node.isOverdraft())
-                .setArchived(node.isArchived())
-                .build();
-    }
-
-    public static int compareNodeVO(NodeVO node1, NodeVO node2) {
-        if (node1.getExternal() != node2.getExternal()) {
-            return Boolean.compare(node1.getExternal(), node2.getExternal());
+    public static int compareNodeVO(NodeResponseTO node1, NodeResponseTO node2) {
+        if (node1.isExternal() != node2.isExternal()) {
+            return Boolean.compare(node1.isExternal(), node2.isExternal());
         }
 
         int nodeOneBancrupt = node1.getAmount().compareTo(BigDecimal.ZERO);
@@ -45,17 +30,33 @@ public class NodeMapper {
         return node2.getLastTransactionDate().compareTo(node1.getLastTransactionDate());
     }
 
-    public Node entityFromViewObject(NodeVO nodeVO) {
-        return new SimpleNodeImpl.Builder()
-                .setId(nodeVO.getId())
-                .setName(nodeVO.getName())
-                .setDescription(nodeVO.getDescription())
-                .setAmount(nodeVO.getAmount())
-                .setCurrencyId(nodeVO.getCurrencyId())
-                .setExternal(nodeVO.getExternal())
-                .setUserId(nodeVO.getUserId())
-                .setOverdraft(nodeVO.getOverdraft())
-                .setArchived(nodeVO.getArchived())
+    public NodeResponseTO responseFromDto(NodeExtendedInfoDto node) {
+        return NodeResponseTO.builder()
+                .id(node.getId())
+                .name(node.getName())
+                .description(node.getDescription())
+                .currencySymbol(currencyService.getById(node.getCurrencyId()).getSymbol())
+                .currencyId(node.getCurrencyId())
+                .amount(node.getAmount())
+                .userId(node.getUserId())
+                .isExternal(node.isExternal())
+                .lastTransactionDate(node.getLastTransactionDate() == null ? LocalDate.MIN : node.getLastTransactionDate())
+                .isOverdraft(node.isOverdraft())
+                .isArchived(node.isArchived())
+                .build();
+    }
+
+    public NodeDto dtoFromRequest(NodeRequestTO nodeRequestTO) {
+        return NodeDto.builder()
+                .id(nodeRequestTO.getId())
+                .name(nodeRequestTO.getName())
+                .description(nodeRequestTO.getDescription())
+                .amount(nodeRequestTO.getAmount())
+                .currencyId(nodeRequestTO.getCurrencyId())
+                .isExternal(nodeRequestTO.isExternal())
+                .userId(nodeRequestTO.getUserId())
+                .isOverdraft(nodeRequestTO.isOverdraft())
+                .isArchived(nodeRequestTO.isArchived())
                 .build();
     }
 }

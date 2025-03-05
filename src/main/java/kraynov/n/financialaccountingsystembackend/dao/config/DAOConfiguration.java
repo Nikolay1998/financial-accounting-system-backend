@@ -1,9 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.dao.config;
 
-import kraynov.n.financialaccountingsystembackend.dao.CurrencyDAO;
-import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
-import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
-import kraynov.n.financialaccountingsystembackend.dao.UserDAO;
+import kraynov.n.financialaccountingsystembackend.dao.*;
 import kraynov.n.financialaccountingsystembackend.dao.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +16,12 @@ public class DAOConfiguration {
     }
 
     @Bean
-    public TransactionDAO transactionPostgresDAO(NamedParameterJdbcTemplate namedJdbc) {
+    public TransactionExtendedInfoDAO transactionPostgresDAO(NamedParameterJdbcTemplate namedJdbc) {
+        return new TransactionPostgresExtendedInfoDAO(namedJdbc);
+    }
+
+    @Bean
+    public TransactionDAO transactionFullInfoPostgresDAO(NamedParameterJdbcTemplate namedJdbc) {
         return new TransactionPostgresDAO(namedJdbc);
     }
 

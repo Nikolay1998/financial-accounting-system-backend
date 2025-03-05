@@ -1,18 +1,17 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
+import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-
-import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
-import kraynov.n.financialaccountingsystembackend.model.Node;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
 
 public class NodePostgresDAO implements NodeDAO {
     private final JdbcTemplate jdbcTemplate;
@@ -24,7 +23,7 @@ public class NodePostgresDAO implements NodeDAO {
     }
 
     @Override
-    public Node save(Node node) {
+    public NodeDto save(NodeDto node) {
         jdbcTemplate.update(
                 "insert into node values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 node.getId(),
@@ -36,12 +35,20 @@ public class NodePostgresDAO implements NodeDAO {
                 node.getUserId(),
                 node.isOverdraft(),
                 node.isArchived()
-                );
+        );
         return node;
     }
 
     @Override
-    public Node update(Node node, String userId) {
+    public NodeExtendedInfoDto getExtendedInfoById(String nodeId) {
+        return namedJdbc.queryForObject(
+                "select * from node_with_last_transaction_date where id = :nodeId",
+                Map.of("nodeId", nodeId),
+                this::mapRowToExtendedNodeInfo);
+    }
+
+    @Override
+    public NodeDto update(NodeDto node, String userId) {
         int updated = namedJdbc.update(
                 """
                         update node
@@ -70,36 +77,52 @@ public class NodePostgresDAO implements NodeDAO {
     }
 
     @Override
-    public Node getById(String nodeId) {
+    public NodeDto getById(String nodeId) {
         return namedJdbc.queryForObject(
-                "select * from node_with_last_transaction_date where id = :nodeId",
+                "select * from node where id = :nodeId",
                 Map.of("nodeId", nodeId),
                 this::mapRowToNode);
     }
 
     @Override
-    public List<Node> getAll(String userId) {
+    public List<NodeExtendedInfoDto> getAll(String userId) {
         return namedJdbc.query(
                 "select * from node_with_last_transaction_date where user_id = :userId",
                 Map.of("userId", userId),
-                this::mapRowToNode);
+                this::mapRowToExtendedNodeInfo);
     }
 
-    private Node mapRowToNode(ResultSet row, int rowNum) throws SQLException {
-        return new SimpleNodeImpl.Builder()
-                .setId(row.getString("id"))
-                .setName(row.getString("name"))
-                .setDescription(row.getString("description"))
-                .setCurrencyId(row.getString("currencyId"))
-                .setAmount(row.getBigDecimal("amount"))
-                .setUserId(row.getString("user_id"))
-                .setExternal(row.getBoolean("is_external"))
-                .setLastTransactionDate(
+    private NodeExtendedInfoDto mapRowToExtendedNodeInfo(ResultSet row, int rowNum) throws SQLException {
+        return NodeExtendedInfoDto.builder()
+                .id(row.getString("id"))
+                .name(row.getString("name"))
+                .description(row.getString("description"))
+                .currencyId(row.getString("currencyId"))
+                .amount(row.getBigDecimal("amount"))
+                .userId(row.getString("user_id"))
+                .isExternal(row.getBoolean("is_external"))
+                .lastTransactionDate(
                         row.getTimestamp("last_transaction_date") == null ? null :
                                 LocalDate.ofInstant(row.getTimestamp("last_transaction_date").toInstant(),
                                         TimeZone.getDefault().toZoneId()))
-                .setOverdraft(row.getBoolean("is_overdraft"))
-                .setArchived(row.getBoolean("is_archived"))
+                .isOverdraft(row.getBoolean("is_overdraft"))
+                .isArchived(row.getBoolean("is_archived"))
                 .build();
     }
+
+    private NodeDto mapRowToNode(ResultSet row, int rowNum) throws SQLException {
+        return NodeDto.builder()
+                .id(row.getString("id"))
+                .name(row.getString("name"))
+                .description(row.getString("description"))
+                .currencyId(row.getString("currencyId"))
+                .amount(row.getBigDecimal("amount"))
+                .userId(row.getString("user_id"))
+                .isExternal(row.getBoolean("is_external"))
+                .isOverdraft(row.getBoolean("is_overdraft"))
+                .isArchived(row.getBoolean("is_archived"))
+                .build();
+    }
+
+
 }

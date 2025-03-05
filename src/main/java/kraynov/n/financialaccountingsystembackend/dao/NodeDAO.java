@@ -1,15 +1,18 @@
 package kraynov.n.financialaccountingsystembackend.dao;
 
-import kraynov.n.financialaccountingsystembackend.model.Node;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 
 import java.util.List;
 
 public interface NodeDAO {
-    Node save(Node node);
+    NodeDto save(NodeDto node);
 
-    Node getById(String nodeId);
+    NodeExtendedInfoDto getExtendedInfoById(String nodeId);
 
-    List<Node> getAll(String userId);
+    NodeDto getById(String nodeId);
 
-    Node update(Node node, String userId);
+    List<NodeExtendedInfoDto> getAll(String userId);
+
+    NodeDto update(NodeDto node, String userId);
 }

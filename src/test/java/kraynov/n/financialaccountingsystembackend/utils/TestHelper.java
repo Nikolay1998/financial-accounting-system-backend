@@ -1,11 +1,8 @@
 package kraynov.n.financialaccountingsystembackend.utils;
 
-import kraynov.n.financialaccountingsystembackend.model.Node;
-import kraynov.n.financialaccountingsystembackend.model.Transaction;
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleNodeImpl;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleTransactionImpl;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleUserDTO;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,35 +14,35 @@ public class TestHelper {
 
     private final AtomicInteger nodeCounter = new AtomicInteger(0);
 
-    private final UserDTO testUser = new SimpleUserDTO("TEST_USER_ID", "name", "123");
+    private final UserDetailsDto testUser = new UserDetailsDto("TEST_USER_ID", "name", "123");
 
-    public UserDTO getTestUser() {
+    public UserDetailsDto getTestUser() {
         return testUser;
     }
 
-    public Transaction createTransaction(String senderNodeId, String receiverNodeId, BigDecimal amount) {
-        return SimpleTransactionImpl.builder()
-                .setId(String.valueOf(transactionCounter.incrementAndGet()))
-                .setDescription("description")
-                .setSenderNodeId(senderNodeId)
-                .setReceiverNodeId(receiverNodeId)
-                .setSenderAmount(amount)
-                .setReceiverAmount(amount)
-                .setTime(LocalDate.from(LocalDateTime.now()))
-                .setCancelled(false)
-                .setUserId(testUser.getId())
+    public TransactionDto createTransactionDto(String senderNodeId, String receiverNodeId, BigDecimal amount) {
+        return TransactionDto.builder()
+                .id(String.valueOf(transactionCounter.incrementAndGet()))
+                .description("description")
+                .senderNodeId(senderNodeId)
+                .receiverNodeId(receiverNodeId)
+                .senderAmount(amount)
+                .receiverAmount(amount)
+                .date(LocalDate.from(LocalDateTime.now()))
+                .isCancelled(false)
+                .userId(testUser.getId())
                 .build();
     }
 
-    public Node createNode(BigDecimal amount, boolean isExternal) {
-        return new SimpleNodeImpl.Builder()
-                .setId(String.valueOf(nodeCounter.incrementAndGet()))
-                .setAmount(amount)
-                .setCurrencyId("1")
-                .setDescription("Just node")
-                .setExternal(isExternal)
-                .setName("Node")
-                .setUserId(testUser.getId())
+    public NodeDto createNode(BigDecimal amount, boolean isExternal) {
+        return NodeDto.builder()
+                .id(String.valueOf(nodeCounter.incrementAndGet()))
+                .amount(amount)
+                .currencyId("1")
+                .description("Just node")
+                .isExternal(isExternal)
+                .name("Node")
+                .userId(testUser.getId())
                 .build();
     }
 }

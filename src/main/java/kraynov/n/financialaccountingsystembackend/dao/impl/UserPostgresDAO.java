@@ -1,8 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.UserDAO;
-import kraynov.n.financialaccountingsystembackend.model.UserDTO;
-import kraynov.n.financialaccountingsystembackend.model.impl.SimpleUserDTO;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -21,7 +20,7 @@ public class UserPostgresDAO implements UserDAO {
     }
 
     @Override
-    public UserDTO getByName(String username) {
+    public UserDetailsDto getByName(String username) {
         try {
             return namedJdbc.queryForObject("select * from fas_user where name = :username", Map.of("username", username), this::mapRowToUser);
         } catch (EmptyResultDataAccessException e) {
@@ -30,7 +29,7 @@ public class UserPostgresDAO implements UserDAO {
     }
 
     @Override
-    public UserDTO save(UserDTO userDTO) {
+    public UserDetailsDto save(UserDetailsDto userDTO) {
         jdbcTemplate.update("insert into fas_user values (?, ?, ?)",
                 userDTO.getId(),
                 userDTO.getUsername(),
@@ -38,7 +37,7 @@ public class UserPostgresDAO implements UserDAO {
         return userDTO;
     }
 
-    private UserDTO mapRowToUser(ResultSet row, int rowNum) throws SQLException {
-        return new SimpleUserDTO(row.getString("id"), row.getString("name"), row.getString("password"));
+    private UserDetailsDto mapRowToUser(ResultSet row, int rowNum) throws SQLException {
+        return new UserDetailsDto(row.getString("id"), row.getString("name"), row.getString("password"));
     }
 }

@@ -1,34 +1,48 @@
 package kraynov.n.financialaccountingsystembackend.utils;
 
 import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
-import kraynov.n.financialaccountingsystembackend.model.Node;
+import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
+import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class NodeMockDAO implements NodeDAO {
 
-    private final Map<String, Node> nodes = new HashMap<>();
+    private final Map<String, NodeDto> nodes = new HashMap<>();
 
     @Override
-    public Node save(Node node) {
+    public NodeDto save(NodeDto node) {
         nodes.put(node.getId(), node);
         return node;
     }
 
     @Override
-    public Node getById(String nodeId) {
+    public NodeExtendedInfoDto getExtendedInfoById(String nodeId) {
+        return null;
+    }
+
+    @Override
+    public NodeDto getById(String nodeId) {
         return nodes.get(nodeId);
     }
 
     @Override
-    public List<Node> getAll(String userId) {
-        return (List<Node>) nodes.values();
+    public List<NodeExtendedInfoDto> getAll(String userId) {
+        return nodes.values().stream().map(nodeDto -> NodeExtendedInfoDto
+                        .builder()
+                        .id(nodeDto.getId())
+                        .name(nodeDto.getName())
+                        .lastTransactionDate(LocalDate.of(2020, 1, 1))
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Node update(Node node, String userId) {
+    public NodeDto update(NodeDto node, String userId) {
         nodes.put(node.getId(), node);
         return node;
     }
