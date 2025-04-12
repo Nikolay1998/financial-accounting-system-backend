@@ -10,7 +10,9 @@ import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.BatchUpdateException;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,7 +60,7 @@ public class TransactionSimpleService implements TransactionService {
         LOGGER.debug("Start loading all transactions");
 
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        return transactionExtendedInfoDAO.getAll(userDTO.getId());
+        return transactionExtendedInfoDAO.getAllByUserId(userDTO.getId());
     }
 
     @Override
@@ -121,5 +123,26 @@ public class TransactionSimpleService implements TransactionService {
         TransactionDto restoredTransaction = transactionToRestore
                 .withCancelled(false);
         return transactionDAO.update(restoredTransaction, userDTO.getId());
+    }
+
+    @Transactional
+    @Override
+    public List<TransactionExtendedInfoDto> swapOrder(String firstTransactionId, String secondTransactionId) {
+        LOGGER.debug("Start swapping transactions {} and {}", firstTransactionId, secondTransactionId);
+        List<TransactionDto> pairToSwap = transactionDAO.getAllByIds(List.of(firstTransactionId, secondTransactionId));
+        if (!pairToSwap.get(0).getDate().isEqual(pairToSwap.get(1).getDate())) {
+            throw new InvalidOperationException(String.format("Transactions have different date: %s and %s",
+                    pairToSwap.get(0).getDate(), pairToSwap.get(1).getDate()),
+                    "Only transactions with same date are available to move");
+        }
+        TransactionDto firstUpdatedTransaction = pairToSwap.get(0).toBuilder().order(pairToSwap.get(1).getOrder()).build();
+        TransactionDto secondUpdatedTransaction = pairToSwap.get(1).toBuilder().order(pairToSwap.get(0).getOrder()).build();
+        try {
+            transactionDAO.batchUpdate(List.of(firstUpdatedTransaction, secondUpdatedTransaction));
+        } catch (BatchUpdateException e) {
+            throw new RuntimeException(e);
+        }
+
+        return transactionExtendedInfoDAO.getAllByIds(List.of(firstTransactionId, secondTransactionId));
     }
 }

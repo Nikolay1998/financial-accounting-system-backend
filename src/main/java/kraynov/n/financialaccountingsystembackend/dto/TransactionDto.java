@@ -20,8 +20,9 @@ public class TransactionDto {
     private final LocalDate date;
     private final boolean isCancelled;
     private final String userId;
+    private final Integer order;
 
-    private TransactionDto(String id, String description, String senderNodeId, String receiverNodeId, BigDecimal senderAmount, BigDecimal receiverAmount, LocalDate date, boolean isCancelled, String userId) {
+    private TransactionDto(String id, String description, String senderNodeId, String receiverNodeId, BigDecimal senderAmount, BigDecimal receiverAmount, LocalDate date, boolean isCancelled, String userId, Integer order) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;
@@ -31,5 +32,6 @@ public class TransactionDto {
         this.date = date;
         this.isCancelled = isCancelled;
         this.userId = userId;
+        this.order = order;
     }
 }

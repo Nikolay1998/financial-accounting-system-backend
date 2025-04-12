@@ -32,6 +32,7 @@ public class TransactionMapper {
                 .userId(transaction.getUserId())
                 .isFromExternal(transaction.isFromExternal())
                 .isToExternal(transaction.isToExternal())
+                .order(transaction.getOrder())
                 .build();
     }
 

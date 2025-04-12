@@ -8,11 +8,13 @@ public interface TransactionExtendedInfoDAO {
 
     TransactionExtendedInfoDto get(String transactionId);
 
-    List<TransactionExtendedInfoDto> getAll(String usedId);
+    List<TransactionExtendedInfoDto> getAllByUserId(String usedId);
 
     List<TransactionExtendedInfoDto> getAllBySenderId(int id);
 
     List<TransactionExtendedInfoDto> getAllByReceiverId(int id);
 
     List<TransactionExtendedInfoDto> getAllByNodeId(String id);
+
+    List<TransactionExtendedInfoDto> getAllByIds(List<String> ids);
 }

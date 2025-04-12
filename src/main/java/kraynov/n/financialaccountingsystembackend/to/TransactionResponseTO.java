@@ -44,8 +44,10 @@ public class TransactionResponseTO {
     private final boolean isFromExternal;
     @JsonProperty("toExternal")
     private final boolean isToExternal;
+    @JsonProperty("order")
+    private final int order;
 
-    private TransactionResponseTO(String id, String description, String senderNodeId, String receiverNodeId, String senderNodeName, String receiverNodeName, BigDecimal senderAmount, BigDecimal receiverAmount, String senderCurrencyId, String senderCurrencySymbol, String receiverCurrencyId, String receiverCurrencySymbol, LocalDate date, boolean isCancelled, String userId, boolean isFromExternal, boolean isToExternal) {
+    private TransactionResponseTO(String id, String description, String senderNodeId, String receiverNodeId, String senderNodeName, String receiverNodeName, BigDecimal senderAmount, BigDecimal receiverAmount, String senderCurrencyId, String senderCurrencySymbol, String receiverCurrencyId, String receiverCurrencySymbol, LocalDate date, boolean isCancelled, String userId, boolean isFromExternal, boolean isToExternal, int order) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;
@@ -63,5 +65,6 @@ public class TransactionResponseTO {
         this.userId = userId;
         this.isFromExternal = isFromExternal;
         this.isToExternal = isToExternal;
+        this.order = order;
     }
 }

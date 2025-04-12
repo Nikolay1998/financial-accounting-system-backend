@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="kraynov.n" id="transaction-order_number">
+        <addColumn tableName="transaction">
+            <column name="order_number" type="number"/>
+        </addColumn>
+
+        <createSequence sequenceName="transaction_order_seq" startValue="1" incrementBy="1"/>
+
+        <sql>
+            WITH ordered_transactions AS (SELECT id
+                                          FROM transaction
+                                          ORDER BY timestamp)
+            UPDATE transaction
+            SET order_number = nextval('transaction_order_seq') FROM ordered_transactions
+            WHERE transaction.id = ordered_transactions.id;
+        </sql>
+
+        <addDefaultValue tableName="transaction" columnName="order_number"
+                         defaultValueSequenceNext="transaction_order_seq"/>
+
+        <addNotNullConstraint tableName="transaction" columnName="order_number" columnDataType="number"/>
+
+    </changeSet>
+
+</databaseChangeLog>
