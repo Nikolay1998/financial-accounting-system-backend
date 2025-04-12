@@ -55,6 +55,15 @@ public class TransactionController {
         return transactionMapper.responseFromDto(editedTransaction);
     }
 
+    @CrossOrigin
+    @PutMapping(path = "/swapOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public List<TransactionResponseTO> swapOrder(@RequestParam String transactionId, @RequestParam String indexForSwap) {
+        return transactionService.swapOrder(transactionId, indexForSwap)
+                .stream()
+                .map(transactionMapper::responseFromDto)
+                .toList();
+    }
+
     @GetMapping(path = "/getAllBySender", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TransactionExtendedInfoDto> getAllBySenderId(int id) {
         // toDO: replace with transactionVO

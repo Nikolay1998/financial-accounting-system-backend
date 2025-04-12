@@ -33,10 +33,10 @@ public class TransactionPostgresExtendedInfoDAO implements TransactionExtendedIn
     }
 
     @Override
-    public List<TransactionExtendedInfoDto> getAll(String userId) {
+    public List<TransactionExtendedInfoDto> getAllByUserId(String userId) {
         logger.debug("Start retrieving all transactions by userId");
         List<TransactionExtendedInfoDto> result = namedJdbc.query(
-                "select * from transaction_with_extended_info where user_id = :userId order by timestamp desc",
+                "select * from transaction_with_extended_info where user_id = :userId order by timestamp desc, order_number desc",
                 Map.of("userId", userId),
                 this::mapRowToTransaction);
         logger.debug("Finish retrieving all transactions by userId");
@@ -64,6 +64,16 @@ public class TransactionPostgresExtendedInfoDAO implements TransactionExtendedIn
                 Map.of("nodeId", id), this::mapRowToTransaction);
     }
 
+    @Override
+    public List<TransactionExtendedInfoDto> getAllByIds(List<String> ids) {
+        return namedJdbc.query(
+                """
+                        SELECT * FROM transaction_with_extended_info WHERE id IN (:ids)
+                        """,
+                Map.of("ids", ids),
+                this::mapRowToTransaction);
+    }
+
     private TransactionExtendedInfoDto mapRowToTransaction(ResultSet row, int rowNum) throws SQLException {
         return TransactionExtendedInfoDto.builder()
                 .id(row.getString("id"))
@@ -82,6 +92,7 @@ public class TransactionPostgresExtendedInfoDAO implements TransactionExtendedIn
                 .senderCurrencyId(row.getString("sender_currency_id"))
                 .receiverName(row.getString("receiver_name"))
                 .receiverCurrencyId(row.getString("receiver_currency_id"))
+                .order(row.getInt("order_number"))
                 .build();
     }
 

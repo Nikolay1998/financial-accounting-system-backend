@@ -5,10 +5,14 @@ import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 
+import java.sql.BatchUpdateException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -41,6 +45,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         "description", transaction.getDescription(),
                         "senderAmount", transaction.getSenderAmount(),
                         "receiverAmount", transaction.getReceiverAmount(),
+                        "order_number", transaction.getOrder(),
                         "dateTime", java.sql.Date.valueOf((transaction.getDate())),
                         "isCancelled", transaction.isCancelled(),
                         "userId", transaction.getUserId()));
@@ -72,6 +77,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         "receiverAmount", transaction.getReceiverAmount(),
                         "dateTime", java.sql.Date.valueOf((transaction.getDate())),
                         "isCancelled", transaction.isCancelled(),
+                        "order", transaction.getOrder(),
                         "userId", userId));
 
         if (updated > 0) {
@@ -79,6 +85,57 @@ public class TransactionPostgresDAO implements TransactionDAO {
         }
         return null;
     }
+
+    @Override
+    public List<TransactionDto> getAllByIds(List<String> ids) {
+        return namedJdbc.query(
+                """
+                        SELECT * FROM transaction WHERE id IN (:ids)
+                        """,
+                Map.of("ids", ids),
+                this::mapRowToTransaction);
+    }
+
+    @Override
+    public List<TransactionDto> batchUpdate(List<TransactionDto> transactions) throws BatchUpdateException {
+        int[] updated = namedJdbc.batchUpdate("""
+                        update transaction
+                        set sendernodeid = :senderNodeId,
+                        receivernodeid = :receiverNodeId,
+                        description = :description,
+                        senderamount = :senderAmount,
+                        receiveramount = :receiverAmount,
+                        timestamp = :date,
+                        is_cancelled = :cancelled,
+                        order_number = :order
+                        where id = :id and user_id = :userId
+                        """,
+                SqlParameterSourceUtils.createBatch(transactions));
+        if (Arrays.stream(updated).anyMatch(row -> row != 1)) {
+            throw new BatchUpdateException("Something went wrong", updated);
+        }
+        return transactions;
+    }
+
+
+//    @Override
+//    public List<TransactionDto> swap(String firstTransactionId, String secondTransactionId) {
+//        int updated = namedJdbc.update(
+//                """
+//                        UPDATE transaction
+//                        SET
+//                            order_number = CASE
+//                                WHEN id = :firstTransactionId THEN (SELECT order_number FROM transaction WHERE id = :secondTransactionId)
+//                                WHEN id = :secondTransactionId THEN (SELECT order_number FROM transaction WHERE id = :firstTransactionId)
+//                            END
+//                        WHERE
+//                            id IN (:firstTransactionId, :secondTransactionId);
+//                        """,
+//                Map.of("firstTransactionId", firstTransactionId,
+//                        "secondTransactionId", secondTransactionId)
+//        );
+//        );
+//    }
 
     private TransactionDto mapRowToTransaction(ResultSet row, int rowNum) throws SQLException {
         return TransactionDto.builder()
@@ -91,6 +148,7 @@ public class TransactionPostgresDAO implements TransactionDAO {
                 .date(LocalDate.ofInstant(row.getTimestamp("timestamp").toInstant(),
                         TimeZone.getDefault().toZoneId()))
                 .isCancelled(row.getBoolean("is_cancelled"))
+                .order(row.getInt("order_number"))
                 .userId(row.getString("user_id"))
                 .build();
     }

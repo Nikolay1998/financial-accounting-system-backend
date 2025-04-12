@@ -25,4 +25,6 @@ public interface TransactionService {
     TransactionExtendedInfoDto edit(TransactionDto transaction);
 
     TransactionDto restore(String transactionId);
+
+    List<TransactionExtendedInfoDto> swapOrder(String firstTransactionId, String secondTransactionId);
 }
