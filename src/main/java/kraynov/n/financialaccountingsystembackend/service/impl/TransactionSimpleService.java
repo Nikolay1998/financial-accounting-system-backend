@@ -4,6 +4,7 @@ import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
 import kraynov.n.financialaccountingsystembackend.dao.TransactionExtendedInfoDAO;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionFilterDto;
 import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.exception.InvalidOperationException;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
@@ -144,5 +145,14 @@ public class TransactionSimpleService implements TransactionService {
         }
 
         return transactionExtendedInfoDAO.getAllByIds(List.of(firstTransactionId, secondTransactionId));
+    }
+
+    @Override
+    public List<TransactionExtendedInfoDto> getAllByFilter(TransactionFilterDto filter) {
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        if (filter.getFrom().isAfter(filter.getTo())) {
+            throw new InvalidOperationException("From date should be before to", "From date should be before to");
+        }
+        return transactionExtendedInfoDAO.getAllByFilter(filter, userDTO.getId());
     }
 }

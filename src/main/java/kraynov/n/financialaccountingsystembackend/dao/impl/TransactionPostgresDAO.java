@@ -45,7 +45,6 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         "description", transaction.getDescription(),
                         "senderAmount", transaction.getSenderAmount(),
                         "receiverAmount", transaction.getReceiverAmount(),
-                        "order_number", transaction.getOrder(),
                         "dateTime", java.sql.Date.valueOf((transaction.getDate())),
                         "isCancelled", transaction.isCancelled(),
                         "userId", transaction.getUserId()));
@@ -77,7 +76,6 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         "receiverAmount", transaction.getReceiverAmount(),
                         "dateTime", java.sql.Date.valueOf((transaction.getDate())),
                         "isCancelled", transaction.isCancelled(),
-                        "order", transaction.getOrder(),
                         "userId", userId));
 
         if (updated > 0) {

@@ -2,6 +2,7 @@ package kraynov.n.financialaccountingsystembackend.dao.impl;
 
 import kraynov.n.financialaccountingsystembackend.dao.TransactionExtendedInfoDAO;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionFilterDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -71,6 +72,21 @@ public class TransactionPostgresExtendedInfoDAO implements TransactionExtendedIn
                         SELECT * FROM transaction_with_extended_info WHERE id IN (:ids)
                         """,
                 Map.of("ids", ids),
+                this::mapRowToTransaction);
+    }
+
+    @Override
+    public List<TransactionExtendedInfoDto> getAllByFilter(TransactionFilterDto filter, String userId) {
+        return namedJdbc.query(
+                """
+                        SELECT * FROM transaction_with_extended_info
+                                 WHERE user_id = :userId
+                                 AND DATE("timestamp") between :from and :to
+                                 order by timestamp desc, order_number desc
+                        """,
+                Map.of("userId", userId,
+                        "from", filter.getFrom().atStartOfDay(),
+                        "to", filter.getTo().plusDays(1).atStartOfDay()),
                 this::mapRowToTransaction);
     }
 

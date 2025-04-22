@@ -2,6 +2,7 @@ package kraynov.n.financialaccountingsystembackend.service;
 
 import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionFilterDto;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface TransactionService {
     TransactionDto restore(String transactionId);
 
     List<TransactionExtendedInfoDto> swapOrder(String firstTransactionId, String secondTransactionId);
+
+    List<TransactionExtendedInfoDto> getAllByFilter(TransactionFilterDto filter);
 }
