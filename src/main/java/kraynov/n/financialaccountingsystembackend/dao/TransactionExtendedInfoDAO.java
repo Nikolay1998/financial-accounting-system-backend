@@ -1,6 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.dao;
 
 import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.TransactionFilterDto;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface TransactionExtendedInfoDAO {
     List<TransactionExtendedInfoDto> getAllByNodeId(String id);
 
     List<TransactionExtendedInfoDto> getAllByIds(List<String> ids);
+
+    List<TransactionExtendedInfoDto> getAllByFilter(TransactionFilterDto filter, String userId);
 }
