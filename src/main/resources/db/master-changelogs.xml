@@ -13,6 +13,7 @@
     <include file="db/2025-01.xml"/>
     <include file="db/2025-02.xml"/>
     <include file="db/transaction-order.xml"/>
+    <include file="db/demo-user-data.sql"/>
 
     <include file="db/views.xml"/>
 </databaseChangeLog>
