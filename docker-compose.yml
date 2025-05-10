@@ -4,7 +4,8 @@ services:
     ports:
       - "80:80"
     environment:
-      API_URL: http://192.168.45.9:8081 
+      #API_URL: 192.168.0.106 - only when front and backend on separate hostnames
+      API_PORT: 8081
   fas-backend:
     image: krajnovnik/fas-backend:latest
     depends_on:
