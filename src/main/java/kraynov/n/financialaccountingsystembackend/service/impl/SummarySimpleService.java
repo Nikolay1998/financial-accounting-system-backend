@@ -10,6 +10,7 @@ import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
 import kraynov.n.financialaccountingsystembackend.service.SummaryService;
 import kraynov.n.financialaccountingsystembackend.service.TransactionService;
 import kraynov.n.financialaccountingsystembackend.to.CurrencyBalanceChangeTo;
+import kraynov.n.financialaccountingsystembackend.to.PeriodStatsTo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,30 +55,60 @@ public class SummarySimpleService implements SummaryService {
     }
 
     @Override
-    public List<CurrencyBalanceChangeTo> getBalanceChange(LocalDate from, LocalDate to) {
+    public PeriodStatsTo getBalanceChange(LocalDate from, LocalDate to) {
         UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
 
-        LOGGER.debug("Start computing in and out for user with id = {}", userDTO.getId());
+        LOGGER.debug("Start computing balance changes for user with id = {}", userDTO.getId());
         List<TransactionExtendedInfoDto> transactionsByFilter = transactionService.getAllByFilter(
                 TransactionFilterDto.builder()
                         .to(to)
                         .from(from)
                         .build());
 
-        Map<String, BigDecimal> in = new HashMap<>();
-        Map<String, BigDecimal> out = new HashMap<>();
+        List<CurrencyBalanceChangeTo> currencyBalanceChangeTo = calculateBalanceChange(transactionsByFilter);
+        List<CurrencyBalanceChangeTo> inAndOutByCurrency = calculateInAndOut(transactionsByFilter);
+
+        return PeriodStatsTo.builder()
+                .balanceChange(currencyBalanceChangeTo)
+                .inAndOut(inAndOutByCurrency)
+                .build();
+    }
+
+    private List<CurrencyBalanceChangeTo> calculateBalanceChange(List<TransactionExtendedInfoDto> transactionsByFilter) {
+        Map<String, BigDecimal> balanceIncrease = new HashMap<>();
+        Map<String, BigDecimal> balanceDecrease = new HashMap<>();
 
         for (TransactionExtendedInfoDto transaction : transactionsByFilter) {
             if (transaction.isFromExternal()) {
-                in.merge(transaction.getReceiverCurrencyId(), transaction.getReceiverAmount(), BigDecimal::add);
+                balanceIncrease.merge(transaction.getReceiverCurrencyId(), transaction.getReceiverAmount(), BigDecimal::add);
             } else if (transaction.isToExternal()) {
-                out.merge(transaction.getSenderCurrencyId(), transaction.getSenderAmount(), BigDecimal::add);
+                balanceDecrease.merge(transaction.getSenderCurrencyId(), transaction.getSenderAmount(), BigDecimal::add);
             } else if (!transaction.getSenderCurrencyId().equals(transaction.getReceiverCurrencyId())) {
-                in.merge(transaction.getReceiverCurrencyId(), transaction.getReceiverAmount(), BigDecimal::add);
-                out.merge(transaction.getSenderCurrencyId(), transaction.getSenderAmount(), BigDecimal::add);
+                balanceIncrease.merge(transaction.getReceiverCurrencyId(), transaction.getReceiverAmount(), BigDecimal::add);
+                balanceDecrease.merge(transaction.getSenderCurrencyId(), transaction.getSenderAmount(), BigDecimal::add);
             }
         }
 
+        return combineInAndOut(balanceIncrease, balanceDecrease);
+    }
+
+    private List<CurrencyBalanceChangeTo> calculateInAndOut(List<TransactionExtendedInfoDto> transactionsByFilter) {
+        Map<String, BigDecimal> incomeByCurrency = new HashMap<>();
+        Map<String, BigDecimal> expenseByCurrency = new HashMap<>();
+
+        for (TransactionExtendedInfoDto transaction : transactionsByFilter) {
+            if (transaction.isFromExternal()) {
+                incomeByCurrency.merge(transaction.getReceiverCurrencyId(), transaction.getReceiverAmount(), BigDecimal::add);
+            } else if (transaction.isToExternal()) {
+                expenseByCurrency.merge(transaction.getSenderCurrencyId(), transaction.getSenderAmount(), BigDecimal::add);
+            }
+        }
+
+        return combineInAndOut(incomeByCurrency, expenseByCurrency);
+    }
+
+
+    private List<CurrencyBalanceChangeTo> combineInAndOut(Map<String, BigDecimal> in, Map<String, BigDecimal> out) {
         Set<String> combinedCurrencyIds = new HashSet<>();
         combinedCurrencyIds.addAll(in.keySet());
         combinedCurrencyIds.addAll(out.keySet());
@@ -93,7 +124,6 @@ public class SummarySimpleService implements SummaryService {
                     .totalChange(income.subtract(outgo))
                     .build());
         }
-
         return result;
     }
 }
