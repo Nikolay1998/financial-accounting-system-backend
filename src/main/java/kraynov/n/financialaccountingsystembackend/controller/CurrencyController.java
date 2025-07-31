@@ -24,4 +24,10 @@ public class CurrencyController {
     public List<CurrencyDto> getAll() {
         return currencyService.getAll();
     }
+
+    @CrossOrigin
+    @GetMapping("getAllByIds")
+    public List<CurrencyDto> getAllByIds(List<String> ids) {
+        return currencyService.getAllByIds(ids);
+    }
 }

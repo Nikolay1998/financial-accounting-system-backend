@@ -24,4 +24,9 @@ public class CurrencySimpleService implements CurrencyService {
         return currencyDAO.getById(id);
     }
 
+    @Override
+    public List<CurrencyDto> getAllByIds(List<String> ids) {
+        return currencyDAO.getAllByIds(ids);
+    }
+
 }

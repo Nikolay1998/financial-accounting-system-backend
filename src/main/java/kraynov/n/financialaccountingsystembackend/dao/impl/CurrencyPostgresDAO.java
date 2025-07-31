@@ -15,7 +15,7 @@ public class CurrencyPostgresDAO implements CurrencyDAO {
     private final NamedParameterJdbcTemplate namedJdbc;
 
     public CurrencyPostgresDAO(JdbcTemplate jdbcTemplate,
-            NamedParameterJdbcTemplate namedJdbc) {
+                               NamedParameterJdbcTemplate namedJdbc) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedJdbc = namedJdbc;
     }
@@ -29,6 +29,11 @@ public class CurrencyPostgresDAO implements CurrencyDAO {
     public CurrencyDto getById(String id) {
         return namedJdbc.queryForObject("select * from currency where id = :id", Map.of("id", id),
                 this::mapRowToCurrency);
+    }
+
+    @Override
+    public List<CurrencyDto> getAllByIds(List<String> ids) {
+        return namedJdbc.query("select * from currency where id in (:ids)", Map.of("ids", ids), this::mapRowToCurrency);
     }
 
     private CurrencyDto mapRowToCurrency(ResultSet row, int rowNum) throws SQLException {

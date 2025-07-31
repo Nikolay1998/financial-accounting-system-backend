@@ -8,4 +8,6 @@ public interface CurrencyService {
     List<CurrencyDto> getAll();
 
     CurrencyDto getById(String id);
+
+    List<CurrencyDto> getAllByIds(List<String> ids);
 }

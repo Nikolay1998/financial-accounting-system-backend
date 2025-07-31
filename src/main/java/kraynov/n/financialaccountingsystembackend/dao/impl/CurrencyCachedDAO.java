@@ -49,4 +49,10 @@ public class CurrencyCachedDAO implements CurrencyDAO {
         }
         return currencyDTO;
     }
+
+    @Override
+    public List<CurrencyDto> getAllByIds(List<String> ids) {
+        getAll();
+        return ids.stream().map(currencies::get).toList();
+    }
 }
