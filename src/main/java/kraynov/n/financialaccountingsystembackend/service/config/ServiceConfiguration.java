@@ -1,5 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.service.config;
 
+import kraynov.n.financialaccountingsystembackend.client.RateClient;
 import kraynov.n.financialaccountingsystembackend.dao.*;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.*;
@@ -44,5 +45,10 @@ public class ServiceConfiguration {
     public CurrencyService simpleCurrencyService(
             CurrencyDAO currencyCachedDAO) {
         return new CurrencySimpleService(currencyCachedDAO);
+    }
+
+    @Bean
+    public RateService rateService(RateClient rateClient) {
+        return new RateServiceImpl(rateClient);
     }
 }

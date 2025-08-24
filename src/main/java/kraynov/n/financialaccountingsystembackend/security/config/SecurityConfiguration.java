@@ -1,5 +1,9 @@
 package kraynov.n.financialaccountingsystembackend.security.config;
 
+import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
+import kraynov.n.financialaccountingsystembackend.security.impl.FASBasicAuthenticationEntryPoint;
+import kraynov.n.financialaccountingsystembackend.security.impl.SimpleContextHolderFacade;
+import kraynov.n.financialaccountingsystembackend.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,11 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
-
-import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
-import kraynov.n.financialaccountingsystembackend.security.impl.FASBasicAuthenticationEntryPoint;
-import kraynov.n.financialaccountingsystembackend.security.impl.SimpleContextHolderFacade;
-import kraynov.n.financialaccountingsystembackend.service.UserService;
 
 @Configuration
 public class SecurityConfiguration {
@@ -55,6 +54,7 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/user/add").permitAll()
+                .antMatchers("/rate/calculateEquivalents").permitAll() //todo
                 .antMatchers("/", "/**").authenticated()
                 .and()
                 .httpBasic()

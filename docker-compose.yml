@@ -14,6 +14,7 @@ services:
       - "8081:8080"
     environment:
       POSTGRES_PATH: fas_test_bd:5432/financial_service_test
+      CURRENCY_RATES_PATH: fas-currency-rates-service:8080
     networks:
       - fas-net
   fas-db:
@@ -27,6 +28,30 @@ services:
     networks:
       - fas-net
     hostname: fas_test_bd
+  fas-currency-rates:
+    image: krajnovnik/fas-currency-rates:latest
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    depends_on:
+      - fas-currency-rates-db
+    environment:
+      POSTGRES_PATH: fas-currency-rates-db:5432/currency_rates
+    networks:
+      - fas-net
+    hostname: fas-currency-rates-service
+  fas-currency-rates-db:
+    image: postgres:latest
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: currency_rates
+    networks:
+      - fas-net
+    hostname: fas-currency-rates-db
+
 
 networks:
   fas-net:
