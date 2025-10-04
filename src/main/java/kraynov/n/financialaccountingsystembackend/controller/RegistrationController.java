@@ -5,7 +5,12 @@ import kraynov.n.financialaccountingsystembackend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
@@ -20,7 +25,7 @@ public class RegistrationController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @CrossOrigin
+
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public UserDetailsDto add(@RequestBody UserDetailsDto userDTO) {
@@ -29,7 +34,7 @@ public class RegistrationController {
         return userService.add(encryptedUser);
     }
 
-    @CrossOrigin
+
     @GetMapping(path = "/authenticate", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDetailsDto authenticate() {
         return userService.getAuthenticatedUser();

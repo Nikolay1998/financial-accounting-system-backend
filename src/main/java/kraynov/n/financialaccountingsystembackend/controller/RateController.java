@@ -18,7 +18,7 @@ public class RateController {
         this.rateService = rateService;
     }
 
-    @CrossOrigin
+
     @PostMapping(path = "/calculateEquivalents", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, BigDecimal> calculateEquivalents(@RequestBody Map<String, BigDecimal> amountByCurrencies) {
         log.info("calculateEquivalents called");

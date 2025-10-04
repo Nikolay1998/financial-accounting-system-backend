@@ -11,7 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -30,7 +37,7 @@ public class NodeController {
         this.nodeMapper = nodeMapper;
     }
 
-    @CrossOrigin
+
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NodeResponseTO> getAll() {
         List<NodeResponseTO> nodes = nodeService.getAll()
@@ -42,7 +49,7 @@ public class NodeController {
         return nodes;
     }
 
-    @CrossOrigin
+
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public NodeResponseTO add(@RequestBody NodeRequestTO node) {
@@ -50,7 +57,7 @@ public class NodeController {
                 nodeService.add(nodeMapper.dtoFromRequest(node)));
     }
 
-    @CrossOrigin
+
     @PutMapping(path = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public NodeResponseTO editNode(@RequestBody NodeRequestTO nodeRequestTO) {
         NodeDto node = nodeMapper.dtoFromRequest(nodeRequestTO);
@@ -64,14 +71,14 @@ public class NodeController {
         return nodeMapper.responseFromDto(edited);
     }
 
-    @CrossOrigin
+
     @PutMapping(path = "/archive", consumes = MediaType.APPLICATION_JSON_VALUE)
     public NodeResponseTO archiveNode(@RequestParam String nodeId) {
         NodeExtendedInfoDto archived = nodeService.archive(nodeId);
         return nodeMapper.responseFromDto(archived);
     }
 
-    @CrossOrigin
+
     @PutMapping(path = "/restore", consumes = MediaType.APPLICATION_JSON_VALUE)
     public NodeResponseTO restoreNode(@RequestParam String nodeId) {
         NodeExtendedInfoDto restored = nodeService.restore(nodeId);

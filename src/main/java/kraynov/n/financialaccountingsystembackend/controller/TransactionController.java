@@ -8,7 +8,15 @@ import kraynov.n.financialaccountingsystembackend.to.TransactionRequestTO;
 import kraynov.n.financialaccountingsystembackend.to.TransactionResponseTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -26,7 +34,7 @@ public class TransactionController {
         this.transactionMapper = transactionMapper;
     }
 
-    @CrossOrigin
+
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public TransactionResponseTO add(@RequestBody TransactionRequestTO transactionVO) {
@@ -35,19 +43,19 @@ public class TransactionController {
                         transactionMapper.dtoFromRequest(transactionVO)));
     }
 
-    @CrossOrigin
+
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TransactionResponseTO> getAll() {
         return transactionService.getAll().stream().map(transactionMapper::responseFromDto).toList();
     }
 
-    @CrossOrigin
+
     @GetMapping(path = "/getAllByNode", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TransactionResponseTO> getAllRelatedToNode(String nodeId) {
         return transactionService.getAllByNodeId(nodeId).stream().map(transactionMapper::responseFromDto).toList();
     }
 
-    @CrossOrigin
+
     @PutMapping(path = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public TransactionResponseTO editTransaction(@RequestBody TransactionRequestTO transactionVO) {
         TransactionExtendedInfoDto editedTransaction = fasFacade
@@ -55,7 +63,7 @@ public class TransactionController {
         return transactionMapper.responseFromDto(editedTransaction);
     }
 
-    @CrossOrigin
+
     @PutMapping(path = "/swapOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
     public List<TransactionResponseTO> swapOrder(@RequestParam String transactionId, @RequestParam String indexForSwap) {
         return transactionService.swapOrder(transactionId, indexForSwap)
@@ -76,14 +84,14 @@ public class TransactionController {
         return transactionService.getAllByReceiverId(id);
     }
 
-    @CrossOrigin
+
     @DeleteMapping(path = "/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
     public TransactionResponseTO cancelTransaction(@RequestParam String transactionId) {
         TransactionExtendedInfoDto cancelledTransaction = fasFacade.cancelTransaction(transactionId);
         return transactionMapper.responseFromDto(cancelledTransaction);
     }
 
-    @CrossOrigin
+
     @PutMapping(path = "/restore")
     public TransactionResponseTO restore(@RequestParam String transactionId) {
         TransactionExtendedInfoDto restoredTransaction = fasFacade.restoreTransaction(transactionId);
