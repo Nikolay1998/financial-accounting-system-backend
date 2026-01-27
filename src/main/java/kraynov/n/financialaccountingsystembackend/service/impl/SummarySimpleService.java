@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SummarySimpleService implements SummaryService {
 
@@ -46,12 +45,8 @@ public class SummarySimpleService implements SummaryService {
         for (NodeExtendedInfoDto node : nodes) {
             sum.merge(node.getCurrencyId(), node.getAmount(), BigDecimal::add);
         }
-        Map<String, BigDecimal> sumWithCurencySymbol = sum.entrySet().stream().collect(Collectors.toMap(
-                e -> currencyService.getById(e.getKey()).getSymbol(),
-                Map.Entry::getValue));
 
-        LOGGER.debug("End computing sum for user with id = {}, sum = {}", userDTO.getId(), sumWithCurencySymbol);
-        return sumWithCurencySymbol;
+        return sum;
     }
 
     @Override

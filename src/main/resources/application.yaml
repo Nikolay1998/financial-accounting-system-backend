@@ -4,11 +4,14 @@ spring:
     username: postgres
     password: password
 
-
   liquibase:
     change-log: classpath:db/master-changelogs.xml
 
 server:
-  error:
-    include-message: always
-    include-binding-errors: always
+  #  error:
+  #    include-message: always
+  #    include-binding-errors: always
+  port: 8080
+
+rate-service:
+  url: http://${CURRENCY_RATES_PATH:localhost:8081}
