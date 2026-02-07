@@ -11,11 +11,11 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/user")
-public class RegistrationController {
+public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
-    public RegistrationController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
