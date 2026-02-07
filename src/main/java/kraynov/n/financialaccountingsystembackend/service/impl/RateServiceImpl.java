@@ -21,7 +21,11 @@ public class RateServiceImpl implements RateService {
     @Override
     public Map<String, BigDecimal> calculateEquivalents(Map<String, BigDecimal> amountByCurrencies) {
         Map<String, BigDecimal> equivalents = new HashMap<>();
-        Map<CurrencyIdPairTo, RateTo> rates = rateServiceClient.getRates(generateAllPairs(amountByCurrencies.keySet()));
+        Set<CurrencyIdPairTo> currencyPairs = generateAllPairs(amountByCurrencies.keySet());
+        if (currencyPairs.isEmpty()) {
+            return amountByCurrencies;
+        }
+        Map<CurrencyIdPairTo, RateTo> rates = rateServiceClient.getRates(currencyPairs);
         for (String toCurrency : amountByCurrencies.keySet()) {
             BigDecimal equivalentInCurrentCurrency = amountByCurrencies.get(toCurrency);
             for (String fromCurrency : amountByCurrencies.keySet()) {
