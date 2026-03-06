@@ -2,8 +2,10 @@ package kraynov.n.financialaccountingsystembackend.controller;
 
 import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
 import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
+import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 import kraynov.n.financialaccountingsystembackend.exception.InvalidOperationException;
 import kraynov.n.financialaccountingsystembackend.mapper.NodeMapper;
+import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
 import kraynov.n.financialaccountingsystembackend.to.NodeRequestTO;
 import kraynov.n.financialaccountingsystembackend.to.NodeResponseTO;
@@ -25,15 +27,19 @@ public class NodeController {
 
     private final NodeMapper nodeMapper;
 
-    public NodeController(NodeService nodeService, NodeMapper nodeMapper) {
+    public final ContextHolderFacade contextHolderFacade;
+
+    public NodeController(NodeService nodeService, NodeMapper nodeMapper, ContextHolderFacade contextHolderFacade) {
         this.nodeService = nodeService;
         this.nodeMapper = nodeMapper;
+        this.contextHolderFacade = contextHolderFacade;
     }
 
     @CrossOrigin
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NodeResponseTO> getAll() {
-        List<NodeResponseTO> nodes = nodeService.getAll()
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        List<NodeResponseTO> nodes = nodeService.getAllByUser(userDTO.getId())
                 .stream()
                 .map(nodeMapper::responseFromDto)
                 .sorted(NodeMapper::compareNodeVO)

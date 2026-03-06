@@ -13,7 +13,7 @@ public interface NodeService {
 
     NodeExtendedInfoDto get(String id);
 
-    List<NodeExtendedInfoDto> getAll();
+    List<NodeExtendedInfoDto> getAllByUser(String userId);
 
     NodeExtendedInfoDto archive(String id);
 
