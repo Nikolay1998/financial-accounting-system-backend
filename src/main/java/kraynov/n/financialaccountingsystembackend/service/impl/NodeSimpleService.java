@@ -46,30 +46,30 @@ public class NodeSimpleService implements NodeService {
         LOGGER.debug("Start adding node {}", node);
         nodeDao.save(nodeWithId);
 
-        return nodeDao.getExtendedInfoById(nodeWithId.getId());
+        return nodeDao.getExtendedInfoById(nodeWithId.id());
     }
 
     private void validate(NodeDto node) {
         if (!node.isOverdraft() && node.isExternal()) {
             LOGGER.warn("External node {} is not overdraft", node);
         }
-        if (!node.isOverdraft() && !node.isExternal() && node.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+        if (!node.isOverdraft() && !node.isExternal() && node.amount().compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidOperationException(
-                    String.format("Node %s is not overdraft and have negative balance", node.getId()),
+                    String.format("Node %s is not overdraft and have negative balance", node.id()),
                     "node should be overdraft to have negative balance");
         }
     }
 
     @Override
     public NodeExtendedInfoDto edit(NodeDto node) {
-        LOGGER.debug("Start editing node with id={}", node.getId());
+        LOGGER.debug("Start editing node with id={}", node.id());
 
         validate(node);
 
         UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
         nodeDao.update(node, userDto.getId());
 
-        return nodeDao.getExtendedInfoById(node.getId());
+        return nodeDao.getExtendedInfoById(node.id());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class NodeSimpleService implements NodeService {
                     String.format("Node %s not found", id),
                     "node not found");
         }
-        if (!node.getUserId().equals(userDto.getId())) {
+        if (!node.userId().equals(userDto.getId())) {
             throw new ForbiddenOperationException("Requested node belongs to another user");
         }
         return nodeDao.getExtendedInfoById(id);
@@ -100,8 +100,8 @@ public class NodeSimpleService implements NodeService {
         NodeDto nodeToArchive = nodeDao.getById(id);
         if (nodeToArchive.isArchived()) {
             throw new InvalidOperationException(
-                    String.format("Node %s is already archived", nodeToArchive.getId()),
-                    String.format("node %s is already archived", nodeToArchive.getName()));
+                    String.format("Node %s is already archived", nodeToArchive.id()),
+                    String.format("node %s is already archived", nodeToArchive.name()));
         }
 
         NodeDto archivedNode = nodeToArchive
@@ -118,8 +118,8 @@ public class NodeSimpleService implements NodeService {
         NodeDto nodeToRestore = nodeDao.getById(id);
         if (!nodeToRestore.isArchived()) {
             throw new InvalidOperationException(
-                    String.format("Node %s is not archived", nodeToRestore.getId()),
-                    String.format("node %s is not archived", nodeToRestore.getName()));
+                    String.format("Node %s is not archived", nodeToRestore.id()),
+                    String.format("node %s is not archived", nodeToRestore.name()));
         }
 
         NodeDto restoredNode = nodeToRestore
@@ -135,8 +135,8 @@ public class NodeSimpleService implements NodeService {
         try {
             calculate(transaction);
         } catch (InsufficientFundsException e) {
-            LOGGER.debug("Not enough amount ({}) on sender node with id = {} ({})", transaction.getSenderAmount(),
-                         transaction.getSenderNodeId(), transaction.getSenderAmount());
+            LOGGER.debug("Not enough amount ({}) on sender node with id = {} ({})", transaction.senderAmount(),
+                         transaction.senderNodeId(), transaction.senderAmount());
             throw e;
         }
     }
@@ -145,35 +145,35 @@ public class NodeSimpleService implements NodeService {
     public void cancelTransactionAffection(TransactionDto transaction) {
         TransactionDto reversedTransaction = transaction
                 .toBuilder()
-                .senderAmount(transaction.getSenderAmount().negate())
-                .receiverAmount(transaction.getReceiverAmount().negate())
+                .senderAmount(transaction.senderAmount().negate())
+                .receiverAmount(transaction.receiverAmount().negate())
                 .build();
         try {
             calculate(reversedTransaction);
         } catch (InsufficientFundsException e) {
             LOGGER.debug("Not enough amount ({}) on receiver node with id = {} ({}) to cancel transaction",
-                         transaction.getSenderAmount(), transaction.getSenderNodeId(), transaction.getSenderAmount());
+                         transaction.senderAmount(), transaction.senderNodeId(), transaction.senderAmount());
             throw e;
         }
     }
 
     private void calculate(TransactionDto transaction) {
-        NodeDto senderNode = nodeDao.getById(transaction.getSenderNodeId());
-        NodeDto receiverNode = nodeDao.getById(transaction.getReceiverNodeId());
+        NodeDto senderNode = nodeDao.getById(transaction.senderNodeId());
+        NodeDto receiverNode = nodeDao.getById(transaction.receiverNodeId());
 
         UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        if (!senderNode.getUserId().equals(userDto.getId()) ||
-                !receiverNode.getUserId().equals(userDto.getId())) {
+        if (!senderNode.userId().equals(userDto.getId()) ||
+                !receiverNode.userId().equals(userDto.getId())) {
             throw new ForbiddenOperationException("Requested transaction from another user node");
         }
 
         NodeDto newSenderNode = senderNode
-                .withAmount(senderNode.getAmount().subtract(transaction.getSenderAmount()));
+                .withAmount(senderNode.amount().subtract(transaction.senderAmount()));
 
         NodeDto newReceiverNode = receiverNode
-                .withAmount(receiverNode.getAmount().add(transaction.getReceiverAmount()));
+                .withAmount(receiverNode.amount().add(transaction.receiverAmount()));
 
-        if (!newSenderNode.isOverdraft() && !newSenderNode.isExternal() && BigDecimal.ZERO.compareTo(newSenderNode.getAmount()) > 0) {
+        if (!newSenderNode.isOverdraft() && !newSenderNode.isExternal() && BigDecimal.ZERO.compareTo(newSenderNode.amount()) > 0) {
             throw new InsufficientFundsException("Not enough amount on sender node");
         }
 

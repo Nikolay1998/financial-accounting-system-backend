@@ -39,15 +39,15 @@ public class TransactionPostgresDao implements TransactionDao {
         namedJdbc.update(
                 "insert into transaction values (:id, :senderNodeId, :receiverNodeId, :description, :senderAmount, :receiverAmount, :dateTime, :userId, :isCancelled)",
                 Map.of(
-                        "id", transaction.getId(),
-                        "senderNodeId", transaction.getSenderNodeId(),
-                        "receiverNodeId", transaction.getReceiverNodeId(),
-                        "description", transaction.getDescription(),
-                        "senderAmount", transaction.getSenderAmount(),
-                        "receiverAmount", transaction.getReceiverAmount(),
-                        "dateTime", java.sql.Date.valueOf((transaction.getDate())),
+                        "id", transaction.id(),
+                        "senderNodeId", transaction.senderNodeId(),
+                        "receiverNodeId", transaction.receiverNodeId(),
+                        "description", transaction.description(),
+                        "senderAmount", transaction.senderAmount(),
+                        "receiverAmount", transaction.receiverAmount(),
+                        "dateTime", java.sql.Date.valueOf((transaction.date())),
                         "isCancelled", transaction.isCancelled(),
-                        "userId", transaction.getUserId()));
+                        "userId", transaction.userId()));
         return transaction;
     }
 
@@ -71,13 +71,13 @@ public class TransactionPostgresDao implements TransactionDao {
                         where id = :id and user_id = :userId
                         """,
                 Map.of(
-                        "id", transaction.getId(),
-                        "senderNodeId", transaction.getSenderNodeId(),
-                        "receiverNodeId", transaction.getReceiverNodeId(),
-                        "description", transaction.getDescription(),
-                        "senderAmount", transaction.getSenderAmount(),
-                        "receiverAmount", transaction.getReceiverAmount(),
-                        "dateTime", java.sql.Date.valueOf((transaction.getDate())),
+                        "id", transaction.id(),
+                        "senderNodeId", transaction.senderNodeId(),
+                        "receiverNodeId", transaction.receiverNodeId(),
+                        "description", transaction.description(),
+                        "senderAmount", transaction.senderAmount(),
+                        "receiverAmount", transaction.receiverAmount(),
+                        "dateTime", java.sql.Date.valueOf((transaction.date())),
                         "isCancelled", transaction.isCancelled(),
                         "userId", userId));
 

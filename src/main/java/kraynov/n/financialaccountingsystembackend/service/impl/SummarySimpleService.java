@@ -45,7 +45,7 @@ public class SummarySimpleService implements SummaryService {
         List<NodeExtendedInfoDto> nodes = nodeDao.getAll(userDto.getId()).stream().filter(n -> !n.isExternal()).toList();
         Map<String, BigDecimal> sum = new HashMap<>();
         for (NodeExtendedInfoDto node : nodes) {
-            sum.merge(node.getCurrencyId(), node.getAmount(), BigDecimal::add);
+            sum.merge(node.currencyId(), node.amount(), BigDecimal::add);
         }
 
         return sum;
@@ -80,12 +80,12 @@ public class SummarySimpleService implements SummaryService {
 
         for (TransactionExtendedInfoDto transaction : transactionsByFilter) {
             if (transaction.isFromExternal()) {
-                balanceIncrease.merge(transaction.getReceiverCurrencyId(), transaction.getReceiverAmount(), BigDecimal::add);
+                balanceIncrease.merge(transaction.receiverCurrencyId(), transaction.receiverAmount(), BigDecimal::add);
             } else if (transaction.isToExternal()) {
-                balanceDecrease.merge(transaction.getSenderCurrencyId(), transaction.getSenderAmount(), BigDecimal::add);
-            } else if (!transaction.getSenderCurrencyId().equals(transaction.getReceiverCurrencyId())) {
-                balanceIncrease.merge(transaction.getReceiverCurrencyId(), transaction.getReceiverAmount(), BigDecimal::add);
-                balanceDecrease.merge(transaction.getSenderCurrencyId(), transaction.getSenderAmount(), BigDecimal::add);
+                balanceDecrease.merge(transaction.senderCurrencyId(), transaction.senderAmount(), BigDecimal::add);
+            } else if (!transaction.senderCurrencyId().equals(transaction.receiverCurrencyId())) {
+                balanceIncrease.merge(transaction.receiverCurrencyId(), transaction.receiverAmount(), BigDecimal::add);
+                balanceDecrease.merge(transaction.senderCurrencyId(), transaction.senderAmount(), BigDecimal::add);
             }
         }
 
@@ -98,9 +98,9 @@ public class SummarySimpleService implements SummaryService {
 
         for (TransactionExtendedInfoDto transaction : transactionsByFilter) {
             if (transaction.isFromExternal()) {
-                incomeByCurrency.merge(transaction.getReceiverCurrencyId(), transaction.getReceiverAmount(), BigDecimal::add);
+                incomeByCurrency.merge(transaction.receiverCurrencyId(), transaction.receiverAmount(), BigDecimal::add);
             } else if (transaction.isToExternal()) {
-                expenseByCurrency.merge(transaction.getSenderCurrencyId(), transaction.getSenderAmount(), BigDecimal::add);
+                expenseByCurrency.merge(transaction.senderCurrencyId(), transaction.senderAmount(), BigDecimal::add);
             }
         }
 

@@ -46,7 +46,7 @@ public class TransactionSimpleService implements TransactionService {
                 .build();
 
         transactionDao.save(transactionWithId);
-        return transactionExtendedInfoDao.get(transactionWithId.getId());
+        return transactionExtendedInfoDao.get(transactionWithId.id());
     }
 
     @Override
@@ -108,11 +108,11 @@ public class TransactionSimpleService implements TransactionService {
         TransactionDto updated = transactionDao.update(transaction, userDto.getId());
         if (updated == null) {
             throw new InvalidOperationException(
-                    String.format("Can't find transaction for edit with id = %s", transaction.getId()),
-                    "transaction " + transaction.getDescription() + " not found");
+                    String.format("Can't find transaction for edit with id = %s", transaction.id()),
+                    "transaction " + transaction.description() + " not found");
         }
 
-        return transactionExtendedInfoDao.get(transaction.getId());
+        return transactionExtendedInfoDao.get(transaction.id());
     }
 
     @Override
@@ -121,8 +121,8 @@ public class TransactionSimpleService implements TransactionService {
         TransactionDto transactionToRestore = transactionDao.get(transactionId);
         if (!transactionToRestore.isCancelled()) {
             throw new InvalidOperationException(
-                    String.format("transaction %s is not canceled", transactionToRestore.getId()),
-                    String.format("transaction %s is not canceled", transactionToRestore.getDescription()));
+                    String.format("transaction %s is not canceled", transactionToRestore.id()),
+                    String.format("transaction %s is not canceled", transactionToRestore.description()));
         }
         UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
         TransactionDto restoredTransaction = transactionToRestore
@@ -138,13 +138,13 @@ public class TransactionSimpleService implements TransactionService {
     ) {
         LOGGER.debug("Start swapping transactions {} and {}", firstTransactionId, secondTransactionId);
         List<TransactionDto> pairToSwap = transactionDao.getAllByIds(List.of(firstTransactionId, secondTransactionId));
-        if (!pairToSwap.get(0).getDate().isEqual(pairToSwap.get(1).getDate())) {
+        if (!pairToSwap.get(0).date().isEqual(pairToSwap.get(1).date())) {
             throw new InvalidOperationException(String.format("Transactions have different date: %s and %s",
-                                                              pairToSwap.get(0).getDate(), pairToSwap.get(1).getDate()),
+                                                              pairToSwap.get(0).date(), pairToSwap.get(1).date()),
                                                 "Only transactions with same date are available to move");
         }
-        TransactionDto firstUpdatedTransaction = pairToSwap.get(0).toBuilder().order(pairToSwap.get(1).getOrder()).build();
-        TransactionDto secondUpdatedTransaction = pairToSwap.get(1).toBuilder().order(pairToSwap.get(0).getOrder()).build();
+        TransactionDto firstUpdatedTransaction = pairToSwap.get(0).toBuilder().order(pairToSwap.get(1).order()).build();
+        TransactionDto secondUpdatedTransaction = pairToSwap.get(1).toBuilder().order(pairToSwap.get(0).order()).build();
         try {
             transactionDao.batchUpdate(List.of(firstUpdatedTransaction, secondUpdatedTransaction));
         } catch (BatchUpdateException e) {
@@ -157,7 +157,7 @@ public class TransactionSimpleService implements TransactionService {
     @Override
     public List<TransactionExtendedInfoDto> getAllByFilter(TransactionFilterDto filter) {
         UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        if (filter.getFrom().isAfter(filter.getTo())) {
+        if (filter.from().isAfter(filter.to())) {
             throw new InvalidOperationException("From date should be before to", "From date should be before to");
         }
         return transactionExtendedInfoDao.getAllByFilter(filter, userDto.getId());

@@ -65,8 +65,8 @@ public class NodeController {
         NodeExtendedInfoDto edited = nodeService.edit(node);
         if (edited == null) {
             throw new InvalidOperationException(
-                    String.format("Node with id '%s' not found", node.getId()),
-                    String.format("node with name '%s' not found", node.getName()));
+                    String.format("Node with id '%s' not found", node.id()),
+                    String.format("node with name '%s' not found", node.name()));
         }
         return nodeMapper.responseFromDto(edited);
     }

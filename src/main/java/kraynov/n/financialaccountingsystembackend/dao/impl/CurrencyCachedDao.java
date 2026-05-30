@@ -31,7 +31,7 @@ public class CurrencyCachedDao implements CurrencyDao {
             lock.readLock().unlock();
             lock.writeLock().lock();
             if (currencies.isEmpty()) {
-                currencies.putAll(currencyDao.getAll().stream().collect(Collectors.toMap(CurrencyDto::getId, c -> c)));
+                currencies.putAll(currencyDao.getAll().stream().collect(Collectors.toMap(CurrencyDto::id, c -> c)));
             }
             lock.writeLock().unlock();
             return List.copyOf(currencies.values());

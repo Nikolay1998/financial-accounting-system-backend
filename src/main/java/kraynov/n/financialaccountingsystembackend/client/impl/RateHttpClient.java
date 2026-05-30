@@ -37,7 +37,7 @@ public class RateHttpClient implements RateClient {
 
         Map<CurrencyIdPairTo, RateTo> map = new HashMap<>();
         for (RateTo rateTo : response.getBody()) {
-            map.put(new CurrencyIdPairTo(rateTo.getFromCurrencyId(), rateTo.getToCurrencyId()), rateTo);
+            map.put(new CurrencyIdPairTo(rateTo.fromCurrencyId(), rateTo.toCurrencyId()), rateTo);
         }
         return map;
     }

@@ -2,36 +2,22 @@ package kraynov.n.financialaccountingsystembackend.to;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Data
 @Builder
-public class NodeResponseTo {
-    @JsonProperty("id")
-    private final String id;
-    @JsonProperty("name")
-    private final String name;
-    @JsonProperty("description")
-    private final String description;
-    @JsonProperty("currencySymbol")
-    private final String currencySymbol;
-    @JsonProperty("currencyId")
-    private final String currencyId;
-    @JsonProperty("amount")
-    private final BigDecimal amount;
-    @JsonProperty("userId")
-    private final String userId;
-    @JsonProperty("external")
-    private final boolean isExternal;
-    @JsonProperty("lastTransactionDate")
-    private final LocalDate lastTransactionDate;
-    @JsonProperty("overdraft")
-    private final boolean isOverdraft;
-    @JsonProperty("archived")
-    private final boolean isArchived;
-
-
+public record NodeResponseTo(
+        @JsonProperty("id") String id,
+        @JsonProperty("name") String name,
+        @JsonProperty("description") String description,
+        @JsonProperty("currencySymbol") String currencySymbol,
+        @JsonProperty("currencyId") String currencyId,
+        @JsonProperty("amount") BigDecimal amount,
+        @JsonProperty("userId") String userId,
+        @JsonProperty("external") boolean isExternal,
+        @JsonProperty("lastTransactionDate") LocalDate lastTransactionDate,
+        @JsonProperty("overdraft") boolean isOverdraft,
+        @JsonProperty("archived") boolean isArchived
+) {
 }

@@ -88,8 +88,8 @@ public class TransactionPostgresExtendedInfoDao implements TransactionExtendedIn
                                  order by timestamp desc, order_number desc
                         """,
                 Map.of("userId", userId,
-                       "from", filter.getFrom().atStartOfDay(),
-                       "to", filter.getTo().plusDays(1).atStartOfDay()),
+                       "from", filter.from().atStartOfDay(),
+                       "to", filter.to().plusDays(1).atStartOfDay()),
                 this::mapRowToTransaction);
     }
 

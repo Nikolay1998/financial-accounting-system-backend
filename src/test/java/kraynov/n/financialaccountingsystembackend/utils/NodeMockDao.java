@@ -16,7 +16,7 @@ public class NodeMockDao implements NodeDao {
 
     @Override
     public NodeDto save(NodeDto node) {
-        nodes.put(node.getId(), node);
+        nodes.put(node.id(), node);
         return node;
     }
 
@@ -34,8 +34,8 @@ public class NodeMockDao implements NodeDao {
     public List<NodeExtendedInfoDto> getAll(String userId) {
         return nodes.values().stream().map(nodeDto -> NodeExtendedInfoDto
                         .builder()
-                        .id(nodeDto.getId())
-                        .name(nodeDto.getName())
+                        .id(nodeDto.id())
+                        .name(nodeDto.name())
                         .lastTransactionDate(LocalDate.of(2020, 1, 1))
                         .build())
                 .collect(Collectors.toList());
@@ -46,7 +46,7 @@ public class NodeMockDao implements NodeDao {
             NodeDto node,
             String userId
     ) {
-        nodes.put(node.getId(), node);
+        nodes.put(node.id(), node);
         return node;
     }
 }

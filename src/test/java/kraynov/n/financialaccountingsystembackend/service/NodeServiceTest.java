@@ -47,19 +47,19 @@ public class NodeServiceTest {
     public void calculateTransactionAffectionTest() {
 
         TransactionDto transaction = testHelper
-                .createTransactionDto(firstNode.getId(), secondNode.getId(), new BigDecimal(100));
+                .createTransactionDto(firstNode.id(), secondNode.id(), new BigDecimal(100));
         nodeService.calculateTransactionAffection(transaction);
 
-        NodeDto senderNode = nodeDao.getById(this.firstNode.getId());
-        NodeDto receiverNode = nodeDao.getById(this.secondNode.getId());
-        Assert.assertEquals(new BigDecimal(0), senderNode.getAmount());
-        Assert.assertEquals(new BigDecimal(200), receiverNode.getAmount());
+        NodeDto senderNode = nodeDao.getById(this.firstNode.id());
+        NodeDto receiverNode = nodeDao.getById(this.secondNode.id());
+        Assert.assertEquals(new BigDecimal(0), senderNode.amount());
+        Assert.assertEquals(new BigDecimal(200), receiverNode.amount());
     }
 
     @Test(expected = InsufficientFundsException.class)
     public void calculateTransactionAffectionInsufficientFundsTest() {
         TransactionDto transaction = testHelper
-                .createTransactionDto(firstNode.getId(), secondNode.getId(), new BigDecimal(101));
+                .createTransactionDto(firstNode.id(), secondNode.id(), new BigDecimal(101));
 
         nodeService.calculateTransactionAffection(transaction);
     }
@@ -67,21 +67,21 @@ public class NodeServiceTest {
     @Test
     public void cancelTransactionAffectionTest() {
         TransactionDto transaction = testHelper
-                .createTransactionDto(firstNode.getId(), secondNode.getId(), new BigDecimal(100));
+                .createTransactionDto(firstNode.id(), secondNode.id(), new BigDecimal(100));
 
         nodeService.calculateTransactionAffection(transaction);
 
-        NodeDto senderNode = nodeDao.getById(this.firstNode.getId());
-        NodeDto receiverNode = nodeDao.getById(this.secondNode.getId());
-        Assert.assertEquals(new BigDecimal(0), senderNode.getAmount());
-        Assert.assertEquals(new BigDecimal(200), receiverNode.getAmount());
+        NodeDto senderNode = nodeDao.getById(this.firstNode.id());
+        NodeDto receiverNode = nodeDao.getById(this.secondNode.id());
+        Assert.assertEquals(new BigDecimal(0), senderNode.amount());
+        Assert.assertEquals(new BigDecimal(200), receiverNode.amount());
 
         nodeService.cancelTransactionAffection(transaction);
 
-        senderNode = nodeDao.getById(this.firstNode.getId());
-        receiverNode = nodeDao.getById(this.secondNode.getId());
-        Assert.assertEquals(new BigDecimal(100), senderNode.getAmount());
-        Assert.assertEquals(new BigDecimal(100), receiverNode.getAmount());
+        senderNode = nodeDao.getById(this.firstNode.id());
+        receiverNode = nodeDao.getById(this.secondNode.id());
+        Assert.assertEquals(new BigDecimal(100), senderNode.amount());
+        Assert.assertEquals(new BigDecimal(100), receiverNode.amount());
 
     }
 }

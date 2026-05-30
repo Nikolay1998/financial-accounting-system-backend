@@ -29,13 +29,13 @@ public class NodePostgresDao implements NodeDao {
     public NodeDto save(NodeDto node) {
         jdbcTemplate.update(
                 "insert into node values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                node.getId(),
-                node.getName(),
-                node.getDescription(),
-                node.getCurrencyId(),
-                node.getAmount(),
+                node.id(),
+                node.name(),
+                node.description(),
+                node.currencyId(),
+                node.amount(),
                 node.isExternal(),
-                node.getUserId(),
+                node.userId(),
                 node.isOverdraft(),
                 node.isArchived()
         );
@@ -67,15 +67,15 @@ public class NodePostgresDao implements NodeDao {
                         is_archived = :is_archived
                         where id = :id and user_id = :user_id
                         """,
-                Map.of("name", node.getName(),
-                       "description", node.getDescription(),
-                       "currencyid", node.getCurrencyId(),
-                       "amount", node.getAmount(),
+                Map.of("name", node.name(),
+                       "description", node.description(),
+                       "currencyid", node.currencyId(),
+                       "amount", node.amount(),
                        "user_id", userId,
                        "is_external", node.isExternal(),
                        "is_overdraft", node.isOverdraft(),
                        "is_archived", node.isArchived(),
-                       "id", node.getId()));
+                       "id", node.id()));
         if (updated > 0) {
             return node;
         }
