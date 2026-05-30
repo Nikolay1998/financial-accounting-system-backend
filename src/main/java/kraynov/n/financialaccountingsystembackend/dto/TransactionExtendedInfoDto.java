@@ -26,7 +26,24 @@ public class TransactionExtendedInfoDto {
     private final String receiverName;
     private final Integer order;
 
-    private TransactionExtendedInfoDto(String id, String description, String senderNodeId, String receiverNodeId, BigDecimal senderAmount, BigDecimal receiverAmount, LocalDate date, boolean isCancelled, String userId, boolean isFromExternal, boolean isToExternal, String senderCurrencyId, String receiverCurrencyId, String senderName, String receiverName, Integer order) {
+    private TransactionExtendedInfoDto(
+            String id,
+            String description,
+            String senderNodeId,
+            String receiverNodeId,
+            BigDecimal senderAmount,
+            BigDecimal receiverAmount,
+            LocalDate date,
+            boolean isCancelled,
+            String userId,
+            boolean isFromExternal,
+            boolean isToExternal,
+            String senderCurrencyId,
+            String receiverCurrencyId,
+            String senderName,
+            String receiverName,
+            Integer order
+    ) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;

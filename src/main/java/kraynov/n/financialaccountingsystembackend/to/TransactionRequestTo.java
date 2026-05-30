@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-public class TransactionRequestTO {
+public class TransactionRequestTo {
     @JsonProperty("id")
     private final String id;
     @JsonProperty("description")
@@ -31,7 +31,19 @@ public class TransactionRequestTO {
     @JsonProperty("userId")
     private final String userId;
 
-    private TransactionRequestTO(String id, String description, String senderNodeId, String receiverNodeId, BigDecimal senderAmount, BigDecimal receiverAmount, String senderCurrencyId, String receiverCurrencyId, LocalDate date, boolean isCancelled, String userId) {
+    private TransactionRequestTo(
+            String id,
+            String description,
+            String senderNodeId,
+            String receiverNodeId,
+            BigDecimal senderAmount,
+            BigDecimal receiverAmount,
+            String senderCurrencyId,
+            String receiverCurrencyId,
+            LocalDate date,
+            boolean isCancelled,
+            String userId
+    ) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;

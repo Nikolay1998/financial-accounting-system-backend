@@ -27,7 +27,10 @@ public interface TransactionService {
 
     TransactionDto restore(String transactionId);
 
-    List<TransactionExtendedInfoDto> swapOrder(String firstTransactionId, String secondTransactionId);
+    List<TransactionExtendedInfoDto> swapOrder(
+            String firstTransactionId,
+            String secondTransactionId
+    );
 
     List<TransactionExtendedInfoDto> getAllByFilter(TransactionFilterDto filter);
 }

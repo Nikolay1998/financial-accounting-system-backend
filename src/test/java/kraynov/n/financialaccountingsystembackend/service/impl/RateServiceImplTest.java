@@ -15,36 +15,24 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.anySet;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RateServiceImplTest {
 
+    private final String userId = "user-123";
     @Mock
     private RateClient rateClient;
-
     @Mock
     private NodeService nodeService;
-
     @Mock
     private ContextHolderFacade contextHolderFacade;
-
     @InjectMocks
     private RateServiceImpl rateService;
-
-    private final String userId = "user-123";
 
     @BeforeEach
     void setUp() {

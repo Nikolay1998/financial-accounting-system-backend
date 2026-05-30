@@ -12,7 +12,13 @@ public class CurrencyDto {
     private final String symbol;
     private final short isoCode;
 
-    private CurrencyDto(String id, String shortName, String fullName, String symbol, short isoCode) {
+    private CurrencyDto(
+            String id,
+            String shortName,
+            String fullName,
+            String symbol,
+            short isoCode
+    ) {
         this.id = id;
         this.shortName = shortName;
         this.fullName = fullName;

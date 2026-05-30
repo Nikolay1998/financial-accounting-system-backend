@@ -22,7 +22,18 @@ public class TransactionDto {
     private final String userId;
     private final Integer order;
 
-    private TransactionDto(String id, String description, String senderNodeId, String receiverNodeId, BigDecimal senderAmount, BigDecimal receiverAmount, LocalDate date, boolean isCancelled, String userId, Integer order) {
+    private TransactionDto(
+            String id,
+            String description,
+            String senderNodeId,
+            String receiverNodeId,
+            BigDecimal senderAmount,
+            BigDecimal receiverAmount,
+            LocalDate date,
+            boolean isCancelled,
+            String userId,
+            Integer order
+    ) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;

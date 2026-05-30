@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class NodeResponseTO {
+public class NodeResponseTo {
     @JsonProperty("id")
     private final String id;
     @JsonProperty("name")

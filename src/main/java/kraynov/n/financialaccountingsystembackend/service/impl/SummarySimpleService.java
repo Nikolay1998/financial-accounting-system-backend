@@ -1,6 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
-import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
+import kraynov.n.financialaccountingsystembackend.dao.NodeDao;
 import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionFilterDto;
@@ -21,16 +21,18 @@ import java.util.*;
 public class SummarySimpleService implements SummaryService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SummarySimpleService.class);
-    private final NodeDAO nodeDAO;
+    private final NodeDao nodeDao;
     private final TransactionService transactionService;
     private final ContextHolderFacade contextHolderFacade;
     private final CurrencyService currencyService;
 
-    public SummarySimpleService(NodeDAO nodeDAO,
-                                TransactionService transactionService,
-                                ContextHolderFacade contextHolderFacade,
-                                CurrencyService currencyService) {
-        this.nodeDAO = nodeDAO;
+    public SummarySimpleService(
+            NodeDao nodeDao,
+            TransactionService transactionService,
+            ContextHolderFacade contextHolderFacade,
+            CurrencyService currencyService
+    ) {
+        this.nodeDao = nodeDao;
         this.transactionService = transactionService;
         this.contextHolderFacade = contextHolderFacade;
         this.currencyService = currencyService;
@@ -38,9 +40,9 @@ public class SummarySimpleService implements SummaryService {
 
     @Override
     public Map<String, BigDecimal> getSum() {
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        LOGGER.debug("Start computing sum for user with id = {}", userDTO.getId());
-        List<NodeExtendedInfoDto> nodes = nodeDAO.getAll(userDTO.getId()).stream().filter(n -> !n.isExternal()).toList();
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        LOGGER.debug("Start computing sum for user with id = {}", userDto.getId());
+        List<NodeExtendedInfoDto> nodes = nodeDao.getAll(userDto.getId()).stream().filter(n -> !n.isExternal()).toList();
         Map<String, BigDecimal> sum = new HashMap<>();
         for (NodeExtendedInfoDto node : nodes) {
             sum.merge(node.getCurrencyId(), node.getAmount(), BigDecimal::add);
@@ -50,10 +52,13 @@ public class SummarySimpleService implements SummaryService {
     }
 
     @Override
-    public PeriodStatsTo getBalanceChange(LocalDate from, LocalDate to) {
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+    public PeriodStatsTo getBalanceChange(
+            LocalDate from,
+            LocalDate to
+    ) {
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
 
-        LOGGER.debug("Start computing balance changes for user with id = {}", userDTO.getId());
+        LOGGER.debug("Start computing balance changes for user with id = {}", userDto.getId());
         List<TransactionExtendedInfoDto> transactionsByFilter = transactionService.getAllByFilter(
                 TransactionFilterDto.builder()
                         .to(to)
@@ -103,7 +108,10 @@ public class SummarySimpleService implements SummaryService {
     }
 
 
-    private List<CurrencyBalanceChangeTo> combineInAndOut(Map<String, BigDecimal> in, Map<String, BigDecimal> out) {
+    private List<CurrencyBalanceChangeTo> combineInAndOut(
+            Map<String, BigDecimal> in,
+            Map<String, BigDecimal> out
+    ) {
         Set<String> combinedCurrencyIds = new HashSet<>();
         combinedCurrencyIds.addAll(in.keySet());
         combinedCurrencyIds.addAll(out.keySet());
@@ -113,11 +121,11 @@ public class SummarySimpleService implements SummaryService {
             BigDecimal income = Optional.ofNullable(in.get(currencyId)).orElse(BigDecimal.ZERO);
             BigDecimal outgo = Optional.ofNullable(out.get(currencyId)).orElse(BigDecimal.ZERO);
             result.add(CurrencyBalanceChangeTo.builder()
-                    .currencyId(currencyId)
-                    .income(income)
-                    .outgo(outgo)
-                    .totalChange(income.subtract(outgo))
-                    .build());
+                               .currencyId(currencyId)
+                               .income(income)
+                               .outgo(outgo)
+                               .totalChange(income.subtract(outgo))
+                               .build());
         }
         return result;
     }

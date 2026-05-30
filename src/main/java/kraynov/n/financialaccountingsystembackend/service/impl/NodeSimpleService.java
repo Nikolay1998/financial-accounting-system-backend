@@ -1,6 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
-import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
+import kraynov.n.financialaccountingsystembackend.dao.NodeDao;
 import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
 import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
@@ -21,29 +21,32 @@ import java.util.UUID;
 public class NodeSimpleService implements NodeService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(NodeSimpleService.class);
-    public final NodeDAO nodeDAO;
+    public final NodeDao nodeDao;
     public final ContextHolderFacade contextHolderFacade;
 
-    public NodeSimpleService(NodeDAO nodeDAO, ContextHolderFacade contextHolderFacade) {
-        this.nodeDAO = nodeDAO;
+    public NodeSimpleService(
+            NodeDao nodeDao,
+            ContextHolderFacade contextHolderFacade
+    ) {
+        this.nodeDao = nodeDao;
         this.contextHolderFacade = contextHolderFacade;
     }
 
     @Override
     public NodeExtendedInfoDto add(NodeDto node) {
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
 
         validate(node);
 
         NodeDto nodeWithId = node.toBuilder()
                 .id(UUID.randomUUID().toString())
-                .userId(userDTO.getId())
+                .userId(userDto.getId())
                 .isOverdraft(node.isExternal() ? Boolean.TRUE : node.isOverdraft())
                 .build();
         LOGGER.debug("Start adding node {}", node);
-        nodeDAO.save(nodeWithId);
+        nodeDao.save(nodeWithId);
 
-        return nodeDAO.getExtendedInfoById(nodeWithId.getId());
+        return nodeDao.getExtendedInfoById(nodeWithId.getId());
     }
 
     private void validate(NodeDto node) {
@@ -63,38 +66,38 @@ public class NodeSimpleService implements NodeService {
 
         validate(node);
 
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        nodeDAO.update(node, userDTO.getId());
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        nodeDao.update(node, userDto.getId());
 
-        return nodeDAO.getExtendedInfoById(node.getId());
+        return nodeDao.getExtendedInfoById(node.getId());
     }
 
     @Override
     public NodeExtendedInfoDto get(String id) {
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        NodeDto node = nodeDAO.getById(id);
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        NodeDto node = nodeDao.getById(id);
         if (node == null) {
             throw new InvalidOperationException(
                     String.format("Node %s not found", id),
                     "node not found");
         }
-        if (!node.getUserId().equals(userDTO.getId())) {
+        if (!node.getUserId().equals(userDto.getId())) {
             throw new ForbiddenOperationException("Requested node belongs to another user");
         }
-        return nodeDAO.getExtendedInfoById(id);
+        return nodeDao.getExtendedInfoById(id);
     }
 
     @Override
     public List<NodeExtendedInfoDto> getAllByUser(String userId) {
         LOGGER.debug("Start loading all nodes for user with id {}", userId);
-        return nodeDAO.getAll(userId);
+        return nodeDao.getAll(userId);
     }
 
     @Transactional
     @Override
     public NodeExtendedInfoDto archive(String id) {
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        NodeDto nodeToArchive = nodeDAO.getById(id);
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        NodeDto nodeToArchive = nodeDao.getById(id);
         if (nodeToArchive.isArchived()) {
             throw new InvalidOperationException(
                     String.format("Node %s is already archived", nodeToArchive.getId()),
@@ -104,15 +107,15 @@ public class NodeSimpleService implements NodeService {
         NodeDto archivedNode = nodeToArchive
                 .withArchived(Boolean.TRUE);
 
-        nodeDAO.update(archivedNode, userDTO.getId());
-        return nodeDAO.getExtendedInfoById(id);
+        nodeDao.update(archivedNode, userDto.getId());
+        return nodeDao.getExtendedInfoById(id);
     }
 
     @Transactional
     @Override
     public NodeExtendedInfoDto restore(String id) {
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        NodeDto nodeToRestore = nodeDAO.getById(id);
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        NodeDto nodeToRestore = nodeDao.getById(id);
         if (!nodeToRestore.isArchived()) {
             throw new InvalidOperationException(
                     String.format("Node %s is not archived", nodeToRestore.getId()),
@@ -122,8 +125,8 @@ public class NodeSimpleService implements NodeService {
         NodeDto restoredNode = nodeToRestore
                 .withArchived(Boolean.FALSE);
 
-        nodeDAO.update(restoredNode, userDTO.getId());
-        return nodeDAO.getExtendedInfoById(id);
+        nodeDao.update(restoredNode, userDto.getId());
+        return nodeDao.getExtendedInfoById(id);
     }
 
     @Override
@@ -133,7 +136,7 @@ public class NodeSimpleService implements NodeService {
             calculate(transaction);
         } catch (InsufficientFundsException e) {
             LOGGER.debug("Not enough amount ({}) on sender node with id = {} ({})", transaction.getSenderAmount(),
-                    transaction.getSenderNodeId(), transaction.getSenderAmount());
+                         transaction.getSenderNodeId(), transaction.getSenderAmount());
             throw e;
         }
     }
@@ -149,18 +152,18 @@ public class NodeSimpleService implements NodeService {
             calculate(reversedTransaction);
         } catch (InsufficientFundsException e) {
             LOGGER.debug("Not enough amount ({}) on receiver node with id = {} ({}) to cancel transaction",
-                    transaction.getSenderAmount(), transaction.getSenderNodeId(), transaction.getSenderAmount());
+                         transaction.getSenderAmount(), transaction.getSenderNodeId(), transaction.getSenderAmount());
             throw e;
         }
     }
 
     private void calculate(TransactionDto transaction) {
-        NodeDto senderNode = nodeDAO.getById(transaction.getSenderNodeId());
-        NodeDto receiverNode = nodeDAO.getById(transaction.getReceiverNodeId());
+        NodeDto senderNode = nodeDao.getById(transaction.getSenderNodeId());
+        NodeDto receiverNode = nodeDao.getById(transaction.getReceiverNodeId());
 
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        if (!senderNode.getUserId().equals(userDTO.getId()) ||
-                !receiverNode.getUserId().equals(userDTO.getId())) {
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        if (!senderNode.getUserId().equals(userDto.getId()) ||
+                !receiverNode.getUserId().equals(userDto.getId())) {
             throw new ForbiddenOperationException("Requested transaction from another user node");
         }
 
@@ -174,7 +177,7 @@ public class NodeSimpleService implements NodeService {
             throw new InsufficientFundsException("Not enough amount on sender node");
         }
 
-        nodeDAO.update(newSenderNode, userDTO.getId());
-        nodeDAO.update(newReceiverNode, userDTO.getId());
+        nodeDao.update(newSenderNode, userDto.getId());
+        nodeDao.update(newReceiverNode, userDto.getId());
     }
 }

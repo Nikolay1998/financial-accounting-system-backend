@@ -20,7 +20,17 @@ public class NodeDto {
     private final boolean isOverdraft;
     private final boolean isArchived;
 
-    private NodeDto(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean isExternal, boolean isOverdraft, boolean isArchived) {
+    private NodeDto(
+            String id,
+            String name,
+            String description,
+            String currencyId,
+            BigDecimal amount,
+            String userId,
+            boolean isExternal,
+            boolean isOverdraft,
+            boolean isArchived
+    ) {
         this.id = id;
         this.name = name;
         this.description = description;

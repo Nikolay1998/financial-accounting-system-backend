@@ -70,8 +70,10 @@ public class RateServiceImpl implements RateService {
                 .collect(Collectors.toSet());
     }
 
-    private Set<CurrencyIdPairTo> generateAllPairs(Set<String> incomingCurrencies,
-                                                   Set<String> userCurrencies) {
+    private Set<CurrencyIdPairTo> generateAllPairs(
+            Set<String> incomingCurrencies,
+            Set<String> userCurrencies
+    ) {
         Set<CurrencyIdPairTo> pairs = new HashSet<>();
         for (String from : incomingCurrencies) {
             for (String to : userCurrencies) {

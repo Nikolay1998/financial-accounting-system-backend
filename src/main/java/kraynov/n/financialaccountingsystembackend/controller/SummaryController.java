@@ -27,8 +27,10 @@ public class SummaryController {
 
     @CrossOrigin
     @GetMapping(path = "/period-stats", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PeriodStatsTo getBalanceChange(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+    public PeriodStatsTo getBalanceChange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    ) {
         return summaryService.getBalanceChange(from, to);
     }
 }

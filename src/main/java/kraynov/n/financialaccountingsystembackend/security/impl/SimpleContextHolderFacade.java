@@ -24,11 +24,11 @@ public class SimpleContextHolderFacade implements ContextHolderFacade {
 
     @Override
     public UserDetailsDto getAuthenticatedUserOrThrowException() {
-        UserDetailsDto userDTO = getAuthenticatedUser();
-        if (userDTO == null) {
+        UserDetailsDto userDto = getAuthenticatedUser();
+        if (userDto == null) {
             throw new NotAuthenticatedException("Can't find authenticated user");
         }
-        return userDTO;
+        return userDto;
     }
 
 

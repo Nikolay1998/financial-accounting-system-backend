@@ -12,7 +12,11 @@ public class UserDetailsDto implements UserDetails {
     private final String password;
     private final String username;
 
-    public UserDetailsDto(String id, String userName, String password) {
+    public UserDetailsDto(
+            String id,
+            String userName,
+            String password
+    ) {
         this.id = id;
         this.password = password;
         this.username = userName;

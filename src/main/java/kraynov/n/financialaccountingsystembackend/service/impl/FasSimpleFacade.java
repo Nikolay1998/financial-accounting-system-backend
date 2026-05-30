@@ -11,7 +11,10 @@ public class FasSimpleFacade implements FasFacade {
     private final NodeService nodeService;
     private final TransactionService transactionService;
 
-    public FasSimpleFacade(NodeService nodeService, TransactionService transactionService) {
+    public FasSimpleFacade(
+            NodeService nodeService,
+            TransactionService transactionService
+    ) {
         this.nodeService = nodeService;
         this.transactionService = transactionService;
     }

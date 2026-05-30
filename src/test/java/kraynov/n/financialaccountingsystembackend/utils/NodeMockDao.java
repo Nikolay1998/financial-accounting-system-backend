@@ -1,6 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.utils;
 
-import kraynov.n.financialaccountingsystembackend.dao.NodeDAO;
+import kraynov.n.financialaccountingsystembackend.dao.NodeDao;
 import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
 import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class NodeMockDAO implements NodeDAO {
+public class NodeMockDao implements NodeDao {
 
     private final Map<String, NodeDto> nodes = new HashMap<>();
 
@@ -42,7 +42,10 @@ public class NodeMockDAO implements NodeDAO {
     }
 
     @Override
-    public NodeDto update(NodeDto node, String userId) {
+    public NodeDto update(
+            NodeDto node,
+            String userId
+    ) {
         nodes.put(node.getId(), node);
         return node;
     }

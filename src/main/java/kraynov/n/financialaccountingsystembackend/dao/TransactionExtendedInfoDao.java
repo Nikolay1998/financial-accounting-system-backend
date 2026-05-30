@@ -5,7 +5,7 @@ import kraynov.n.financialaccountingsystembackend.dto.TransactionFilterDto;
 
 import java.util.List;
 
-public interface TransactionExtendedInfoDAO {
+public interface TransactionExtendedInfoDao {
 
     TransactionExtendedInfoDto get(String transactionId);
 
@@ -19,5 +19,8 @@ public interface TransactionExtendedInfoDAO {
 
     List<TransactionExtendedInfoDto> getAllByIds(List<String> ids);
 
-    List<TransactionExtendedInfoDto> getAllByFilter(TransactionFilterDto filter, String userId);
+    List<TransactionExtendedInfoDto> getAllByFilter(
+            TransactionFilterDto filter,
+            String userId
+    );
 }

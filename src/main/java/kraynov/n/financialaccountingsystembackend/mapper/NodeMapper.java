@@ -3,8 +3,8 @@ package kraynov.n.financialaccountingsystembackend.mapper;
 import kraynov.n.financialaccountingsystembackend.dto.NodeDto;
 import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.service.CurrencyService;
-import kraynov.n.financialaccountingsystembackend.to.NodeRequestTO;
-import kraynov.n.financialaccountingsystembackend.to.NodeResponseTO;
+import kraynov.n.financialaccountingsystembackend.to.NodeRequestTo;
+import kraynov.n.financialaccountingsystembackend.to.NodeResponseTo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,7 +16,10 @@ public class NodeMapper {
         this.currencyService = currencyService;
     }
 
-    public static int compareNodeVO(NodeResponseTO node1, NodeResponseTO node2) {
+    public static int compareNodeVO(
+            NodeResponseTo node1,
+            NodeResponseTo node2
+    ) {
         if (node1.isExternal() != node2.isExternal()) {
             return Boolean.compare(node1.isExternal(), node2.isExternal());
         }
@@ -30,8 +33,8 @@ public class NodeMapper {
         return node2.getLastTransactionDate().compareTo(node1.getLastTransactionDate());
     }
 
-    public NodeResponseTO responseFromDto(NodeExtendedInfoDto node) {
-        return NodeResponseTO.builder()
+    public NodeResponseTo responseFromDto(NodeExtendedInfoDto node) {
+        return NodeResponseTo.builder()
                 .id(node.getId())
                 .name(node.getName())
                 .description(node.getDescription())
@@ -46,17 +49,17 @@ public class NodeMapper {
                 .build();
     }
 
-    public NodeDto dtoFromRequest(NodeRequestTO nodeRequestTO) {
+    public NodeDto dtoFromRequest(NodeRequestTo nodeRequestTo) {
         return NodeDto.builder()
-                .id(nodeRequestTO.getId())
-                .name(nodeRequestTO.getName())
-                .description(nodeRequestTO.getDescription())
-                .amount(nodeRequestTO.getAmount())
-                .currencyId(nodeRequestTO.getCurrencyId())
-                .isExternal(nodeRequestTO.isExternal())
-                .userId(nodeRequestTO.getUserId())
-                .isOverdraft(nodeRequestTO.isOverdraft())
-                .isArchived(nodeRequestTO.isArchived())
+                .id(nodeRequestTo.getId())
+                .name(nodeRequestTo.getName())
+                .description(nodeRequestTo.getDescription())
+                .amount(nodeRequestTo.getAmount())
+                .currencyId(nodeRequestTo.getCurrencyId())
+                .isExternal(nodeRequestTo.isExternal())
+                .userId(nodeRequestTo.getUserId())
+                .isOverdraft(nodeRequestTo.isOverdraft())
+                .isArchived(nodeRequestTo.isArchived())
                 .build();
     }
 }

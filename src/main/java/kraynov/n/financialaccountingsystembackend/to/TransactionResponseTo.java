@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class TransactionResponseTO {
+public class TransactionResponseTo {
     @JsonProperty("id")
     private final String id;
     @JsonProperty("description")
@@ -47,7 +47,26 @@ public class TransactionResponseTO {
     @JsonProperty("order")
     private final int order;
 
-    private TransactionResponseTO(String id, String description, String senderNodeId, String receiverNodeId, String senderNodeName, String receiverNodeName, BigDecimal senderAmount, BigDecimal receiverAmount, String senderCurrencyId, String senderCurrencySymbol, String receiverCurrencyId, String receiverCurrencySymbol, LocalDate date, boolean isCancelled, String userId, boolean isFromExternal, boolean isToExternal, int order) {
+    private TransactionResponseTo(
+            String id,
+            String description,
+            String senderNodeId,
+            String receiverNodeId,
+            String senderNodeName,
+            String receiverNodeName,
+            BigDecimal senderAmount,
+            BigDecimal receiverAmount,
+            String senderCurrencyId,
+            String senderCurrencySymbol,
+            String receiverCurrencyId,
+            String receiverCurrencySymbol,
+            LocalDate date,
+            boolean isCancelled,
+            String userId,
+            boolean isFromExternal,
+            boolean isToExternal,
+            int order
+    ) {
         this.id = id;
         this.description = description;
         this.senderNodeId = senderNodeId;

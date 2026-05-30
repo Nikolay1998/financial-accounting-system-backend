@@ -10,6 +10,9 @@ import java.util.Map;
 public interface SummaryService {
     Map<String, BigDecimal> getSum();
 
-    PeriodStatsTo getBalanceChange(LocalDate from, LocalDate to);
+    PeriodStatsTo getBalanceChange(
+            LocalDate from,
+            LocalDate to
+    );
 
 }

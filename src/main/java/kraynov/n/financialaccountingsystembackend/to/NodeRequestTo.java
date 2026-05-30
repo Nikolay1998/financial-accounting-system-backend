@@ -6,7 +6,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class NodeRequestTO {
+public class NodeRequestTo {
     @JsonProperty("id")
     private final String id;
     @JsonProperty("name")
@@ -26,7 +26,17 @@ public class NodeRequestTO {
     @JsonProperty("archived")
     private final boolean isArchived;
 
-    private NodeRequestTO(String id, String name, String description, String currencyId, BigDecimal amount, String userId, boolean isExternal, boolean isOverdraft, boolean isArchived) {
+    private NodeRequestTo(
+            String id,
+            String name,
+            String description,
+            String currencyId,
+            BigDecimal amount,
+            String userId,
+            boolean isExternal,
+            boolean isOverdraft,
+            boolean isArchived
+    ) {
         this.id = id;
         this.name = name;
         this.description = description;

@@ -1,6 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
-import kraynov.n.financialaccountingsystembackend.dao.CurrencyDAO;
+import kraynov.n.financialaccountingsystembackend.dao.CurrencyDao;
 import kraynov.n.financialaccountingsystembackend.dto.CurrencyDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,16 +12,16 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class CurrencyCachedDAO implements CurrencyDAO {
+public class CurrencyCachedDao implements CurrencyDao {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final CurrencyDAO currencyDAO;
+    private final CurrencyDao currencyDao;
     private final Map<String, CurrencyDto> currencies = new HashMap<>();
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public CurrencyCachedDAO(CurrencyDAO currencyDAO) {
-        this.currencyDAO = currencyDAO;
+    public CurrencyCachedDao(CurrencyDao currencyDao) {
+        this.currencyDao = currencyDao;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class CurrencyCachedDAO implements CurrencyDAO {
             lock.readLock().unlock();
             lock.writeLock().lock();
             if (currencies.isEmpty()) {
-                currencies.putAll(currencyDAO.getAll().stream().collect(Collectors.toMap(CurrencyDto::getId, c -> c)));
+                currencies.putAll(currencyDao.getAll().stream().collect(Collectors.toMap(CurrencyDto::getId, c -> c)));
             }
             lock.writeLock().unlock();
             return List.copyOf(currencies.values());
@@ -43,10 +43,10 @@ public class CurrencyCachedDAO implements CurrencyDAO {
     @Override
     public CurrencyDto getById(String id) {
         getAll();
-        CurrencyDto currencyDTO = currencies.get(id);
-        if (currencyDTO == null) {
+        CurrencyDto currencyDto = currencies.get(id);
+        if (currencyDto == null) {
             logger.warn("getById : {}, currencies : {}", id, currencies);
         }
-        return currencyDTO;
+        return currencyDto;
     }
 }

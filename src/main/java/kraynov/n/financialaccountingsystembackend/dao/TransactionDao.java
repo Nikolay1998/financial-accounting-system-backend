@@ -5,13 +5,16 @@ import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import java.sql.BatchUpdateException;
 import java.util.List;
 
-public interface TransactionDAO {
+public interface TransactionDao {
 
     TransactionDto get(String transactionId);
 
     TransactionDto save(TransactionDto transaction);
 
-    TransactionDto update(TransactionDto transaction, String userId);
+    TransactionDto update(
+            TransactionDto transaction,
+            String userId
+    );
 
     List<TransactionDto> getAllByIds(List<String> ids);
 

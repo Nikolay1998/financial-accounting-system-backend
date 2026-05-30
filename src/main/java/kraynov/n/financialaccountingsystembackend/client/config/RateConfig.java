@@ -12,8 +12,10 @@ import org.springframework.web.client.RestTemplate;
 public class RateConfig {
 
     @Bean
-    public RestTemplate rateRestTemplate(RestTemplateBuilder restTemplateBuilder,
-                                         @Value("${rate-service.url}") String rateServiceUrl) {
+    public RestTemplate rateRestTemplate(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${rate-service.url}") String rateServiceUrl
+    ) {
         return restTemplateBuilder.rootUri(rateServiceUrl).build();
     }
 
