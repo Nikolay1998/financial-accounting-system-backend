@@ -71,14 +71,23 @@ public class NodeSimpleService implements NodeService {
 
     @Override
     public NodeExtendedInfoDto get(String id) {
+        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        NodeDto node = nodeDAO.getById(id);
+        if (node == null) {
+            throw new InvalidOperationException(
+                    String.format("Node %s not found", id),
+                    "node not found");
+        }
+        if (!node.getUserId().equals(userDTO.getId())) {
+            throw new ForbiddenOperationException("Requested node belongs to another user");
+        }
         return nodeDAO.getExtendedInfoById(id);
     }
 
     @Override
-    public List<NodeExtendedInfoDto> getAll() {
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        LOGGER.debug("Start loading all nodes for user with id {}", userDTO.getId());
-        return nodeDAO.getAll(userDTO.getId());
+    public List<NodeExtendedInfoDto> getAllByUser(String userId) {
+        LOGGER.debug("Start loading all nodes for user with id {}", userId);
+        return nodeDAO.getAll(userId);
     }
 
     @Transactional
