@@ -47,7 +47,8 @@ public class NodePostgresDao implements NodeDao {
         return namedJdbc.queryForObject(
                 "select * from node_with_last_transaction_date where id = :nodeId",
                 Map.of("nodeId", nodeId),
-                this::mapRowToExtendedNodeInfo);
+                this::mapRowToExtendedNodeInfo
+        );
     }
 
     @Override
@@ -67,15 +68,18 @@ public class NodePostgresDao implements NodeDao {
                         is_archived = :is_archived
                         where id = :id and user_id = :user_id
                         """,
-                Map.of("name", node.name(),
-                       "description", node.description(),
-                       "currencyid", node.currencyId(),
-                       "amount", node.amount(),
-                       "user_id", userId,
-                       "is_external", node.isExternal(),
-                       "is_overdraft", node.isOverdraft(),
-                       "is_archived", node.isArchived(),
-                       "id", node.id()));
+                Map.of(
+                        "name", node.name(),
+                        "description", node.description(),
+                        "currencyid", node.currencyId(),
+                        "amount", node.amount(),
+                        "user_id", userId,
+                        "is_external", node.isExternal(),
+                        "is_overdraft", node.isOverdraft(),
+                        "is_archived", node.isArchived(),
+                        "id", node.id()
+                )
+        );
         if (updated > 0) {
             return node;
         }
@@ -87,7 +91,8 @@ public class NodePostgresDao implements NodeDao {
         return namedJdbc.queryForObject(
                 "select * from node where id = :nodeId",
                 Map.of("nodeId", nodeId),
-                this::mapRowToNode);
+                this::mapRowToNode
+        );
     }
 
     @Override
@@ -95,7 +100,8 @@ public class NodePostgresDao implements NodeDao {
         return namedJdbc.query(
                 "select * from node_with_last_transaction_date where user_id = :userId",
                 Map.of("userId", userId),
-                this::mapRowToExtendedNodeInfo);
+                this::mapRowToExtendedNodeInfo
+        );
     }
 
     private NodeExtendedInfoDto mapRowToExtendedNodeInfo(
@@ -112,8 +118,10 @@ public class NodePostgresDao implements NodeDao {
                 .isExternal(row.getBoolean("is_external"))
                 .lastTransactionDate(
                         row.getTimestamp("last_transaction_date") == null ? null :
-                                LocalDate.ofInstant(row.getTimestamp("last_transaction_date").toInstant(),
-                                                    TimeZone.getDefault().toZoneId()))
+                                LocalDate.ofInstant(
+                                        row.getTimestamp("last_transaction_date").toInstant(),
+                                        TimeZone.getDefault().toZoneId()
+                                ))
                 .isOverdraft(row.getBoolean("is_overdraft"))
                 .isArchived(row.getBoolean("is_archived"))
                 .build();

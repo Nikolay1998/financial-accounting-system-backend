@@ -56,7 +56,8 @@ public class NodeSimpleService implements NodeService {
         if (!node.isOverdraft() && !node.isExternal() && node.amount().compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidOperationException(
                     String.format("Node %s is not overdraft and have negative balance", node.id()),
-                    "node should be overdraft to have negative balance");
+                    "node should be overdraft to have negative balance"
+            );
         }
     }
 
@@ -79,7 +80,8 @@ public class NodeSimpleService implements NodeService {
         if (node == null) {
             throw new InvalidOperationException(
                     String.format("Node %s not found", id),
-                    "node not found");
+                    "node not found"
+            );
         }
         if (!node.userId().equals(userDto.getId())) {
             throw new ForbiddenOperationException("Requested node belongs to another user");
@@ -101,7 +103,8 @@ public class NodeSimpleService implements NodeService {
         if (nodeToArchive.isArchived()) {
             throw new InvalidOperationException(
                     String.format("Node %s is already archived", nodeToArchive.id()),
-                    String.format("node %s is already archived", nodeToArchive.name()));
+                    String.format("node %s is already archived", nodeToArchive.name())
+            );
         }
 
         NodeDto archivedNode = nodeToArchive
@@ -119,7 +122,8 @@ public class NodeSimpleService implements NodeService {
         if (!nodeToRestore.isArchived()) {
             throw new InvalidOperationException(
                     String.format("Node %s is not archived", nodeToRestore.id()),
-                    String.format("node %s is not archived", nodeToRestore.name()));
+                    String.format("node %s is not archived", nodeToRestore.name())
+            );
         }
 
         NodeDto restoredNode = nodeToRestore
@@ -135,8 +139,10 @@ public class NodeSimpleService implements NodeService {
         try {
             calculate(transaction);
         } catch (InsufficientFundsException e) {
-            LOGGER.debug("Not enough amount ({}) on sender node with id = {} ({})", transaction.senderAmount(),
-                         transaction.senderNodeId(), transaction.senderAmount());
+            LOGGER.debug(
+                    "Not enough amount ({}) on sender node with id = {} ({})", transaction.senderAmount(),
+                    transaction.senderNodeId(), transaction.senderAmount()
+            );
             throw e;
         }
     }
@@ -151,8 +157,10 @@ public class NodeSimpleService implements NodeService {
         try {
             calculate(reversedTransaction);
         } catch (InsufficientFundsException e) {
-            LOGGER.debug("Not enough amount ({}) on receiver node with id = {} ({}) to cancel transaction",
-                         transaction.senderAmount(), transaction.senderNodeId(), transaction.senderAmount());
+            LOGGER.debug(
+                    "Not enough amount ({}) on receiver node with id = {} ({}) to cancel transaction",
+                    transaction.senderAmount(), transaction.senderNodeId(), transaction.senderAmount()
+            );
             throw e;
         }
     }

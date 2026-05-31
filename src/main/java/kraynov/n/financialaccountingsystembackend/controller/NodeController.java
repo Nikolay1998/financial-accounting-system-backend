@@ -66,7 +66,8 @@ public class NodeController {
         if (edited == null) {
             throw new InvalidOperationException(
                     String.format("Node with id '%s' not found", node.id()),
-                    String.format("node with name '%s' not found", node.name()));
+                    String.format("node with name '%s' not found", node.name())
+            );
         }
         return nodeMapper.responseFromDto(edited);
     }

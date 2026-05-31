@@ -85,7 +85,8 @@ public class TransactionSimpleService implements TransactionService {
         if (transactionToCancel.isCancelled()) {
             throw new InvalidOperationException(
                     String.format("Transaction %s has been cancelled", transactionId),
-                    "transaction already canceled");
+                    "transaction already canceled"
+            );
         }
         UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
         TransactionDto canceledTransaction = transactionToCancel
@@ -109,7 +110,8 @@ public class TransactionSimpleService implements TransactionService {
         if (updated == null) {
             throw new InvalidOperationException(
                     String.format("Can't find transaction for edit with id = %s", transaction.id()),
-                    "transaction " + transaction.description() + " not found");
+                    "transaction " + transaction.description() + " not found"
+            );
         }
 
         return transactionExtendedInfoDao.get(transaction.id());
@@ -122,7 +124,8 @@ public class TransactionSimpleService implements TransactionService {
         if (!transactionToRestore.isCancelled()) {
             throw new InvalidOperationException(
                     String.format("transaction %s is not canceled", transactionToRestore.id()),
-                    String.format("transaction %s is not canceled", transactionToRestore.description()));
+                    String.format("transaction %s is not canceled", transactionToRestore.description())
+            );
         }
         UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
         TransactionDto restoredTransaction = transactionToRestore
@@ -139,9 +142,13 @@ public class TransactionSimpleService implements TransactionService {
         LOGGER.debug("Start swapping transactions {} and {}", firstTransactionId, secondTransactionId);
         List<TransactionDto> pairToSwap = transactionDao.getAllByIds(List.of(firstTransactionId, secondTransactionId));
         if (!pairToSwap.get(0).date().isEqual(pairToSwap.get(1).date())) {
-            throw new InvalidOperationException(String.format("Transactions have different date: %s and %s",
-                                                              pairToSwap.get(0).date(), pairToSwap.get(1).date()),
-                                                "Only transactions with same date are available to move");
+            throw new InvalidOperationException(
+                    String.format(
+                            "Transactions have different date: %s and %s",
+                            pairToSwap.get(0).date(), pairToSwap.get(1).date()
+                    ),
+                    "Only transactions with same date are available to move"
+            );
         }
         TransactionDto firstUpdatedTransaction = pairToSwap.get(0).toBuilder().order(pairToSwap.get(1).order()).build();
         TransactionDto secondUpdatedTransaction = pairToSwap.get(1).toBuilder().order(pairToSwap.get(0).order()).build();

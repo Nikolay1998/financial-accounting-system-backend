@@ -29,8 +29,10 @@ public class CurrencyPostgresDao implements CurrencyDao {
 
     @Override
     public CurrencyDto getById(String id) {
-        return namedJdbc.queryForObject("select * from currency where id = :id", Map.of("id", id),
-                                        this::mapRowToCurrency);
+        return namedJdbc.queryForObject(
+                "select * from currency where id = :id", Map.of("id", id),
+                this::mapRowToCurrency
+        );
     }
 
     private CurrencyDto mapRowToCurrency(

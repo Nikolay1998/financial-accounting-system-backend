@@ -31,7 +31,8 @@ public class TransactionPostgresDao implements TransactionDao {
         return namedJdbc.queryForObject(
                 "select * from transaction_with_extended_info where id = :id",
                 Map.of("id", transactionId),
-                this::mapRowToTransaction);
+                this::mapRowToTransaction
+        );
     }
 
     @Override
@@ -47,7 +48,9 @@ public class TransactionPostgresDao implements TransactionDao {
                         "receiverAmount", transaction.receiverAmount(),
                         "dateTime", java.sql.Date.valueOf((transaction.date())),
                         "isCancelled", transaction.isCancelled(),
-                        "userId", transaction.userId()));
+                        "userId", transaction.userId()
+                )
+        );
         return transaction;
     }
 
@@ -79,7 +82,9 @@ public class TransactionPostgresDao implements TransactionDao {
                         "receiverAmount", transaction.receiverAmount(),
                         "dateTime", java.sql.Date.valueOf((transaction.date())),
                         "isCancelled", transaction.isCancelled(),
-                        "userId", userId));
+                        "userId", userId
+                )
+        );
 
         if (updated > 0) {
             return transaction;
@@ -94,24 +99,27 @@ public class TransactionPostgresDao implements TransactionDao {
                         SELECT * FROM transaction WHERE id IN (:ids)
                         """,
                 Map.of("ids", ids),
-                this::mapRowToTransaction);
+                this::mapRowToTransaction
+        );
     }
 
     @Override
     public List<TransactionDto> batchUpdate(List<TransactionDto> transactions) throws BatchUpdateException {
-        int[] updated = namedJdbc.batchUpdate("""
-                                                      update transaction
-                                                      set sendernodeid = :senderNodeId,
-                                                      receivernodeid = :receiverNodeId,
-                                                      description = :description,
-                                                      senderamount = :senderAmount,
-                                                      receiveramount = :receiverAmount,
-                                                      timestamp = :date,
-                                                      is_cancelled = :cancelled,
-                                                      order_number = :order
-                                                      where id = :id and user_id = :userId
-                                                      """,
-                                              SqlParameterSourceUtils.createBatch(transactions));
+        int[] updated = namedJdbc.batchUpdate(
+                """
+                        update transaction
+                        set sendernodeid = :senderNodeId,
+                        receivernodeid = :receiverNodeId,
+                        description = :description,
+                        senderamount = :senderAmount,
+                        receiveramount = :receiverAmount,
+                        timestamp = :date,
+                        is_cancelled = :cancelled,
+                        order_number = :order
+                        where id = :id and user_id = :userId
+                        """,
+                SqlParameterSourceUtils.createBatch(transactions)
+        );
         if (Arrays.stream(updated).anyMatch(row -> row != 1)) {
             throw new BatchUpdateException("Something went wrong", updated);
         }
@@ -149,8 +157,10 @@ public class TransactionPostgresDao implements TransactionDao {
                 .receiverNodeId(row.getString("receiverNodeId"))
                 .senderAmount(row.getBigDecimal("senderamount"))
                 .receiverAmount(row.getBigDecimal("receiveramount"))
-                .date(LocalDate.ofInstant(row.getTimestamp("timestamp").toInstant(),
-                                          TimeZone.getDefault().toZoneId()))
+                .date(LocalDate.ofInstant(
+                        row.getTimestamp("timestamp").toInstant(),
+                        TimeZone.getDefault().toZoneId()
+                ))
                 .isCancelled(row.getBoolean("is_cancelled"))
                 .order(row.getInt("order_number"))
                 .userId(row.getString("user_id"))

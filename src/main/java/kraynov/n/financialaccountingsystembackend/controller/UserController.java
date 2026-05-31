@@ -27,8 +27,10 @@ public class UserController {
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public UserDetailsDto add(@RequestBody UserDetailsDto userDto) {
-        UserDetailsDto encryptedUser = new UserDetailsDto(UUID.randomUUID().toString(), userDto.getUsername(),
-                                                          passwordEncoder.encode(userDto.getPassword()));
+        UserDetailsDto encryptedUser = new UserDetailsDto(
+                UUID.randomUUID().toString(), userDto.getUsername(),
+                passwordEncoder.encode(userDto.getPassword())
+        );
         return userService.add(encryptedUser);
     }
 

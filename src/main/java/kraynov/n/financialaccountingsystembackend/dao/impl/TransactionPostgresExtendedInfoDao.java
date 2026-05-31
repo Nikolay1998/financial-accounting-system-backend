@@ -30,7 +30,8 @@ public class TransactionPostgresExtendedInfoDao implements TransactionExtendedIn
         return namedJdbc.queryForObject(
                 "select * from transaction_with_extended_info where id = :id",
                 Map.of("id", transactionId),
-                this::mapRowToTransaction);
+                this::mapRowToTransaction
+        );
     }
 
     @Override
@@ -39,7 +40,8 @@ public class TransactionPostgresExtendedInfoDao implements TransactionExtendedIn
         List<TransactionExtendedInfoDto> result = namedJdbc.query(
                 "select * from transaction_with_extended_info where user_id = :userId order by timestamp desc, order_number desc",
                 Map.of("userId", userId),
-                this::mapRowToTransaction);
+                this::mapRowToTransaction
+        );
         logger.debug("Finish retrieving all transactions by userId");
         return result;
 
@@ -62,7 +64,8 @@ public class TransactionPostgresExtendedInfoDao implements TransactionExtendedIn
         return namedJdbc.query(
                 "select * from transaction_with_extended_info" +
                         " where sendernodeid = :nodeId or receivernodeid = :nodeId order by timestamp desc",
-                Map.of("nodeId", id), this::mapRowToTransaction);
+                Map.of("nodeId", id), this::mapRowToTransaction
+        );
     }
 
     @Override
@@ -72,7 +75,8 @@ public class TransactionPostgresExtendedInfoDao implements TransactionExtendedIn
                         SELECT * FROM transaction_with_extended_info WHERE id IN (:ids)
                         """,
                 Map.of("ids", ids),
-                this::mapRowToTransaction);
+                this::mapRowToTransaction
+        );
     }
 
     @Override
@@ -87,10 +91,13 @@ public class TransactionPostgresExtendedInfoDao implements TransactionExtendedIn
                                  AND DATE("timestamp") between :from and :to
                                  order by timestamp desc, order_number desc
                         """,
-                Map.of("userId", userId,
-                       "from", filter.from().atStartOfDay(),
-                       "to", filter.to().plusDays(1).atStartOfDay()),
-                this::mapRowToTransaction);
+                Map.of(
+                        "userId", userId,
+                        "from", filter.from().atStartOfDay(),
+                        "to", filter.to().plusDays(1).atStartOfDay()
+                ),
+                this::mapRowToTransaction
+        );
     }
 
     private TransactionExtendedInfoDto mapRowToTransaction(
@@ -104,8 +111,10 @@ public class TransactionPostgresExtendedInfoDao implements TransactionExtendedIn
                 .receiverNodeId(row.getString("receiverNodeId"))
                 .senderAmount(row.getBigDecimal("senderamount"))
                 .receiverAmount(row.getBigDecimal("receiveramount"))
-                .date(LocalDate.ofInstant(row.getTimestamp("timestamp").toInstant(),
-                                          TimeZone.getDefault().toZoneId()))
+                .date(LocalDate.ofInstant(
+                        row.getTimestamp("timestamp").toInstant(),
+                        TimeZone.getDefault().toZoneId()
+                ))
                 .isCancelled(row.getBoolean("is_cancelled"))
                 .userId(row.getString("user_id"))
                 .isFromExternal(row.getBoolean("is_from_external"))

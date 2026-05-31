@@ -25,9 +25,11 @@ public class UserPostgresDao implements UserDao {
     @Override
     public UserDetailsDto getByName(String username) {
         try {
-            return namedJdbc.queryForObject("select * from fas_user where name = :username",
-                                            Map.of("username", username),
-                                            this::mapRowToUser);
+            return namedJdbc.queryForObject(
+                    "select * from fas_user where name = :username",
+                    Map.of("username", username),
+                    this::mapRowToUser
+            );
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -35,10 +37,12 @@ public class UserPostgresDao implements UserDao {
 
     @Override
     public UserDetailsDto save(UserDetailsDto userDto) {
-        jdbcTemplate.update("insert into fas_user values (?, ?, ?)",
-                            userDto.getId(),
-                            userDto.getUsername(),
-                            userDto.getPassword());
+        jdbcTemplate.update(
+                "insert into fas_user values (?, ?, ?)",
+                userDto.getId(),
+                userDto.getUsername(),
+                userDto.getPassword()
+        );
         return userDto;
     }
 
