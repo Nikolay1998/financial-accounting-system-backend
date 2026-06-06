@@ -13,8 +13,8 @@ import java.util.List;
 @Data
 public class UserDetailsDto implements UserDetails {
     private final String id;
-    private final String password;
     private final String username;
+    private final String password;
     private final Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
     private final boolean isAccountNonExpired = true;
     private final boolean isAccountNonLocked = true;
