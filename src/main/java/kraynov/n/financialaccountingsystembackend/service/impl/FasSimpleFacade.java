@@ -11,7 +11,10 @@ public class FasSimpleFacade implements FasFacade {
     private final NodeService nodeService;
     private final TransactionService transactionService;
 
-    public FasSimpleFacade(NodeService nodeService, TransactionService transactionService) {
+    public FasSimpleFacade(
+            NodeService nodeService,
+            TransactionService transactionService
+    ) {
         this.nodeService = nodeService;
         this.transactionService = transactionService;
     }
@@ -34,7 +37,7 @@ public class FasSimpleFacade implements FasFacade {
     @Transactional
     @Override
     public TransactionExtendedInfoDto editTransaction(TransactionDto newTransaction) {
-        TransactionDto old = transactionService.get(newTransaction.getId());
+        TransactionDto old = transactionService.get(newTransaction.id());
         nodeService.cancelTransactionAffection(old);
         nodeService.calculateTransactionAffection(newTransaction);
         return transactionService.edit(newTransaction);

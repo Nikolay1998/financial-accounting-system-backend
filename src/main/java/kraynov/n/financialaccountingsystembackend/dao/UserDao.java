@@ -2,8 +2,8 @@ package kraynov.n.financialaccountingsystembackend.dao;
 
 import kraynov.n.financialaccountingsystembackend.dto.UserDetailsDto;
 
-public interface UserDAO {
+public interface UserDao {
     UserDetailsDto getByName(String username);
 
-    UserDetailsDto save(UserDetailsDto userDTO);
+    UserDetailsDto save(UserDetailsDto userDto);
 }

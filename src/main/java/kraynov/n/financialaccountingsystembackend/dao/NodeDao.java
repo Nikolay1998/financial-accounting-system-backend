@@ -5,7 +5,7 @@ import kraynov.n.financialaccountingsystembackend.dto.NodeExtendedInfoDto;
 
 import java.util.List;
 
-public interface NodeDAO {
+public interface NodeDao {
     NodeDto save(NodeDto node);
 
     NodeExtendedInfoDto getExtendedInfoById(String nodeId);
@@ -14,5 +14,8 @@ public interface NodeDAO {
 
     List<NodeExtendedInfoDto> getAll(String userId);
 
-    NodeDto update(NodeDto node, String userId);
+    NodeDto update(
+            NodeDto node,
+            String userId
+    );
 }

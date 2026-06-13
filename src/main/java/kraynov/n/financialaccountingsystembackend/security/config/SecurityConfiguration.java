@@ -46,8 +46,10 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,
-            BasicAuthenticationEntryPoint fasBasicAuthenticationEntryPoint) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            BasicAuthenticationEntryPoint fasBasicAuthenticationEntryPoint
+    ) throws Exception {
         http.csrf().disable();
         http
                 .cors()

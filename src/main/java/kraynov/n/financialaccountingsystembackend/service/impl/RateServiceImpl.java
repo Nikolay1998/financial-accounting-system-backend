@@ -53,7 +53,7 @@ public class RateServiceImpl implements RateService {
                     throw new RuntimeException("Rate for currency pair: from " + fromCurrency + " to " + toCurrency + " not found");
                 }
                 equivalentInCurrentCurrency = equivalentInCurrentCurrency.add(
-                        amountByCurrencies.getOrDefault(fromCurrency, BigDecimal.ZERO).multiply(rate.getRate()));
+                        amountByCurrencies.getOrDefault(fromCurrency, BigDecimal.ZERO).multiply(rate.rate()));
             }
             equivalentInCurrentCurrency = equivalentInCurrentCurrency
                     .add(amountByCurrencies.getOrDefault(toCurrency, BigDecimal.ZERO));
@@ -66,12 +66,14 @@ public class RateServiceImpl implements RateService {
         String userId = contextHolderFacade.getAuthenticatedUser().getId();
         return nodeService.getAllByUser(userId)
                 .stream()
-                .map(NodeExtendedInfoDto::getCurrencyId)
+                .map(NodeExtendedInfoDto::currencyId)
                 .collect(Collectors.toSet());
     }
 
-    private Set<CurrencyIdPairTo> generateAllPairs(Set<String> incomingCurrencies,
-                                                   Set<String> userCurrencies) {
+    private Set<CurrencyIdPairTo> generateAllPairs(
+            Set<String> incomingCurrencies,
+            Set<String> userCurrencies
+    ) {
         Set<CurrencyIdPairTo> pairs = new HashSet<>();
         for (String from : incomingCurrencies) {
             for (String to : userCurrencies) {

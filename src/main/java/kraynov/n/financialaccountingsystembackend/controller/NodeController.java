@@ -7,8 +7,8 @@ import kraynov.n.financialaccountingsystembackend.exception.InvalidOperationExce
 import kraynov.n.financialaccountingsystembackend.mapper.NodeMapper;
 import kraynov.n.financialaccountingsystembackend.security.ContextHolderFacade;
 import kraynov.n.financialaccountingsystembackend.service.NodeService;
-import kraynov.n.financialaccountingsystembackend.to.NodeRequestTO;
-import kraynov.n.financialaccountingsystembackend.to.NodeResponseTO;
+import kraynov.n.financialaccountingsystembackend.to.NodeRequestTo;
+import kraynov.n.financialaccountingsystembackend.to.NodeResponseTo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,15 +21,16 @@ import java.util.List;
 @RequestMapping(path = "/node")
 public class NodeController {
 
+    public final ContextHolderFacade contextHolderFacade;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final NodeService nodeService;
-
     private final NodeMapper nodeMapper;
 
-    public final ContextHolderFacade contextHolderFacade;
-
-    public NodeController(NodeService nodeService, NodeMapper nodeMapper, ContextHolderFacade contextHolderFacade) {
+    public NodeController(
+            NodeService nodeService,
+            NodeMapper nodeMapper,
+            ContextHolderFacade contextHolderFacade
+    ) {
         this.nodeService = nodeService;
         this.nodeMapper = nodeMapper;
         this.contextHolderFacade = contextHolderFacade;
@@ -37,9 +38,9 @@ public class NodeController {
 
     @CrossOrigin
     @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<NodeResponseTO> getAll() {
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        List<NodeResponseTO> nodes = nodeService.getAllByUser(userDTO.getId())
+    public List<NodeResponseTo> getAll() {
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        List<NodeResponseTo> nodes = nodeService.getAllByUser(userDto.getId())
                 .stream()
                 .map(nodeMapper::responseFromDto)
                 .sorted(NodeMapper::compareNodeVO)
@@ -51,35 +52,36 @@ public class NodeController {
     @CrossOrigin
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public NodeResponseTO add(@RequestBody NodeRequestTO node) {
+    public NodeResponseTo add(@RequestBody NodeRequestTo node) {
         return nodeMapper.responseFromDto(
                 nodeService.add(nodeMapper.dtoFromRequest(node)));
     }
 
     @CrossOrigin
     @PutMapping(path = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public NodeResponseTO editNode(@RequestBody NodeRequestTO nodeRequestTO) {
-        NodeDto node = nodeMapper.dtoFromRequest(nodeRequestTO);
+    public NodeResponseTo editNode(@RequestBody NodeRequestTo nodeRequestTo) {
+        NodeDto node = nodeMapper.dtoFromRequest(nodeRequestTo);
         logger.debug("Converted node for editing: {}", node);
         NodeExtendedInfoDto edited = nodeService.edit(node);
         if (edited == null) {
             throw new InvalidOperationException(
-                    String.format("Node with id '%s' not found", node.getId()),
-                    String.format("node with name '%s' not found", node.getName()));
+                    String.format("Node with id '%s' not found", node.id()),
+                    String.format("node with name '%s' not found", node.name())
+            );
         }
         return nodeMapper.responseFromDto(edited);
     }
 
     @CrossOrigin
     @PutMapping(path = "/archive", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public NodeResponseTO archiveNode(@RequestParam String nodeId) {
+    public NodeResponseTo archiveNode(@RequestParam String nodeId) {
         NodeExtendedInfoDto archived = nodeService.archive(nodeId);
         return nodeMapper.responseFromDto(archived);
     }
 
     @CrossOrigin
     @PutMapping(path = "/restore", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public NodeResponseTO restoreNode(@RequestParam String nodeId) {
+    public NodeResponseTo restoreNode(@RequestParam String nodeId) {
         NodeExtendedInfoDto restored = nodeService.restore(nodeId);
         return nodeMapper.responseFromDto(restored);
     }

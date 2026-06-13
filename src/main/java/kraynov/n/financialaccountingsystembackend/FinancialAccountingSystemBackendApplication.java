@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class FinancialAccountingSystemBackendApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FinancialAccountingSystemBackendApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FinancialAccountingSystemBackendApplication.class, args);
+    }
 
 }

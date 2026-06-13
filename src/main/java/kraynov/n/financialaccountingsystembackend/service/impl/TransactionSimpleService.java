@@ -1,7 +1,7 @@
 package kraynov.n.financialaccountingsystembackend.service.impl;
 
-import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
-import kraynov.n.financialaccountingsystembackend.dao.TransactionExtendedInfoDAO;
+import kraynov.n.financialaccountingsystembackend.dao.TransactionDao;
+import kraynov.n.financialaccountingsystembackend.dao.TransactionExtendedInfoDao;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionExtendedInfoDto;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionFilterDto;
@@ -20,139 +20,153 @@ import java.util.UUID;
 public class TransactionSimpleService implements TransactionService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TransactionSimpleService.class);
-    private final TransactionExtendedInfoDAO transactionExtendedInfoDAO;
-    private final TransactionDAO transactionDAO;
+    private final TransactionExtendedInfoDao transactionExtendedInfoDao;
+    private final TransactionDao transactionDao;
     private final ContextHolderFacade contextHolderFacade;
 
-    public TransactionSimpleService(TransactionExtendedInfoDAO transactionExtendedInfoDAO, TransactionDAO transactionDAO, ContextHolderFacade contextHolderFacade) {
-        this.transactionExtendedInfoDAO = transactionExtendedInfoDAO;
-        this.transactionDAO = transactionDAO;
+    public TransactionSimpleService(
+            TransactionExtendedInfoDao transactionExtendedInfoDao,
+            TransactionDao transactionDao,
+            ContextHolderFacade contextHolderFacade
+    ) {
+        this.transactionExtendedInfoDao = transactionExtendedInfoDao;
+        this.transactionDao = transactionDao;
         this.contextHolderFacade = contextHolderFacade;
     }
 
     @Override
     public TransactionExtendedInfoDto add(TransactionDto transaction) {
         LOGGER.debug("Start adding transaction {}", transaction);
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
         TransactionDto transactionWithId = transaction
                 .toBuilder()
                 .id(UUID.randomUUID().toString())
                 .isCancelled(false)
-                .userId(userDTO.getId())
+                .userId(userDto.getId())
                 .build();
 
-        transactionDAO.save(transactionWithId);
-        return transactionExtendedInfoDAO.get(transactionWithId.getId());
+        transactionDao.save(transactionWithId);
+        return transactionExtendedInfoDao.get(transactionWithId.id());
     }
 
     @Override
     public TransactionDto get(String id) {
         LOGGER.debug("Start loading transaction with id = {}", id);
-        return transactionDAO.get(id);
+        return transactionDao.get(id);
     }
 
     @Override
     public TransactionExtendedInfoDto getExtendedInfo(String id) {
-        return transactionExtendedInfoDAO.get(id);
+        return transactionExtendedInfoDao.get(id);
     }
 
     @Override
     public List<TransactionExtendedInfoDto> getAll() {
         LOGGER.debug("Start loading all transactions");
 
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        return transactionExtendedInfoDAO.getAllByUserId(userDTO.getId());
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        return transactionExtendedInfoDao.getAllByUserId(userDto.getId());
     }
 
     @Override
     public List<TransactionExtendedInfoDto> getAllBySenderId(int id) {
-        return transactionExtendedInfoDAO.getAllBySenderId(id);
+        return transactionExtendedInfoDao.getAllBySenderId(id);
     }
 
     @Override
     public List<TransactionExtendedInfoDto> getAllByReceiverId(int id) {
-        return transactionExtendedInfoDAO.getAllByReceiverId(id);
+        return transactionExtendedInfoDao.getAllByReceiverId(id);
     }
 
     @Override
     public TransactionDto cancel(String transactionId) {
         LOGGER.debug("Start cancelling transaction {}", transactionId);
-        TransactionDto transactionToCancel = transactionDAO.get(transactionId);
+        TransactionDto transactionToCancel = transactionDao.get(transactionId);
         if (transactionToCancel.isCancelled()) {
             throw new InvalidOperationException(
                     String.format("Transaction %s has been cancelled", transactionId),
-                    "transaction already canceled");
+                    "transaction already canceled"
+            );
         }
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
         TransactionDto canceledTransaction = transactionToCancel
                 .withCancelled(true);
 
-        return transactionDAO.update(canceledTransaction, userDTO.getId());
+        return transactionDao.update(canceledTransaction, userDto.getId());
     }
 
     @Override
     public List<TransactionExtendedInfoDto> getAllByNodeId(String id) {
         LOGGER.debug("Start loading all transactions for nodeId = {}", id);
-        return transactionExtendedInfoDAO.getAllByNodeId(id);
+        return transactionExtendedInfoDao.getAllByNodeId(id);
     }
 
     @Override
     public TransactionExtendedInfoDto edit(TransactionDto transaction) {
         LOGGER.debug("Start editing transaction {}", transaction);
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
 
-        TransactionDto updated = transactionDAO.update(transaction, userDTO.getId());
+        TransactionDto updated = transactionDao.update(transaction, userDto.getId());
         if (updated == null) {
             throw new InvalidOperationException(
-                    String.format("Can't find transaction for edit with id = %s", transaction.getId()),
-                    "transaction " + transaction.getDescription() + " not found");
+                    String.format("Can't find transaction for edit with id = %s", transaction.id()),
+                    "transaction " + transaction.description() + " not found"
+            );
         }
 
-        return transactionExtendedInfoDAO.get(transaction.getId());
+        return transactionExtendedInfoDao.get(transaction.id());
     }
 
     @Override
     public TransactionDto restore(String transactionId) {
         LOGGER.debug("Start restoring transaction {}", transactionId);
-        TransactionDto transactionToRestore = transactionDAO.get(transactionId);
+        TransactionDto transactionToRestore = transactionDao.get(transactionId);
         if (!transactionToRestore.isCancelled()) {
             throw new InvalidOperationException(
-                    String.format("transaction %s is not canceled", transactionToRestore.getId()),
-                    String.format("transaction %s is not canceled", transactionToRestore.getDescription()));
+                    String.format("transaction %s is not canceled", transactionToRestore.id()),
+                    String.format("transaction %s is not canceled", transactionToRestore.description())
+            );
         }
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
         TransactionDto restoredTransaction = transactionToRestore
                 .withCancelled(false);
-        return transactionDAO.update(restoredTransaction, userDTO.getId());
+        return transactionDao.update(restoredTransaction, userDto.getId());
     }
 
     @Transactional
     @Override
-    public List<TransactionExtendedInfoDto> swapOrder(String firstTransactionId, String secondTransactionId) {
+    public List<TransactionExtendedInfoDto> swapOrder(
+            String firstTransactionId,
+            String secondTransactionId
+    ) {
         LOGGER.debug("Start swapping transactions {} and {}", firstTransactionId, secondTransactionId);
-        List<TransactionDto> pairToSwap = transactionDAO.getAllByIds(List.of(firstTransactionId, secondTransactionId));
-        if (!pairToSwap.get(0).getDate().isEqual(pairToSwap.get(1).getDate())) {
-            throw new InvalidOperationException(String.format("Transactions have different date: %s and %s",
-                    pairToSwap.get(0).getDate(), pairToSwap.get(1).getDate()),
-                    "Only transactions with same date are available to move");
+        List<TransactionDto> pairToSwap = transactionDao.getAllByIds(List.of(firstTransactionId, secondTransactionId));
+        if (!pairToSwap.get(0).date().isEqual(pairToSwap.get(1).date())) {
+            throw new InvalidOperationException(
+                    String.format(
+                            "Transactions have different date: %s and %s",
+                            pairToSwap.get(0).date(), pairToSwap.get(1).date()
+                    ),
+                    "Only transactions with same date are available to move"
+            );
         }
-        TransactionDto firstUpdatedTransaction = pairToSwap.get(0).toBuilder().order(pairToSwap.get(1).getOrder()).build();
-        TransactionDto secondUpdatedTransaction = pairToSwap.get(1).toBuilder().order(pairToSwap.get(0).getOrder()).build();
+        TransactionDto firstUpdatedTransaction = pairToSwap.get(0).toBuilder().order(pairToSwap.get(1).order()).build();
+        TransactionDto secondUpdatedTransaction = pairToSwap.get(1).toBuilder().order(pairToSwap.get(0).order()).build();
         try {
-            transactionDAO.batchUpdate(List.of(firstUpdatedTransaction, secondUpdatedTransaction));
+            transactionDao.batchUpdate(List.of(firstUpdatedTransaction, secondUpdatedTransaction));
         } catch (BatchUpdateException e) {
             throw new RuntimeException(e);
         }
 
-        return transactionExtendedInfoDAO.getAllByIds(List.of(firstTransactionId, secondTransactionId));
+        return transactionExtendedInfoDao.getAllByIds(List.of(firstTransactionId, secondTransactionId));
     }
 
     @Override
     public List<TransactionExtendedInfoDto> getAllByFilter(TransactionFilterDto filter) {
-        UserDetailsDto userDTO = contextHolderFacade.getAuthenticatedUserOrThrowException();
-        if (filter.getFrom().isAfter(filter.getTo())) {
+        UserDetailsDto userDto = contextHolderFacade.getAuthenticatedUserOrThrowException();
+        if (filter.from().isAfter(filter.to())) {
             throw new InvalidOperationException("From date should be before to", "From date should be before to");
         }
-        return transactionExtendedInfoDAO.getAllByFilter(filter, userDTO.getId());
+        return transactionExtendedInfoDao.getAllByFilter(filter, userDto.getId());
     }
 }

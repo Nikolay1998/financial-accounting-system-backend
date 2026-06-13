@@ -1,6 +1,6 @@
 package kraynov.n.financialaccountingsystembackend.dao.impl;
 
-import kraynov.n.financialaccountingsystembackend.dao.TransactionDAO;
+import kraynov.n.financialaccountingsystembackend.dao.TransactionDao;
 import kraynov.n.financialaccountingsystembackend.dto.TransactionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class TransactionPostgresDAO implements TransactionDAO {
+public class TransactionPostgresDao implements TransactionDao {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final NamedParameterJdbcTemplate namedJdbc;
 
-    public TransactionPostgresDAO(NamedParameterJdbcTemplate namedJdbc) {
+    public TransactionPostgresDao(NamedParameterJdbcTemplate namedJdbc) {
         this.namedJdbc = namedJdbc;
     }
 
@@ -31,7 +31,8 @@ public class TransactionPostgresDAO implements TransactionDAO {
         return namedJdbc.queryForObject(
                 "select * from transaction_with_extended_info where id = :id",
                 Map.of("id", transactionId),
-                this::mapRowToTransaction);
+                this::mapRowToTransaction
+        );
     }
 
     @Override
@@ -39,20 +40,25 @@ public class TransactionPostgresDAO implements TransactionDAO {
         namedJdbc.update(
                 "insert into transaction values (:id, :senderNodeId, :receiverNodeId, :description, :senderAmount, :receiverAmount, :dateTime, :userId, :isCancelled)",
                 Map.of(
-                        "id", transaction.getId(),
-                        "senderNodeId", transaction.getSenderNodeId(),
-                        "receiverNodeId", transaction.getReceiverNodeId(),
-                        "description", transaction.getDescription(),
-                        "senderAmount", transaction.getSenderAmount(),
-                        "receiverAmount", transaction.getReceiverAmount(),
-                        "dateTime", java.sql.Date.valueOf((transaction.getDate())),
+                        "id", transaction.id(),
+                        "senderNodeId", transaction.senderNodeId(),
+                        "receiverNodeId", transaction.receiverNodeId(),
+                        "description", transaction.description(),
+                        "senderAmount", transaction.senderAmount(),
+                        "receiverAmount", transaction.receiverAmount(),
+                        "dateTime", java.sql.Date.valueOf((transaction.date())),
                         "isCancelled", transaction.isCancelled(),
-                        "userId", transaction.getUserId()));
+                        "userId", transaction.userId()
+                )
+        );
         return transaction;
     }
 
     @Override
-    public TransactionDto update(TransactionDto transaction, String userId) {
+    public TransactionDto update(
+            TransactionDto transaction,
+            String userId
+    ) {
         logger.debug("Start updating transaction: {}", transaction);
 
         int updated = namedJdbc.update(
@@ -68,15 +74,17 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         where id = :id and user_id = :userId
                         """,
                 Map.of(
-                        "id", transaction.getId(),
-                        "senderNodeId", transaction.getSenderNodeId(),
-                        "receiverNodeId", transaction.getReceiverNodeId(),
-                        "description", transaction.getDescription(),
-                        "senderAmount", transaction.getSenderAmount(),
-                        "receiverAmount", transaction.getReceiverAmount(),
-                        "dateTime", java.sql.Date.valueOf((transaction.getDate())),
+                        "id", transaction.id(),
+                        "senderNodeId", transaction.senderNodeId(),
+                        "receiverNodeId", transaction.receiverNodeId(),
+                        "description", transaction.description(),
+                        "senderAmount", transaction.senderAmount(),
+                        "receiverAmount", transaction.receiverAmount(),
+                        "dateTime", java.sql.Date.valueOf((transaction.date())),
                         "isCancelled", transaction.isCancelled(),
-                        "userId", userId));
+                        "userId", userId
+                )
+        );
 
         if (updated > 0) {
             return transaction;
@@ -91,12 +99,14 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         SELECT * FROM transaction WHERE id IN (:ids)
                         """,
                 Map.of("ids", ids),
-                this::mapRowToTransaction);
+                this::mapRowToTransaction
+        );
     }
 
     @Override
     public List<TransactionDto> batchUpdate(List<TransactionDto> transactions) throws BatchUpdateException {
-        int[] updated = namedJdbc.batchUpdate("""
+        int[] updated = namedJdbc.batchUpdate(
+                """
                         update transaction
                         set sendernodeid = :senderNodeId,
                         receivernodeid = :receiverNodeId,
@@ -108,7 +118,8 @@ public class TransactionPostgresDAO implements TransactionDAO {
                         order_number = :order
                         where id = :id and user_id = :userId
                         """,
-                SqlParameterSourceUtils.createBatch(transactions));
+                SqlParameterSourceUtils.createBatch(transactions)
+        );
         if (Arrays.stream(updated).anyMatch(row -> row != 1)) {
             throw new BatchUpdateException("Something went wrong", updated);
         }
@@ -135,7 +146,10 @@ public class TransactionPostgresDAO implements TransactionDAO {
 //        );
 //    }
 
-    private TransactionDto mapRowToTransaction(ResultSet row, int rowNum) throws SQLException {
+    private TransactionDto mapRowToTransaction(
+            ResultSet row,
+            int rowNum
+    ) throws SQLException {
         return TransactionDto.builder()
                 .id(row.getString("id"))
                 .description(row.getString("description"))
@@ -143,8 +157,10 @@ public class TransactionPostgresDAO implements TransactionDAO {
                 .receiverNodeId(row.getString("receiverNodeId"))
                 .senderAmount(row.getBigDecimal("senderamount"))
                 .receiverAmount(row.getBigDecimal("receiveramount"))
-                .date(LocalDate.ofInstant(row.getTimestamp("timestamp").toInstant(),
-                        TimeZone.getDefault().toZoneId()))
+                .date(LocalDate.ofInstant(
+                        row.getTimestamp("timestamp").toInstant(),
+                        TimeZone.getDefault().toZoneId()
+                ))
                 .isCancelled(row.getBoolean("is_cancelled"))
                 .order(row.getInt("order_number"))
                 .userId(row.getString("user_id"))
